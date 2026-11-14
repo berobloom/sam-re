@@ -62,8 +62,10 @@ def regions(u, rec):
     for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:   # (unmatched) routine's literals follow
         if f.startswith(seg + '_') and f.endswith('.PAS'):
             m = re.search(r'\{ to: ([0-9A-F]{4}) \}', open(os.path.join(d, f)).read())
-            if m and h(m.group(1)) < init:
-                cuts = sorted(set(cuts) | {h(m.group(1))})
+            if m and h(m.group(1)) < init:              # the next routine's region starts at its literals
+                to = h(m.group(1))
+                nxt = [c for c in cuts if c > to][:1]
+                cuts = sorted((set(cuts) - set(nxt)) | {to})
     if init == 0:
         cuts = []
     merged = []
@@ -231,8 +233,24 @@ def outside_keeps(units, regs):
     return out
 
 
+def signature(seg, off):
+    """src/match/<SEG>_<OFF>.SIG: an unmatched routine's real header (`{$F+} function ReadMenuKey: Char;`), so
+    matched code can call its stub; `{ keep: STATEMENT }` keeps it from the keeper (default: none, a matched
+    caller keeps it)"""
+    path = os.path.join(SRC, 'match', '%s_%04X.SIG' % (seg, off))
+    if not os.path.exists(path):
+        return None
+    text = open(path).read().replace('\r', '')
+    head = next(l for l in text.split('\n') if re.search(r'\b(procedure|function) ', l))
+    far = '{$F+}' in head
+    head = re.sub(r'\{\$F[+-]\}', '', head).strip()
+    keep = re.search(r'\{ keep: (.*) \}', text)
+    return {'head': head, 'far': far, 'name': re.search(r'(?:procedure|function) (\w+)', head).group(1),
+            'keep': keep.group(1) if keep else '-'}
+
+
 def keeper_of(regs):
-    stubs = [r for r in regs if r[0] == 'stub' and not fragment(r[1][1:5], r[2])]
+    stubs = [r for r in regs if r[0] == 'stub' and not fragment(r[1][1:5], r[2]) and not signature(r[1][1:5], r[2])]
     return max(stubs, key=lambda r: r[3])[1] if stubs else None
 
 
@@ -245,13 +263,15 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         dnames = []                         # unit data is in the interface; the main body keeps it
     stubs = [r for r in regs if r[0] == 'stub']
     frags = {r[1]: fragment(seg, r[2]) for r in stubs}
-    plain = [r for r in stubs if not frags[r[1]]]
+    sigs = {r[1]: signature(seg, r[2]) for r in stubs if not frags[r[1]]}
+    plain = [r for r in stubs if not frags[r[1]] and not sigs.get(r[1])]
     obj = [r for r in regs if r[0] == 'obj']
     keeper = keeper_of(regs) if not main else None
     # the unit keeps its private routines; what other units can see (keeper, interface routines, the .OBJ entry)
     # is kept from the main program body (outside_keeps)
-    calls = [frags[r[1]]['keep'] if frags[r[1]] else r[1] for r in stubs
-             if r[1] != keeper and not (frags[r[1]] and (frags[r[1]]['interface'] or frags[r[1]]['keep'] == '-'))]
+    calls = [frags[r[1]]['keep'] if frags[r[1]] else sigs[r[1]]['keep'] if sigs.get(r[1]) else r[1] for r in stubs
+             if r[1] != keeper and not (frags[r[1]] and (frags[r[1]]['interface'] or frags[r[1]]['keep'] == '-'))
+             and not (sigs.get(r[1]) and sigs[r[1]]['keep'] == '-')]
     if main:
         calls += [r[1] for r in obj]
     # links System 025D (structured value parameter); its prologue grows, so the largest stub carries it
@@ -277,6 +297,9 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         f = frags[r[1]]
         if f and not f['interface']:                # a far private routine's forward is far too
             L.append(('{$F+} %s forward; {$F-}' if '{$F+}' in f['text'] else '%s forward;') % f['head'])
+        elif sigs.get(r[1]):
+            g = sigs[r[1]]
+            L.append(('{$F+} %s forward; {$F-}' if g['far'] else '%s forward;') % g['head'])
         elif not f and r[1] != keeper:
             L.append('procedure %s%s; forward;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
     for r in obj:
@@ -299,10 +322,15 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         if frags[r[1]]:
             L += frags[r[1]]['text'].split('\n')
             continue
-        L.append('procedure %s%s;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
+        g = sigs.get(r[1])
+        if g and g['far']:
+            L.append('{$F+}')
+        L.append(g['head'] if g else 'procedure %s%s;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
         L.append('begin')
         L += body(r[1], calls if r[1] == keeper else [], dnames if r[1] == keeper else [])
         L.append('end;')
+        if g and g['far']:
+            L.append('{$F-}')
     L.append('begin')
     if main:
         L += body('INIT', calls + list(keepers_of_units), dnames + list(unit_data), rtl=True)
@@ -430,7 +458,8 @@ def main(argv):
                 elif kind == 'obj':                # TP puts the .OBJ code last; NASM emits exactly its size
                     a = base + lens[name] - fill[u['seg']][rname]
                 else:
-                    a = ln.get(bl.get(rname))
+                    g = signature(u['seg'], off) if kind == 'stub' else None
+                    a = ln.get(bl.get(g['name'] if g else rname))
                     fi = fragment(u['seg'], off) if kind == 'init' else None
                     if fi and a is not None:
                         a -= fi['lit']

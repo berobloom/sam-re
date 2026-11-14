@@ -36,7 +36,9 @@ var
   Level: Integer; { @6842 }
   P_6846: array[1..2] of Byte;
   W6846: Integer; { @6846 }
-  P_6852: array[1..10] of Byte;
+  P_684A: array[1..2] of Byte;
+  W684A: Integer; { @684A }
+  P_6852: array[1..6] of Byte;
   W6852: Integer; { @6852 }
   P_6856: array[1..2] of Byte;
   W6856: Integer; { @6856 }

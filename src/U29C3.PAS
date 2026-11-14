@@ -12,6 +12,7 @@ procedure SetViewStartAlt(X, Y: Integer);
 procedure SetPalReg(Reg, Color: Integer);
 procedure SetColor(C: Integer);
 procedure ClearRows(Base, Count, Row, Rows: Integer);
+procedure Proc2ECF(A, B, C, D: Integer);
 procedure CopyPage;
 implementation
 {$L OBJ29C3.OBJ}
@@ -26,6 +27,7 @@ procedure SetColor; external;
 procedure ClearRows; external;
 {$F+} procedure GetRomFonts; external; {$F-}
 {$F+} procedure Proc2981(X: Integer); external; {$F-}
+procedure Proc2ECF; external;
 procedure CopyPage; external;
 begin
 { src: 29C3:0070, the unit init (SAM1RE: sets the video mode; copies the notice to DS:7166) }

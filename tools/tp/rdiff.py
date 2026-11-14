@@ -8,6 +8,7 @@ SEG:OFF is a routine in recipe/units.json. Prints N instruction pairs (target | 
 """
 import json
 import os
+import re
 import sys
 
 from capstone import Cs, CS_ARCH_X86, CS_MODE_16
@@ -33,7 +34,7 @@ def main(argv):
     rec = json.load(open(os.path.join(ROOT, 'recipe', 'units.json')))
     size = next(f['size'] for u in rec['units'] for f in u['functions'] if f['addr'] == '%04X:%04X' % (seg, off))
     lo = seg * 16 + off
-    k = next((x for x in range(lo, lo + size) if t.img[x] != b.img[x]), None)
+    k = next((x for x in range(lo, lo + size) if t.img[x] != b.img[x] and not any(r <= x < r + 2 for r in t.rel)), None)
     if k is None:
         print('identical')
         return 0
@@ -42,7 +43,8 @@ def main(argv):
     for i in range(first, min(first + n, max(len(a), len(c)))):
         x = a[i] if i < len(a) else (0, '')
         y = c[i] if i < len(c) else (0, '')
-        print('%s %04X %-34s | %04X %s' % ('*' if x[1] != y[1] else ' ', x[0], x[1], y[0], y[1]))
+        same = re.sub(r'(lcall|ljmp) 0x[0-9a-f]+', r'\1 SEG', x[1]) == re.sub(r'(lcall|ljmp) 0x[0-9a-f]+', r'\1 SEG', y[1])
+        print('%s %04X %-34s | %04X %s' % (' ' if same else '*', x[0], x[1], y[0], y[1]))
     return 0
 
 

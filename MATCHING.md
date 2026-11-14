@@ -244,6 +244,12 @@ so unknown variables between known ones need no declaration yet.
   operand of `or` first here; try the swap when only the order differs.
 - A function returning String gets the result address at the highest
   `[bp+n]` and does not pop it (`retf` counts the parameters only).
+- A test at the top that jumps past the loop plus the same test at the bottom
+  jumping back into the body is `if C then repeat ... until not C`, not
+  `while` (TP 5.0's while jumps back to the top test; 1802:3489).
+- Stubs called by matched code need their header: `src/match/<SEG>_<OFF>.SIG`
+  (e.g. `{$F+} function MainMenu: Char;`); `{ to: XXXX }` ends a fragment
+  where the next routine's literals begin.
 - An OBJ may declare `segment DATA public` (empty) and use `dw DATA` / `dw
   CODE` for segment fixups; TP links them (Genus, 106 fixups).
 - `{ keep: - }` on a private routine reached through exported ones: no keeper

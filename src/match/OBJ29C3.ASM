@@ -11,6 +11,7 @@ global SETCOLOR
 global CLEARROWS
 global GETROMFONTS
 global PROC2981
+global PROC2ECF
 global COPYPAGE
 OBJ29C3:
     db 0x08, 0x00, 0x42, 0x30, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x08, 0x00, 0x46, 0x30
@@ -1877,6 +1878,7 @@ L2EB5:
     pop si                                  ; 2ECA
     pop bp                                  ; 2ECB
     retf 6                                  ; 2ECC
+PROC2ECF:
     push bp                                 ; 2ECF
     db 0x8B, 0xEC   ; mov bp, sp
     push si                                 ; 2ED2

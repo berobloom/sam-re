@@ -29,6 +29,7 @@ var
   B683C: Byte; { @683C }
   Level: Integer; { @6842 }
   W6846: Integer; { @6846 }
+  W684A: Integer; { @684A }
   W6852: Integer; { @6852 }
   W6856: Integer; { @6856 }
   W6858: Integer; { @6858 }
