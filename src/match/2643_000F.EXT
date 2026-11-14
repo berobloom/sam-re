@@ -1,0 +1,3 @@
+{ src: GUESS 2643:000F (Genus asm, returns AX; the title calls it with 2 before loading a picture) }
+{ interface }
+{$F+} function Genus000F(X: Integer): Integer; external; {$F-}

@@ -6,6 +6,7 @@ var
   V7114: array[0..$51] of Byte; { @7114 }
   Copyright: String[80]; { @7166 }
 procedure OBJ29C3;
+function SetStride(N: Integer): Integer;
 procedure SetViewStart(X, Y: Integer);
 procedure SetViewStartAlt(X, Y: Integer);
 procedure SetPalReg(Reg, Color: Integer);
@@ -17,6 +18,7 @@ implementation
 procedure OBJ29C3; external;
 {$F+} procedure SetGraphMode(Sel: Integer); external; {$F-}
 {$F+} procedure SetBiosMode(Mode: Integer); external; {$F-}
+function SetStride; external;
 procedure SetViewStart; external;
 procedure SetViewStartAlt; external;
 procedure SetPalReg; external;

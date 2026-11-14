@@ -2,10 +2,14 @@
 segment CODE public align=1
 segment DATA public
 segment CODE
-global OBJ2643
+global GENUS000F
+global GENUS0047
 global GENUSINIT1
+global SHOWPICTURE
 global GENUSINIT2
+global OBJ2643
 OBJ2643:
+GENUS000F:
     push bp                                 ; 000F
     db 0x8B, 0xEC   ; mov bp, sp
     sub sp, 2                               ; 0012
@@ -36,6 +40,7 @@ L003A:
     db 0x8B, 0xE5   ; mov sp, bp
     pop bp                                  ; 0043
     retf 2                                  ; 0044
+GENUS0047:
     push bp                                 ; 0047
     db 0x8B, 0xEC   ; mov bp, sp
     sub sp, 2                               ; 004A
@@ -1314,6 +1319,7 @@ L0DBA:
     db 0xE3, 0x05, 0x24, 0xF0, 0x0A, 0xC3, 0xEE, 0x5B, 0x58, 0xB0, 0x06, 0xBA, 0xC4, 0x03, 0xEE, 0x42
     db 0xB0, 0xAE, 0xEE, 0xC7, 0x46, 0xFE, 0x00, 0x00, 0x8B, 0x46, 0xFE, 0x5F, 0x5E, 0x07, 0x1F, 0x8B
     db 0xE5, 0x5D, 0xCA, 0x0C, 0x00
+SHOWPICTURE:
     int3                                    ; 1915
     push bp                                 ; 1916
     db 0x8B, 0xEC   ; mov bp, sp

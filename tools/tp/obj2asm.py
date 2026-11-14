@@ -141,6 +141,8 @@ def main(argv):
             lines.append('segment DATA public')
             lines.append('segment CODE')
         lines += ['global %s' % n for _, n in sorted(names.items())]
+        if names[lo] != 'OBJ' + seg:                    # an .EXT entry at the block start: both labels
+            lines += ['global OBJ%s' % seg, 'OBJ%s:' % seg]
         off = lo
         while off < hi:
             if off in labels:

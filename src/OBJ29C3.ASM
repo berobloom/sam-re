@@ -3,6 +3,7 @@ segment CODE public align=1
 global OBJ29C3
 global SETGRAPHMODE
 global SETBIOSMODE
+global SETSTRIDE
 global SETVIEWSTART
 global SETVIEWSTARTALT
 global SETPALREG
@@ -54,6 +55,7 @@ SETBIOSMODE:
     int 0x10                                ; 01CD
     pop bp                                  ; 01CF
     retf 2                                  ; 01D0
+SETSTRIDE:
     push bp                                 ; 01D3
     db 0x8B, 0xEC   ; mov bp, sp
     mov bx, word [bp + 6]                   ; 01D6
