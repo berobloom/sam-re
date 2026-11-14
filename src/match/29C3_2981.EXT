@@ -1,0 +1,2 @@
+{ src: GUESS 29C3:2981 (one Integer argument, called with 0 by the init; role open) }
+{$F+} procedure Proc2981(X: Integer); external; {$F-}

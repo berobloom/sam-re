@@ -7,10 +7,10 @@ keep a session diary here.
 
 - Executable: `SAM1.EXE` (MZ, LZEXE 0.91, **Turbo Pascal 5.0**, CONFIRMED);
   `findings/executables.md`.
-- Recipe: `recipe/units.json`, 241 routines in 13 code segments; matched:
-  units 286F (joystick) and 287F (sound) whole, 2891's Pascal part
-  (StartupInit, NewGame, LevelReset; its asm decrypt 0C14 open), 3 empty
-  inits: 3205 of 185368 routine bytes (1.73%, `tools/tp/match.py`).
+- Recipe: `recipe/units.json`, 241 routines in 13 code segments. Byte-
+  identical units: 286F (joystick), 287F (sound), 2891 (start-up/resets),
+  29C3 (Jungck's graphics: Pascal init + 12 KB asm block as NASM source);
+  25E6's asm block too. 16111 of 185368 routine bytes (8.69%, `tools/tp/match.py`).
 - Data: per-unit ranges in the recipe; a unit's hand-written variables go in
   `src/match/<SEG>.VAR` (287F's is the first).
 - Compiler: TP 5.0 / 5.5 / 6.0 compile headless (`tools/tp/tpc.sh`); 5.0 is
@@ -27,6 +27,8 @@ keep a session diary here.
 
 ## Next
 
-The asm blocks (`{$L}` OBJ code: 286F:007F, 2891:0C14, then Genus and 29C3)
-via NASM, so whole units match; then unit 25E6, then 1802/0D9C/0529 and main,
-growing 2891.VAR as their routines name more globals.
+Unit 25E6's Pascal part (0000..04A3), then Genus (2643: asm block with 106
+relocations, obj2asm.py needs extern fixups first, and its typed constants),
+then 1802/0D9C/0529 and main, growing 2891.VAR as their routines name more
+globals. OBJ29C3.ASM is mechanical (749 db lines where descent found no code);
+naming its routines comes later.

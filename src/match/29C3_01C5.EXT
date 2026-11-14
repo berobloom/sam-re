@@ -1,0 +1,2 @@
+{ src: SAM1RE 29C3:01C5 (BIOS INT 10h AH=0 with the argument) }
+{$F+} procedure SetBiosMode(Mode: Integer); external; {$F-}

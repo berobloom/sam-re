@@ -1,0 +1,2 @@
+{ src: SAM1RE 29C3:01A3 (../SAM physics/video notes: mode select 0 -> 0x0D, 1 -> 0x10, else 0x12) }
+{$F+} procedure SetGraphMode(Sel: Integer); external; {$F-}

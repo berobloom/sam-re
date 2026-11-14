@@ -1,0 +1,4 @@
+{ 29C3 data, DS:7114..71B7 }
+var
+  V7114: array[0..$51] of Byte; { @7114 }
+  Copyright: String[80]; { @7166 }

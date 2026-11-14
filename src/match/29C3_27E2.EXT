@@ -1,0 +1,2 @@
+{ src: SAM1RE 29C3:27E2 (INT 10h AX=1130h: fetches the ROM font pointers) }
+{$F+} procedure GetRomFonts; external; {$F-}

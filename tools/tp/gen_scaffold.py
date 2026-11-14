@@ -52,7 +52,11 @@ def regions(u, rec):
     init = h(u['init']) if u.get('init') else h(rec['entry'][5:])
     cuts = sorted({0} | {o for o in starts if o < init}
                   | {h(a[5:]) for a in rec['frame_only'] if a[:4] == seg and h(a[5:]) < init})
-    for off, frm in literal_starts(seg).items():      # a routine's string literals precede its code
+    lits = literal_starts(seg)
+    if init in lits:                                    # the init's literals: no stub before it from there
+        init = lits.pop(init)
+        cuts = [c for c in cuts if c < init]
+    for off, frm in lits.items():                       # a routine's string literals precede its code
         cuts = sorted((set(cuts) - {off}) | {frm})
     if init == 0:
         cuts = []
@@ -178,7 +182,7 @@ def fragment(seg, off):
         return None
     text = open(path).read().replace('\r', '').rstrip('\n')
     if '{ init }' in text:                          # the unit init / program body: statements only
-        return {'text': text, 'init': True, 'interface': False, 'keep': None, 'name': 'INIT', 'head': None}
+        return {'text': text, 'init': True, 'interface': False, 'keep': None, 'name': 'INIT', 'head': None, 'lit': lit}
     keep = re.search(r'\{ keep: (.*) \}', text)
     head = next(l for l in text.split('\n') if re.match(r'(procedure|function) ', l))
     name = re.match(r'(?:procedure|function) (\w+)', head).group(1)
@@ -421,6 +425,9 @@ def main(argv):
                     a = base + lens[name] - fill[u['seg']][rname]
                 else:
                     a = ln.get(bl.get(rname))
+                    fi = fragment(u['seg'], off) if kind == 'init' else None
+                    if fi and a is not None:
+                        a -= fi['lit']
                 actual[rname] = None if a is None else a - base
             order = regs[u['seg']]
             for i, (kind, rname, off, size) in enumerate(order):
