@@ -1,0 +1,2 @@
+{ src: GUESS 25E6:04BF (asm: writes S at column Col, row Row with attribute Attr; every text routine of the unit ends in it) }
+{$F+} procedure FastWrite(Col, Row, Attr: Byte; S: String); external; {$F-}

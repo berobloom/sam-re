@@ -1,0 +1,2 @@
+{ src: GUESS 25E6:05C3 (asm; InitVideo picks segment B000h when it returns 7: the BIOS video mode) }
+{$F+} function GetVideoMode: Byte; external; {$F-}

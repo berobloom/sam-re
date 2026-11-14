@@ -36,7 +36,7 @@
    "data": {
     "vars": [
      "02A2",
-     "2206"
+     "21FC"
     ]
    },
    "lead_bytes": 2210,
@@ -834,17 +834,30 @@
    },
    "compiler": "TP 5.0, switches OPEN",
    "init": "048C",
-   "data": {},
+   "data": {
+    "vars": [
+     "21FC",
+     "2206"
+    ]
+   },
    "lead_bytes": 69,
    "obj_start": "04A3",
    "functions": [
+    {
+     "addr": "25E6:0000",
+     "size": 37,
+     "reached": 37,
+     "name": null,
+     "src": null,
+     "status": "matched"
+    },
     {
      "addr": "25E6:0045",
      "size": 82,
      "reached": 82,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "25E6:0097",
@@ -852,7 +865,7 @@
      "reached": 106,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "25E6:0101",
@@ -860,7 +873,7 @@
      "reached": 520,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "25E6:0309",
@@ -868,7 +881,7 @@
      "reached": 64,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "25E6:0349",
@@ -876,7 +889,7 @@
      "reached": 80,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "25E6:0399",
@@ -884,7 +897,7 @@
      "reached": 197,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "25E6:045E",
@@ -892,7 +905,7 @@
      "reached": 46,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "25E6:048C",
@@ -900,7 +913,7 @@
      "reached": 23,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "25E6:04A3",

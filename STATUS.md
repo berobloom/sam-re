@@ -9,8 +9,10 @@ keep a session diary here.
   `findings/executables.md`.
 - Recipe: `recipe/units.json`, 241 routines in 13 code segments. Byte-
   identical units: 286F (joystick), 287F (sound), 2891 (start-up/resets),
-  29C3 (Jungck's graphics: Pascal init + 12 KB asm block as NASM source);
-  25E6's asm block too. 16111 of 185368 routine bytes (8.69%, `tools/tp/match.py`).
+  29C3 (Jungck's graphics: Pascal init + 12 KB asm block as NASM source),
+  25E6 (text windows: MakeAttr, Replicate, ClearArea, Box, Window,
+  WriteCenter, WriteVert over an asm FastWrite). 17266 of 185405 routine
+  bytes (9.31%, `tools/tp/match.py`).
 - Data: per-unit ranges in the recipe; a unit's hand-written variables go in
   `src/match/<SEG>.VAR` (287F's is the first).
 - Compiler: TP 5.0 / 5.5 / 6.0 compile headless (`tools/tp/tpc.sh`); 5.0 is
@@ -27,7 +29,7 @@ keep a session diary here.
 
 ## Next
 
-Unit 25E6's Pascal part (0000..04A3), then Genus (2643: asm block with 106
+Genus (2643: asm block with 106
 relocations, obj2asm.py needs extern fixups first, and its typed constants),
 then 1802/0D9C/0529 and main, growing 2891.VAR as their routines name more
 globals. OBJ29C3.ASM is mechanical (749 db lines where descent found no code);

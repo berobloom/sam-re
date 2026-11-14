@@ -245,7 +245,7 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
     # the unit keeps its private routines; what other units can see (keeper, interface routines, the .OBJ entry)
     # is kept from the main program body (outside_keeps)
     calls = [frags[r[1]]['keep'] if frags[r[1]] else r[1] for r in stubs
-             if r[1] != keeper and not (frags[r[1]] and frags[r[1]]['interface'])]
+             if r[1] != keeper and not (frags[r[1]] and (frags[r[1]]['interface'] or frags[r[1]]['keep'] == '-'))]
     if main:
         calls += [r[1] for r in obj]
     # links System 025D (structured value parameter); its prologue grows, so the largest stub carries it
@@ -269,8 +269,8 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         L.append('{$L %s.OBJ}' % obj[0][1])
     for r in stubs:
         f = frags[r[1]]
-        if f and not f['interface']:
-            L.append(f['head'] + ' forward;')
+        if f and not f['interface']:                # a far private routine's forward is far too
+            L.append(('{$F+} %s forward; {$F-}' if '{$F+}' in f['text'] else '%s forward;') % f['head'])
         elif not f and r[1] != keeper:
             L.append('procedure %s%s; forward;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
     for r in obj:
@@ -470,8 +470,9 @@ def main(argv):
                 continue
             pads, prev = DATAFILL.setdefault(u['seg'], {}), 0
             nxt = dunits[i + 1] if i + 1 < len(dunits) else None
-            nfirst = data_decls(nxt, True)[1][0] if nxt else None
-            for name, want in pins + ([(nfirst, nxt['data']['vars'][0])] if nxt else []):
+            nref = (var_pins(nxt)[:1] or [('V_' + nxt['seg'], nxt['data']['vars'][0])]) if nxt else []
+            nfirst = nref[0][0] if nref else None
+            for name, want in pins + nref:
                 a = pubs.get(name.upper())
                 if a is None:
                     bad += 1

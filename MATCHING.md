@@ -231,6 +231,21 @@ so unknown variables between known ones need no declaration yet.
   packed record (e.g. the state store DS:6D3E, `TState` in `2891.VAR`).
 - `array[1..N]` at BASE is indexed as `[di + BASE - size]`: read the base
   from the displacement plus one element size.
+- A nonzero LongInt constant is stored as two `mov word [x], imm`; an
+  Integer/Word one as one, and zero as `xor ax,ax` + `mov` (25E6 init).
+
+### Code traps (CONFIRMED by builds)
+
+- Source lines over 127 characters: "Error 11: Line too long" (comments too).
+- A private `{$F+}` routine's `forward` declaration must be `{$F+}` as well
+  (the forward decides near/far; the generator does it).
+- Operand order: target loads `Fg` before `Bg shl 4`; `(Bg shl 4) or Fg`
+  matches, `Fg or (Bg shl 4)` does not (25E6:0000). TP evaluates the right
+  operand of `or` first here; try the swap when only the order differs.
+- A function returning String gets the result address at the highest
+  `[bp+n]` and does not pop it (`retf` counts the parameters only).
+- `{ keep: - }` on a private routine reached through exported ones: no keeper
+  call (it may need arguments).
 
 ## 7. Names, after the match, with their source
 

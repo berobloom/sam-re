@@ -1,0 +1,2 @@
+{ src: GUESS 25E6:0557 (asm, returns a byte; InitVideo stores (result = 1) in B21FE) }
+{$F+} function Func0557: Byte; external; {$F-}
