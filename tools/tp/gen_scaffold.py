@@ -117,8 +117,23 @@ def data_decls(u, public):
     return '\n'.join(out), names
 
 
+def fragment(seg, off):
+    """a hand-written routine, src/match/<SEG>_<OFF>.PAS, or None. Lines `{ keep: STATEMENT }` (how the keeper uses
+    it, so it is linked) and `{ interface }` (declare it in the interface: a far routine) are directives; the
+    header is the first procedure/function line; its `begin` stands alone on a line."""
+    path = os.path.join(SRC, 'match', '%s_%04X.PAS' % (seg, off))
+    if not os.path.exists(path):
+        return None
+    text = open(path).read().replace('\r', '').rstrip('\n')
+    keep = re.search(r'\{ keep: (.*) \}', text)
+    head = next(l for l in text.split('\n') if re.match(r'(procedure|function) ', l))
+    name = re.match(r'(?:procedure|function) (\w+)', head).group(1)
+    return {'text': text, 'keep': keep.group(1) if keep else name, 'head': head, 'name': name,
+            'interface': '{ interface }' in text}
+
+
 def keeper_of(regs):
-    stubs = [r for r in regs if r[0] == 'stub']
+    stubs = [r for r in regs if r[0] == 'stub' and not fragment(r[1][1:5], r[2])]
     return max(stubs, key=lambda r: r[3])[1] if stubs else None
 
 
@@ -128,11 +143,13 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=()):
     main = seg == '0000'
     decl, dnames = data_decls(u, True)
     stubs = [r for r in regs if r[0] == 'stub']
+    frags = {r[1]: fragment(seg, r[2]) for r in stubs}
+    plain = [r for r in stubs if not frags[r[1]]]
     obj = [r for r in regs if r[0] == 'obj']
     keeper = keeper_of(regs) if not main else None
-    calls = [r[1] for r in stubs if r[1] != keeper] + [r[1] for r in obj]
+    calls = [frags[r[1]]['keep'] if frags[r[1]] else r[1] for r in stubs if r[1] != keeper] + [r[1] for r in obj]
     # links System 025D (structured value parameter); its prologue grows, so the largest stub carries it
-    valpar = max(stubs, key=lambda r: r[3])[1] if main and stubs else None
+    valpar = max(plain, key=lambda r: r[3])[1] if main and plain else None
     L = []
     if main:
         L += ['program SAM1;', '{$S-,D+,L+}', 'uses ' + ', '.join(USES) + ';', KEEPVARS, decl]
@@ -140,11 +157,15 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=()):
         L += ['unit %s;' % name, '{$S-,D+,L+}', 'interface', decl]
         if keeper:
             L.append('procedure %s;' % keeper)          # exported: the main program calls it (far)
+        L += [f['head'] for f in frags.values() if f and f['interface']]
         L.append('implementation')
     if obj:
         L.append('{$L %s.OBJ}' % obj[0][1])
     for r in stubs:
-        if r[1] != keeper:
+        f = frags[r[1]]
+        if f and not f['interface']:
+            L.append(f['head'] + ' forward;')
+        elif not f and r[1] != keeper:
             L.append('procedure %s%s; forward;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
     for r in obj:
         L.append('procedure %s; external;' % r[1])
@@ -154,13 +175,17 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=()):
         if rtl:
             stmts += [l for l in open(os.path.join(SRC, 'RTLKEEP.INC')).read().split('\n')
                       if l.strip() and not l.startswith(('{', '  '))]
-        stmts += ['%s%s;' % (c, '(KR)' if c == valpar else '') for c in extra_calls]
+        stmts += ['%s%s;' % (c, '(KR)' if c == valpar else '') for c in extra_calls if c not in keepers_of_units]
+        stmts += ['%s;' % c for c in extra_calls if c in keepers_of_units]
         inl = inline_items(fill.get(rname, 0), refs)
         if inl:
             stmts.append(inl)
         return stmts
 
     for r in stubs:
+        if frags[r[1]]:
+            L += frags[r[1]]['text'].split('\n')
+            continue
         L.append('procedure %s%s;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
         L.append('begin')
         L += body(r[1], calls if r[1] == keeper else [], dnames if r[1] == keeper else [])
@@ -185,7 +210,7 @@ def begin_lines(path):
     header that is not a forward/external declaration, else to the unit's init / the program body"""
     out, cur = {}, None
     for i, l in enumerate(open(path, encoding='latin1').read().replace('\r', '').split('\n'), 1):
-        m = re.match(r'procedure (\w+)(\(.*\))?;$', l)
+        m = re.match(r'(?:procedure|function) (\w+)\b(?!.*\b(?:forward|external);)', l)
         if m:
             cur = m.group(1)
         elif l == 'begin':
@@ -260,7 +285,10 @@ def main(argv):
             ln = lines.get(name, {})
             actual = {}
             for kind, rname, off, size in regs[u['seg']]:
-                if kind == 'obj':                # TP puts the .OBJ code last; NASM emits exactly its size
+                fr = fragment(u['seg'], off) if kind == 'stub' else None
+                if fr:
+                    a = ln.get(bl.get(fr['name']))
+                elif kind == 'obj':                # TP puts the .OBJ code last; NASM emits exactly its size
                     a = base + lens[name] - fill[u['seg']][rname]
                 else:
                     a = ln.get(bl.get(rname))
@@ -278,7 +306,9 @@ def main(argv):
                 got = nxt - start
                 if got != size:
                     bad += 1
-                    if kind != 'obj':
+                    if kind == 'stub' and fragment(u['seg'], off):
+                        report.append('%s %s is %d bytes, wants %d' % (name, rname, got, size))
+                    elif kind != 'obj':
                         fill[u['seg']][rname] = max(0, fill[u['seg']][rname] + size - got)
         print('round %d: %d stubs off; %s' % (rnd, bad, '; '.join(report[:6]) or 'all bases right'))
         if not bad and not report:

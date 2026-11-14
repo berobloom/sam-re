@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """The matching check: compare the scaffold build with SAM1's unpacked image.
 
-usage: match.py [--exe BUILD.EXE] [-v]
+usage: match.py [--exe BUILD.EXE] [-v] [--update]
 
 Default BUILD is .work/scaffold/SAM1.EXE (tools/tp/gen_scaffold.py builds it); the target is .work/tp/SAM1_unp.exe.
 Checks, in order (MATCHING.md section 5):
@@ -10,7 +10,9 @@ Checks, in order (MATCHING.md section 5):
   library   System / Crt / Dos (from TP 5.0's TURBO.TPL) byte for byte, and their relocations;
   data      the initialised data DS:0000..end of image; the Genus typed constants are zeros in the scaffold
             until the Genus unit is matched, so differences there are counted apart and do not fail;
-  matched   every routine with status `matched` in recipe/units.json: the bytes of its span and its relocations.
+  matched   every routine with status `matched` in recipe/units.json or a hand-written src/match/<SEG>_<OFF>.PAS:
+            the bytes of its span and its relocations. --update writes status `matched` / `unmatched` back to the
+            recipe for routines with a src/match file (a matched routine that stops matching fails either way).
 
 Prints one line per check and the routines that fail, never image bytes. Exit 0 when everything holds.
 """
@@ -73,7 +75,8 @@ def main(argv):
     for u in rec['units']:
         seg = int(u['seg'], 16)
         for f in u['functions']:
-            if f['status'] != 'matched':
+            frag = os.path.exists(os.path.join(ROOT, 'src', 'match', '%s_%s.PAS' % (u['seg'], f['addr'][5:])))
+            if f['status'] != 'matched' and not frag:
                 continue
             n_m += 1
             lo = seg * 16 + int(f['addr'][5:], 16)
@@ -85,6 +88,11 @@ def main(argv):
                 nd = sum(1 for x in range(lo, hi) if t.img[x] != b.img[x])
                 bad.append('%s (%d bytes): %s' % (f['addr'], f['size'], 'relocations differ' if k is None else
                            'first difference at +%04X, %d bytes differ' % (k - lo, nd)))
+                if frag and f['status'] != 'matched':
+                    f['status'] = 'unmatched'
+                continue
+            if frag:
+                f['status'] = 'matched'
             elif verbose:
                 print('         %s %s match' % (f['addr'], f.get('name') or ''))
     total = sum(f['size'] for u in rec['units'] for f in u['functions'])
@@ -94,6 +102,8 @@ def main(argv):
     for x in bad:
         print('         ' + x)
     ok &= not bad
+    if '--update' in argv:
+        json.dump(rec, open(os.path.join(ROOT, 'recipe', 'units.json'), 'w'), indent=1)
     return 0 if ok else 1
 
 

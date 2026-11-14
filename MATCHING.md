@@ -204,6 +204,17 @@ routine's source output and see it named.
    (different code in TP).
 5. Set `status: matched` in the recipe, commit (`Match: SSSS:OOOO name`).
 
+### Where a matched routine lives
+
+`src/match/<SEG>_<OFF>.PAS` holds the routine as written, plus directive
+comments: `{ interface }` (declare it in the interface, i.e. far; a routine
+that ends in `retf` and is called from other units), `{ keep: STATEMENT }`
+(how the unit's keeper uses it so the smart linker keeps it, e.g. `if
+JumpButton then`). Its `begin` stands alone on a line (the fit and the check
+find it through the map's line numbers). `tools/tp/gen_scaffold.py` pastes it
+into the unit in place of the stub; `tools/tp/match.py --update` sets the
+recipe status.
+
 ## 7. Names, after the match, with their source
 
 Every name in `src/` carries a marker on the line before the declaration:

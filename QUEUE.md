@@ -83,3 +83,6 @@ Rules for the agent:
 - [ ] **Q6 First matched game routine in Pascal**
   Accept: one game routine (not library) is `matched` in the recipe and the
   whole build still matches.
+  READY FOR REVIEW: `286F:0038` JumpButton and `286F:0058` FireButton
+  (`src/match/286F_00{38,58}.PAS`, one line each) compile byte for byte;
+  `tools/tp/match.py` all OK. Mutation: `$10` -> `$11` fails at +000B.
