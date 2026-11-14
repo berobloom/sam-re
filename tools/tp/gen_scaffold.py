@@ -92,8 +92,24 @@ def inline_items(n, names=()):
 
 
 def data_decls(u, public):
+    """the unit's data declarations and the names to keep: src/match/<SEG>.VAR (hand-written type/var/const
+    text) replaces the generated block of the same range; else one byte array per range"""
     out, names = [], []
     d = u.get('data', {})
+    vf = os.path.join(SRC, 'match', u['seg'] + '.VAR')
+    if os.path.exists(vf):
+        text = open(vf).read().replace('\r', '').strip()
+        body = re.sub(r'\{[^}]*\}', '', text)
+        sect = None
+        for l in body.split('\n'):
+            w = l.strip().split()
+            if w and w[0] in ('type', 'var', 'const'):
+                sect = w[0]
+                l = l.strip()[len(w[0]):]
+            m = re.match(r'\s*([\w, ]+?)\s*:', l)
+            if m and sect in ('var', 'const'):
+                names += [x.strip() for x in m.group(1).split(',')]
+        return text, names
     if 'tconsts' in d:
         a, b = map(h, d['tconsts'])
         n = 'T_%s' % u['seg']
@@ -165,11 +181,13 @@ def keeper_of(regs):
     return max(stubs, key=lambda r: r[3])[1] if stubs else None
 
 
-def gen_unit(u, rec, fill, regs, keepers_of_units=()):
+def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
     seg = u['seg']
     name = unit_name(seg)
     main = seg == '0000'
     decl, dnames = data_decls(u, True)
+    if not main:
+        dnames = []                         # unit data is in the interface; the main body keeps it
     stubs = [r for r in regs if r[0] == 'stub']
     frags = {r[1]: fragment(seg, r[2]) for r in stubs}
     plain = [r for r in stubs if not frags[r[1]]]
@@ -226,7 +244,7 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=()):
         L.append('end;')
     L.append('begin')
     if main:
-        L += body('INIT', calls + list(keepers_of_units), dnames, rtl=True)
+        L += body('INIT', calls + list(keepers_of_units), dnames + list(unit_data), rtl=True)
     else:
         init_off = next(r[2] for r in regs if r[0] == 'init')
         fi = fragment(seg, init_off)
@@ -315,8 +333,9 @@ def main(argv):
                 f[name] = max(0, size - over)
     for rnd in range(rounds):
         keepers = outside_keeps(units, regs)
+        udata = [n for u in units if u['seg'] != '0000' for n in data_decls(u, True)[1]]
         for u in units:
-            gen_unit(u, rec, fill[u['seg']], regs[u['seg']], [k for k in keepers if k])
+            gen_unit(u, rec, fill[u['seg']], regs[u['seg']], [k for k in keepers if k], udata)
         json.dump(fill, open(fill_path, 'w'), indent=1, sort_keys=True)
         ok, msg = build()
         if not ok:
@@ -365,6 +384,19 @@ def main(argv):
                         report.append('%s %s is %d bytes, wants %d' % (name, rname, got, size))
                     elif kind != 'obj':
                         fill[u['seg']][rname] = max(0, fill[u['seg']][rname] + size - got)
+        ds = int(re.search(r'\s([0-9A-F]{5})H [0-9A-F]{5}H [0-9A-F]{5}H DATA\s', open(os.path.join(BUILD, 'SAM1.MAP')).read()).group(1), 16)
+        for u in units:
+            d = u.get('data', {}) if u['seg'] != '0000' else {}   # main's vars follow the RTL keeper vars
+            for kind in ('tconsts', 'vars'):
+                if kind not in d:
+                    continue
+                first = data_decls(u, True)[1]
+                first = [n for n in first if (n.startswith('T_') if kind == 'tconsts' else not n.startswith('T_'))]
+                a = pubs.get(first[0].upper()) if first else None
+                if a is None or a - ds != h(d[kind][0]):
+                    bad += 1
+                    report.append('%s %s %s at %s, wants DS:%s' % (unit_name(u['seg']), kind, first[:1],
+                                  'missing' if a is None else 'DS:%04X' % (a - ds), d[kind][0]))
         print('round %d: %d stubs off; %s' % (rnd, bad, '; '.join(report[:6]) or 'all bases right'))
         if not bad and not report:
             json.dump(fill, open(fill_path, 'w'), indent=1, sort_keys=True)

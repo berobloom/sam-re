@@ -12,7 +12,7 @@ check, do not re-derive; **OPEN** = work remains (say what).
 | Startup chain, main loop, frame timing | `game-loop.md` | OPEN |
 | Input: keyboard handler, key table, mouse | `input.md` | OPEN |
 | Video: mode, palette, blitter, back buffer, present | `video.md` | OPEN |
-| Sound: driver, tracks, samples, music | `sound.md` | OPEN |
+| Sound: banks, PlaySound priority gate (287F) | `sound.md` | OPEN (player in main, [bp-4] at run time) |
 
 Add a row per subsystem. Keep each file to what is true now; history lives in
 git. Template: `_TEMPLATE.md`.

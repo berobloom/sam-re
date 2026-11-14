@@ -1,5 +1,5 @@
 {
- "data_note": "DS ranges per unit for the scaffold (MATCHING.md section 4): whole regions, not yet split; main = DS:02A2..2206 also holds 0529..25E6 vars (25E6 refs 21FC..2205), 2891 also holds 286F/287F (287F refs 3442..34D4); Crt 7100..7114 and System from 71B8 come from TURBO.TPL. Evidence: tools/tp/dsrefs.py",
+ "data_note": "DS ranges per unit for the scaffold (MATCHING.md section 4): whole regions, not yet split; main = DS:02A2..2206 also holds 0529..25E6 vars (25E6 refs 21FC..2205), 286F = DS:3442 (the joystick flag main writes at 0:137b), 287F = 3444..34D5 (sound: three .SND table pointers, id, note index, playing, on/off), 2891 from 34D6; Crt 7100..7114 and System from 71B8 come from TURBO.TPL. Evidence: tools/tp/dsrefs.py",
  "init_order": [
   "2CD1",
   "29C3",
@@ -1121,7 +1121,12 @@
    },
    "compiler": "TP 5.0, switches OPEN",
    "init": "0078",
-   "data": {},
+   "data": {
+    "vars": [
+     "3442",
+     "3444"
+    ]
+   },
    "lead_bytes": 0,
    "obj_start": "007F",
    "functions": [
@@ -1188,7 +1193,12 @@
    },
    "compiler": "TP 5.0, switches OPEN",
    "init": "0116",
-   "data": {},
+   "data": {
+    "vars": [
+     "3444",
+     "34D6"
+    ]
+   },
    "lead_bytes": 0,
    "obj_start": null,
    "functions": [
@@ -1198,7 +1208,7 @@
      "reached": 278,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "287F:0116",
@@ -1206,7 +1216,7 @@
      "reached": 7,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     }
    ]
   },
@@ -1225,7 +1235,7 @@
    "init": "0C0D",
    "data": {
     "vars": [
-     "3442",
+     "34D6",
      "7100"
     ]
    },

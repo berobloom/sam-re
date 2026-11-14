@@ -24,5 +24,5 @@ implementation
 {$L OBJ2643.OBJ}
 procedure OBJ2643; external;
 begin
-Inline(>T_2643/>V_2643/>$0000/>$0000)
+Inline(>$0000/>$0000/>$0000/>$0000)
 end.
