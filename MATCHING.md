@@ -244,6 +244,8 @@ so unknown variables between known ones need no declaration yet.
   operand of `or` first here; try the swap when only the order differs.
 - A function returning String gets the result address at the highest
   `[bp+n]` and does not pop it (`retf` counts the parameters only).
+- An OBJ may declare `segment DATA public` (empty) and use `dw DATA` / `dw
+  CODE` for segment fixups; TP links them (Genus, 106 fixups).
 - `{ keep: - }` on a private routine reached through exported ones: no keeper
   call (it may need arguments).
 

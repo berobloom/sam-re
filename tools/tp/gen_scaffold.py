@@ -107,7 +107,7 @@ def var_pins(u):
         return []
     out = []
     for l in open(vf).read().replace('\r', '').split('\n'):
-        m = re.match(r'\s*(\w+)[\w, ]*:.*\{ @([0-9A-F]{4}) \}', l)
+        m = re.match(r'\s*(?:var\s+|const\s+)?(\w+)[\w, ]*:.*\{ @([0-9A-F]{4}) \}', l)
         if m:
             out.append((m.group(1), m.group(2)))
     return out

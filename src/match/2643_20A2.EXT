@@ -1,0 +1,2 @@
+{ src: GUESS 2643:20A2 (asm, called second by the Genus init) }
+{$F+} procedure GenusInit2; external; {$F-}
