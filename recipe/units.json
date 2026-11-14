@@ -1,0 +1,2146 @@
+{
+ "image": ".work/tp/SAM1_unp.exe",
+ "entry": "0000:11C3",
+ "data_segment": "2DEB",
+ "data_size": 688,
+ "relocations": 2555,
+ "units": [
+  {
+   "seg": "0000",
+   "index": 0,
+   "image_offset": 0,
+   "size": 21136,
+   "unit": {
+    "name": "SAM1 (main program)",
+    "kind": "program",
+    "level": "CONFIRMED",
+    "why": "holds the MZ entry 0000:11C3, which calls the 11 unit inits then runs the main body 0000:11FA"
+   },
+   "compiler": "TP 5.0, switches OPEN",
+   "init": null,
+   "lead_bytes": 2210,
+   "functions": [
+    {
+     "addr": "0000:08A2",
+     "size": 1477,
+     "reached": 835,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:0E67",
+     "size": 91,
+     "reached": 91,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:0EC2",
+     "size": 48,
+     "reached": 39,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:0EF2",
+     "size": 131,
+     "reached": 122,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:0F75",
+     "size": 261,
+     "reached": 261,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:107A",
+     "size": 329,
+     "reached": 124,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:11C3",
+     "size": 16400,
+     "reached": 16432,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:51D3",
+     "size": 28,
+     "reached": 28,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:51EF",
+     "size": 114,
+     "reached": 68,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:5261",
+     "size": 20,
+     "reached": 20,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:5275",
+     "size": 27,
+     "reached": 13,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "0529",
+   "index": 1,
+   "image_offset": 21136,
+   "size": 34608,
+   "unit": {
+    "name": "game unit: actors, physics, AI",
+    "kind": "game",
+    "level": "CONFIRMED (game code); role from ../SAM",
+    "why": "Pascal (17/17 routines framed), game strings (\"You can see invisible platforms.\")"
+   },
+   "compiler": "TP 5.0, switches OPEN",
+   "init": "8724",
+   "lead_bytes": 0,
+   "functions": [
+    {
+     "addr": "0529:0000",
+     "size": 141,
+     "reached": 141,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:008D",
+     "size": 141,
+     "reached": 141,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:011A",
+     "size": 19,
+     "reached": 19,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:012D",
+     "size": 151,
+     "reached": 151,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:01C4",
+     "size": 184,
+     "reached": 184,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:027C",
+     "size": 372,
+     "reached": 372,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:03F0",
+     "size": 404,
+     "reached": 404,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:0584",
+     "size": 691,
+     "reached": 691,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:0837",
+     "size": 10036,
+     "reached": 10036,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:2F6B",
+     "size": 13934,
+     "reached": 13934,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:65D9",
+     "size": 218,
+     "reached": 218,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:66B3",
+     "size": 578,
+     "reached": 578,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:68F5",
+     "size": 281,
+     "reached": 281,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:6A0E",
+     "size": 768,
+     "reached": 384,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:6D0E",
+     "size": 6609,
+     "reached": 6609,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:86DF",
+     "size": 69,
+     "reached": 69,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0529:8724",
+     "size": 12,
+     "reached": 7,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "0D9C",
+   "index": 2,
+   "image_offset": 55744,
+   "size": 42592,
+   "unit": {
+    "name": "game unit: map, cells, level loader",
+    "kind": "game",
+    "level": "CONFIRMED (game code); role from ../SAM",
+    "why": "Pascal (9/9 framed), opens SAM103.GFX"
+   },
+   "compiler": "TP 5.0, switches OPEN",
+   "init": "A658",
+   "lead_bytes": 0,
+   "functions": [
+    {
+     "addr": "0D9C:0000",
+     "size": 4485,
+     "reached": 4485,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0D9C:1185",
+     "size": 5035,
+     "reached": 5035,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0D9C:2530",
+     "size": 1854,
+     "reached": 1854,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0D9C:2C6E",
+     "size": 538,
+     "reached": 434,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0D9C:2E88",
+     "size": 3081,
+     "reached": 3025,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0D9C:3A91",
+     "size": 11800,
+     "reached": 11368,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0D9C:68A9",
+     "size": 14597,
+     "reached": 14586,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0D9C:A1AE",
+     "size": 1194,
+     "reached": 1194,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0D9C:A658",
+     "size": 8,
+     "reached": 7,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "1802",
+   "index": 3,
+   "image_offset": 98336,
+   "size": 56896,
+   "unit": {
+    "name": "game unit: menus, text windows, status line",
+    "kind": "game",
+    "level": "CONFIRMED (game code); role from ../SAM",
+    "why": "Pascal (52/52 framed), the font string and \"END OF WINDOW\""
+   },
+   "compiler": "TP 5.0, switches OPEN",
+   "init": "DE33",
+   "lead_bytes": 0,
+   "functions": [
+    {
+     "addr": "1802:0000",
+     "size": 39,
+     "reached": 39,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:0027",
+     "size": 56,
+     "reached": 56,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:005F",
+     "size": 343,
+     "reached": 343,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:01B6",
+     "size": 47,
+     "reached": 47,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:01E5",
+     "size": 1341,
+     "reached": 1341,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:0722",
+     "size": 244,
+     "reached": 66,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:0816",
+     "size": 3439,
+     "reached": 3359,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:1585",
+     "size": 2089,
+     "reached": 2041,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:1DAE",
+     "size": 2213,
+     "reached": 2133,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:2653",
+     "size": 3453,
+     "reached": 3444,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:33D0",
+     "size": 185,
+     "reached": 167,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:3489",
+     "size": 525,
+     "reached": 523,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:3696",
+     "size": 412,
+     "reached": 390,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:3832",
+     "size": 997,
+     "reached": 997,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:3C17",
+     "size": 37,
+     "reached": 37,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:3C3C",
+     "size": 179,
+     "reached": 179,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:3CEF",
+     "size": 190,
+     "reached": 179,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:3DAD",
+     "size": 355,
+     "reached": 328,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:3F10",
+     "size": 3800,
+     "reached": 395,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:4DE8",
+     "size": 8261,
+     "reached": 6898,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:6E2D",
+     "size": 3438,
+     "reached": 2185,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:7B9B",
+     "size": 2167,
+     "reached": 2095,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:8412",
+     "size": 249,
+     "reached": 129,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:850B",
+     "size": 630,
+     "reached": 538,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:8781",
+     "size": 302,
+     "reached": 114,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:88AF",
+     "size": 1400,
+     "reached": 1326,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:8E27",
+     "size": 275,
+     "reached": 186,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:8F3A",
+     "size": 429,
+     "reached": 358,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:90E7",
+     "size": 477,
+     "reached": 267,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:92C4",
+     "size": 1147,
+     "reached": 888,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:973F",
+     "size": 694,
+     "reached": 635,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:99F5",
+     "size": 205,
+     "reached": 178,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:9AC2",
+     "size": 161,
+     "reached": 127,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:9B63",
+     "size": 202,
+     "reached": 143,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:9C2D",
+     "size": 311,
+     "reached": 279,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:9D64",
+     "size": 583,
+     "reached": 150,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:9FAB",
+     "size": 433,
+     "reached": 399,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:A15C",
+     "size": 478,
+     "reached": 171,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:A33A",
+     "size": 832,
+     "reached": 636,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:A67A",
+     "size": 1511,
+     "reached": 1511,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:AC61",
+     "size": 633,
+     "reached": 7,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:AEDA",
+     "size": 1408,
+     "reached": 1031,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:B45A",
+     "size": 962,
+     "reached": 579,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:B81C",
+     "size": 2165,
+     "reached": 587,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:C091",
+     "size": 3635,
+     "reached": 3259,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:CEC4",
+     "size": 995,
+     "reached": 595,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:D2A7",
+     "size": 802,
+     "reached": 595,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:D5C9",
+     "size": 475,
+     "reached": 368,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:D7A4",
+     "size": 930,
+     "reached": 269,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:DB46",
+     "size": 528,
+     "reached": 519,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:DD56",
+     "size": 221,
+     "reached": 221,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "1802:DE33",
+     "size": 13,
+     "reached": 7,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "25E6",
+   "index": 4,
+   "image_offset": 155232,
+   "size": 1488,
+   "unit": {
+    "name": "game unit, role OPEN",
+    "kind": "game",
+    "level": "LIKELY",
+    "why": "Pascal (8/13 framed) + 0x144 bytes after its init (asm or inline); called only from 0000 and 1802; not Borland, does not call Genus"
+   },
+   "compiler": "TP 5.0, switches OPEN",
+   "init": "048C",
+   "lead_bytes": 69,
+   "functions": [
+    {
+     "addr": "25E6:0045",
+     "size": 82,
+     "reached": 82,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:0097",
+     "size": 106,
+     "reached": 106,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:0101",
+     "size": 520,
+     "reached": 520,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:0309",
+     "size": 64,
+     "reached": 64,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:0349",
+     "size": 80,
+     "reached": 80,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:0399",
+     "size": 197,
+     "reached": 197,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:045E",
+     "size": 46,
+     "reached": 46,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:048C",
+     "size": 23,
+     "reached": 23,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:04A3",
+     "size": 28,
+     "reached": 28,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:04BF",
+     "size": 144,
+     "reached": 72,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:054F",
+     "size": 8,
+     "reached": 8,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:0557",
+     "size": 108,
+     "reached": 108,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "25E6:05C3",
+     "size": 13,
+     "reached": 4,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "2643",
+   "index": 5,
+   "image_offset": 156720,
+   "size": 8896,
+   "unit": {
+    "name": "Genus PCX Programmer's Toolkit 3.56",
+    "kind": "library",
+    "level": "STRONGLY SUPPORTED",
+    "why": "a 15-byte Pascal init at 2643:0000 then asm (1/17 framed, 0 System calls, 55 far calls to itself); 2643:0241 loads DS:0098, the Genus video-mode table (\"CGA 320x200x4\"...); DS:000E.. holds the Genus banner and EMMXXXX (DS:0090). Only 0000 (1) and 1802 (10) call it. Version 3.56 from the DS banner"
+   },
+   "compiler": null,
+   "init": "0000",
+   "lead_bytes": 0,
+   "functions": [
+    {
+     "addr": "2643:0000",
+     "size": 15,
+     "reached": 15,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:000F",
+     "size": 56,
+     "reached": 56,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:0047",
+     "size": 164,
+     "reached": 164,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:00EB",
+     "size": 193,
+     "reached": 47,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:01AC",
+     "size": 191,
+     "reached": 88,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:026B",
+     "size": 2565,
+     "reached": 2565,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:0C70",
+     "size": 189,
+     "reached": 84,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:0D2D",
+     "size": 154,
+     "reached": 154,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:0DC7",
+     "size": 2894,
+     "reached": 468,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:1915",
+     "size": 206,
+     "reached": 206,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:19E3",
+     "size": 227,
+     "reached": 124,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:1AC6",
+     "size": 305,
+     "reached": 305,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:1BF7",
+     "size": 361,
+     "reached": 49,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:1D60",
+     "size": 17,
+     "reached": 17,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:1D71",
+     "size": 687,
+     "reached": 686,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:2020",
+     "size": 130,
+     "reached": 130,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2643:20A2",
+     "size": 542,
+     "reached": 534,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "286F",
+   "index": 6,
+   "image_offset": 165616,
+   "size": 256,
+   "unit": {
+    "name": "game unit: joystick",
+    "kind": "game",
+    "level": "LIKELY",
+    "why": "Pascal (4/5 framed), game port 0x201 per ../SAM"
+   },
+   "compiler": "TP 5.0, switches OPEN",
+   "init": "0078",
+   "lead_bytes": 0,
+   "functions": [
+    {
+     "addr": "286F:0000",
+     "size": 56,
+     "reached": 56,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "286F:0038",
+     "size": 32,
+     "reached": 32,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "286F:0058",
+     "size": 32,
+     "reached": 32,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "286F:0078",
+     "size": 84,
+     "reached": 7,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "286F:00CC",
+     "size": 52,
+     "reached": 47,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "287F",
+   "index": 7,
+   "image_offset": 165872,
+   "size": 288,
+   "unit": {
+    "name": "game unit: sound request",
+    "kind": "game",
+    "level": "LIKELY",
+    "why": "Pascal (2/2 framed), per ../SAM"
+   },
+   "compiler": "TP 5.0, switches OPEN",
+   "init": "0116",
+   "lead_bytes": 0,
+   "functions": [
+    {
+     "addr": "287F:0000",
+     "size": 278,
+     "reached": 278,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "287F:0116",
+     "size": 10,
+     "reached": 7,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "2891",
+   "index": 8,
+   "image_offset": 166160,
+   "size": 3328,
+   "unit": {
+    "name": "game unit: start-up, resets, high scores",
+    "kind": "game",
+    "level": "CONFIRMED (game code)",
+    "why": "Pascal; the default high-score names (\"James Bond 200000\")"
+   },
+   "compiler": "TP 5.0, switches OPEN",
+   "init": "0C0D",
+   "lead_bytes": 310,
+   "functions": [
+    {
+     "addr": "2891:0136",
+     "size": 1695,
+     "reached": 1695,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2891:07D5",
+     "size": 692,
+     "reached": 692,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2891:0A89",
+     "size": 388,
+     "reached": 388,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2891:0C0D",
+     "size": 7,
+     "reached": 7,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2891:0C14",
+     "size": 236,
+     "reached": 232,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "2961",
+   "index": 9,
+   "image_offset": 169488,
+   "size": 1568,
+   "unit": {
+    "name": "Crt (Borland, TP 5.0)",
+    "kind": "library",
+    "level": "CONFIRMED",
+    "why": "all 23 routines have TP 5.0 Crt code (tools/tp/pin_version.sh)"
+   },
+   "compiler": "TP 5.0 TURBO.TPL",
+   "init": "0000",
+   "lead_bytes": 0,
+   "functions": [
+    {
+     "addr": "2961:0000",
+     "size": 48,
+     "reached": 48,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:0030",
+     "size": 105,
+     "reached": 105,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:0099",
+     "size": 78,
+     "reached": 78,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:00E7",
+     "size": 94,
+     "reached": 72,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:0145",
+     "size": 40,
+     "reached": 61,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:016D",
+     "size": 85,
+     "reached": 21,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:01C2",
+     "size": 83,
+     "reached": 26,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:0215",
+     "size": 68,
+     "reached": 44,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:0259",
+     "size": 26,
+     "reached": 26,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:0273",
+     "size": 43,
+     "reached": 24,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:029E",
+     "size": 32,
+     "reached": 32,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:02BE",
+     "size": 8,
+     "reached": 8,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:02C6",
+     "size": 45,
+     "reached": 45,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:02F3",
+     "size": 7,
+     "reached": 7,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:02FA",
+     "size": 18,
+     "reached": 18,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:030C",
+     "size": 34,
+     "reached": 34,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:032E",
+     "size": 326,
+     "reached": 43,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:0474",
+     "size": 7,
+     "reached": 96,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:047B",
+     "size": 89,
+     "reached": 89,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:04D4",
+     "size": 33,
+     "reached": 33,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:04F5",
+     "size": 7,
+     "reached": 18,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:04FC",
+     "size": 268,
+     "reached": 18,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2961:0608",
+     "size": 24,
+     "reached": 11,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "29C3",
+   "index": 10,
+   "image_offset": 171056,
+   "size": 12352,
+   "unit": {
+    "name": "Peder Jungck's graphics unit",
+    "kind": "game",
+    "level": "CONFIRMED (author); role from ../SAM",
+    "why": "its code segment opens with \"Copyright 1991 Peder Jungck\" + address; Pascal init at 29C3:0070 sets the video mode and copies those 4 lines to DS:7166; the rest is asm (1/27 framed); 584 far calls from 5 game segments"
+   },
+   "compiler": "TP 5.0, switches OPEN",
+   "init": "0070",
+   "lead_bytes": 112,
+   "functions": [
+    {
+     "addr": "29C3:0070",
+     "size": 307,
+     "reached": 118,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:01A3",
+     "size": 34,
+     "reached": 32,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:01C5",
+     "size": 14,
+     "reached": 14,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:01D3",
+     "size": 38,
+     "reached": 38,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:01F9",
+     "size": 83,
+     "reached": 83,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:024C",
+     "size": 83,
+     "reached": 83,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:029F",
+     "size": 60,
+     "reached": 60,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:02DB",
+     "size": 31,
+     "reached": 31,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:02FA",
+     "size": 61,
+     "reached": 60,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:0337",
+     "size": 27,
+     "reached": 18,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:0352",
+     "size": 291,
+     "reached": 18,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:0475",
+     "size": 170,
+     "reached": 170,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:051F",
+     "size": 262,
+     "reached": 128,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:0625",
+     "size": 457,
+     "reached": 14,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:07EE",
+     "size": 4007,
+     "reached": 144,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:1795",
+     "size": 156,
+     "reached": 156,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:1831",
+     "size": 456,
+     "reached": 145,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:19F9",
+     "size": 302,
+     "reached": 296,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:1B27",
+     "size": 2364,
+     "reached": 304,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:2463",
+     "size": 895,
+     "reached": 310,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:27E2",
+     "size": 415,
+     "reached": 71,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:2981",
+     "size": 286,
+     "reached": 65,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:2A9F",
+     "size": 153,
+     "reached": 153,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:2B38",
+     "size": 821,
+     "reached": 122,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:2E6D",
+     "size": 98,
+     "reached": 98,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:2ECF",
+     "size": 99,
+     "reached": 99,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:2F32",
+     "size": 270,
+     "reached": 73,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "2CC7",
+   "index": 11,
+   "image_offset": 183408,
+   "size": 160,
+   "unit": {
+    "name": "Dos (Borland, TP 5.0)",
+    "kind": "library",
+    "level": "CONFIRMED",
+    "why": "all 3 routines (Intr...) have TP 5.0 Dos code; no init, as TP 5.0 Dos"
+   },
+   "compiler": "TP 5.0 TURBO.TPL",
+   "init": null,
+   "lead_bytes": 11,
+   "functions": [
+    {
+     "addr": "2CC7:000B",
+     "size": 97,
+     "reached": 58,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CC7:006C",
+     "size": 24,
+     "reached": 24,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CC7:0084",
+     "size": 28,
+     "reached": 19,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  },
+  {
+   "seg": "2CD1",
+   "index": 12,
+   "image_offset": 183568,
+   "size": 4512,
+   "unit": {
+    "name": "System (Borland, TP 5.0)",
+    "kind": "library",
+    "level": "CONFIRMED",
+    "why": "all 54 routines have TP 5.0 System code"
+   },
+   "compiler": "TP 5.0 TURBO.TPL",
+   "init": "0000",
+   "lead_bytes": 0,
+   "functions": [
+    {
+     "addr": "2CD1:0000",
+     "size": 216,
+     "reached": 157,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:00D8",
+     "size": 188,
+     "reached": 202,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0194",
+     "size": 14,
+     "reached": 14,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:01A2",
+     "size": 12,
+     "reached": 22,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:01AE",
+     "size": 14,
+     "reached": 14,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:01BC",
+     "size": 7,
+     "reached": 33,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:01C3",
+     "size": 11,
+     "reached": 26,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:01CE",
+     "size": 8,
+     "reached": 15,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:01D6",
+     "size": 49,
+     "reached": 7,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0207",
+     "size": 86,
+     "reached": 7,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:025D",
+     "size": 28,
+     "reached": 24,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0279",
+     "size": 176,
+     "reached": 27,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0329",
+     "size": 59,
+     "reached": 261,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0364",
+     "size": 81,
+     "reached": 234,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:03B5",
+     "size": 145,
+     "reached": 68,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0446",
+     "size": 156,
+     "reached": 156,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:04E2",
+     "size": 179,
+     "reached": 179,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0595",
+     "size": 36,
+     "reached": 36,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:05B9",
+     "size": 21,
+     "reached": 21,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:05CE",
+     "size": 73,
+     "reached": 73,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0617",
+     "size": 14,
+     "reached": 14,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0625",
+     "size": 15,
+     "reached": 15,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0634",
+     "size": 26,
+     "reached": 26,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:064E",
+     "size": 50,
+     "reached": 36,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0680",
+     "size": 65,
+     "reached": 65,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:06C1",
+     "size": 44,
+     "reached": 44,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:06ED",
+     "size": 55,
+     "reached": 55,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0724",
+     "size": 43,
+     "reached": 43,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:074F",
+     "size": 129,
+     "reached": 18,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:07D0",
+     "size": 260,
+     "reached": 86,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:08D4",
+     "size": 172,
+     "reached": 33,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0980",
+     "size": 79,
+     "reached": 22,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:09CF",
+     "size": 69,
+     "reached": 54,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0A14",
+     "size": 122,
+     "reached": 82,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0A8E",
+     "size": 152,
+     "reached": 152,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0B26",
+     "size": 75,
+     "reached": 75,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0B71",
+     "size": 49,
+     "reached": 49,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0BA2",
+     "size": 112,
+     "reached": 69,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0C12",
+     "size": 5,
+     "reached": 77,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0C17",
+     "size": 84,
+     "reached": 77,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0C6B",
+     "size": 59,
+     "reached": 59,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0CA6",
+     "size": 443,
+     "reached": 17,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0E61",
+     "size": 36,
+     "reached": 36,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0E85",
+     "size": 105,
+     "reached": 64,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0EEE",
+     "size": 125,
+     "reached": 63,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0F6B",
+     "size": 62,
+     "reached": 62,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0FA9",
+     "size": 46,
+     "reached": 46,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0FD7",
+     "size": 9,
+     "reached": 95,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:0FE0",
+     "size": 120,
+     "reached": 92,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:1058",
+     "size": 37,
+     "reached": 37,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:107D",
+     "size": 15,
+     "reached": 15,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:108C",
+     "size": 7,
+     "reached": 49,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:1093",
+     "size": 234,
+     "reached": 47,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "2CD1:117D",
+     "size": 35,
+     "reached": 20,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    }
+   ]
+  }
+ ],
+ "frame_only": [
+  "0000:0008",
+  "0000:0BED",
+  "0000:0E33",
+  "0000:11FA",
+  "25E6:0000"
+ ],
+ "totals": {
+  "units": 13,
+  "functions": 238,
+  "code_bytes": 188080
+ }
+}
