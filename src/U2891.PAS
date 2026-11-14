@@ -30,7 +30,11 @@ var
   JumpUpTop: Byte; { @3510 }
   JumpDownTop: Byte; { @3511 }
   Slots: array[1..25] of TSlot; { @3512 }
-  P_683C: array[1..12298] of Byte;
+  P_3838: array[1..6] of Byte;
+  TextLines: array[1..299] of String[40]; { @3838 }
+  P_6820: array[1..4] of Byte;
+  B6820: array[1..20] of Byte; { @6820 }
+  P_683C: array[1..8] of Byte;
   B683C: Byte; { @683C }
   P_6842: array[1..4] of Byte;
   Level: Integer; { @6842 }
