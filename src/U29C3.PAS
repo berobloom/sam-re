@@ -6,6 +6,9 @@ var
   V7114: array[0..$51] of Byte; { @7114 }
   Copyright: String[80]; { @7166 }
 procedure OBJ29C3;
+procedure SetViewStart(X, Y: Integer);
+procedure SetViewStartAlt(X, Y: Integer);
+procedure SetPalReg(Reg, Color: Integer);
 procedure SetColor(C: Integer);
 procedure ClearRows(Base, Count, Row, Rows: Integer);
 procedure CopyPage;
@@ -14,6 +17,9 @@ implementation
 procedure OBJ29C3; external;
 {$F+} procedure SetGraphMode(Sel: Integer); external; {$F-}
 {$F+} procedure SetBiosMode(Mode: Integer); external; {$F-}
+procedure SetViewStart; external;
+procedure SetViewStartAlt; external;
+procedure SetPalReg; external;
 procedure SetColor; external;
 procedure ClearRows; external;
 {$F+} procedure GetRomFonts; external; {$F-}

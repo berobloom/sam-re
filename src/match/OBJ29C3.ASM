@@ -3,6 +3,9 @@ segment CODE public align=1
 global OBJ29C3
 global SETGRAPHMODE
 global SETBIOSMODE
+global SETVIEWSTART
+global SETVIEWSTARTALT
+global SETPALREG
 global SETCOLOR
 global CLEARROWS
 global GETROMFONTS
@@ -70,6 +73,7 @@ L01E1:
     pop ax                                  ; 01F4
     pop bp                                  ; 01F5
     retf 2                                  ; 01F6
+SETVIEWSTART:
     push bp                                 ; 01F9
     db 0x8B, 0xEC   ; mov bp, sp
     mov dx, 0x3da                           ; 01FC
@@ -115,6 +119,7 @@ L022E:
     sti                                     ; 0247
     pop bp                                  ; 0248
     retf 4                                  ; 0249
+SETVIEWSTARTALT:
     push bp                                 ; 024C
     db 0x8B, 0xEC   ; mov bp, sp
     mov dx, 0x3da                           ; 024F
@@ -262,6 +267,7 @@ L0332:
     pop bp                                  ; 0345
     retf 2                                  ; 0346
     db 0xB4, 0x0F, 0xCD, 0x10, 0x32, 0xE4, 0xCD, 0x10, 0xCB
+SETPALREG:
     push bp                                 ; 0352
     db 0x8B, 0xEC   ; mov bp, sp
     mov ax, 0x1000                          ; 0355

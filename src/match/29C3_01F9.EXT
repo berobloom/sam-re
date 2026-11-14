@@ -1,0 +1,3 @@
+{ src: SAM1RE 29C3:01F9 (../SAM: CRTC start address from x, y: y*stride + x shr 3) }
+{ interface }
+{$F+} procedure SetViewStart(X, Y: Integer); external; {$F-}
