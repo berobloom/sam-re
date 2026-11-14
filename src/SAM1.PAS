@@ -293,7 +293,7 @@ NewGame;;
 LevelReset;;
 OBJ2891;
 OBJ29C3;
-Inline(>V_0000/>VideoSeg/>B21FE/>L2200/>W2204/>T_2643/>V_2643/>V_286F/>Bank1/>Bank2/>Bank3/>SndFile/
+Inline(>V_0000/>VideoSeg/>B21FE/>L2200/>W2204/>T_2643/>V_2643/>JoyOn/>Bank1/>Bank2/>Bank3/>SndFile/
 >CurSound/>NoteIdx/>Playing/>SoundOn/>JumpUp/>JumpDown/>JumpUpTop/>JumpDownTop/>Slots/>P_3838/
 >TextLines/>P_6820/>B6820/>P_683A/>W683A/>B683C/>P_6842/>Level/>P_6846/>W6846/>P_684A/>W684A/
 >P_6852/>W6852/>P_6856/>W6856/>W6858/>P_685C/>B685C/>CamX/>CamY/>W6862/>W6864/>W6866/>P_686A/

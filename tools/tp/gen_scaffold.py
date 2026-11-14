@@ -519,7 +519,8 @@ def main(argv):
                 continue
             pads, prev = DATAFILL.setdefault(u['seg'], {}), 0
             nxt = dunits[i + 1] if i + 1 < len(dunits) else None
-            nref = (var_pins(nxt)[:1] or [('V_' + nxt['seg'], nxt['data']['vars'][0])]) if nxt else []
+            nvars = [n for n in data_decls(nxt, True)[1] if not n.startswith('T_')] if nxt else []
+            nref = (var_pins(nxt)[:1] or [(nvars[0], nxt['data']['vars'][0])]) if nxt else []
             nfirst = nref[0][0] if nref else None
             for name, want in pins + nref:
                 a = pubs.get(name.upper())

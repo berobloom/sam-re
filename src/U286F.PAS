@@ -1,7 +1,9 @@
 unit U286F;
 {$S-,D+,L+}
 interface
-var V_286F: array[0..1] of Byte;
+{ 286F data, DS:3442..3443 }
+var
+  JoyOn: Boolean; { @3442 }
 function JoyPresent: Boolean;
 function JumpButton: Boolean;
 function FireButton: Boolean;
