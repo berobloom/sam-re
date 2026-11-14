@@ -74,6 +74,11 @@ Rules for the agent:
   segment of the scaffold build has its original start and size, the
   initialised data is identical, and `match.py` names a matched routine when
   one byte is changed.
+  READY FOR REVIEW: `tools/tp/gen_scaffold.py` (fits in 2 rounds) then
+  `tools/tp/match.py`: layout OK (entry, SS:SP, length, 13 bases, DS), System
+  / Crt / Dos byte-identical with their relocations, data identical except
+  Genus's 614 constant bytes (zeros until Genus is matched). Mutation: one
+  byte flipped in System `Random` -> `library 2CD1 FAIL`.
 
 - [ ] **Q6 First matched game routine in Pascal**
   Accept: one game routine (not library) is `matched` in the recipe and the

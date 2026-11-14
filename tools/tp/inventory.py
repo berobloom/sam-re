@@ -163,9 +163,11 @@ def main(argv):
                     f[k] = kept[f['addr']][k]
         units.append({'seg': '%04X' % seg, 'index': n, 'image_offset': seg * 16, 'size': size,
                       'unit': prev.get('unit'), 'compiler': prev.get('compiler'),
-                      'init': prev.get('init'), 'lead_bytes': head, 'functions': fns})
+                      'init': prev.get('init'), 'data': prev.get('data', {}), 'lead_bytes': head,
+                      'functions': fns})
         print('CODE_%-2d %04X  size %6d  routines %4d  bytes before first %d' % (n, seg, size, len(fns), head))
-    out = {'image': argv[1], 'entry': '%04X:%04X' % p.entry, 'data_segment': '%04X' % p.data_seg,
+    keep = {k: v for k, v in (json.load(open(argv[2])) if old else {}).items() if k.endswith('_note') or k == 'init_order'}
+    out = {**keep, 'image': argv[1], 'entry': '%04X:%04X' % p.entry, 'data_segment': '%04X' % p.data_seg,
            'data_size': len(img) - p.data_seg * 16, 'relocations': len(p.rel), 'units': units,
            'frame_only': frame_only,
            'totals': {'units': len(units), 'functions': sum(len(u['functions']) for u in units),

@@ -169,3 +169,26 @@ first; System's `Input` is at DS:71B8 (`2961:0006` `mov di,0x71b8` is Crt's
 - **Crt's variables in TP 5.0** are 0x14 bytes (CheckBreak .. WindMax and
   private ones), just before the next unit's (`.work/q5/T2.MAP`); `DosError`
   is dropped when unused.
+
+## Runtime set and heap (Q5)
+
+- **The runtime SAM links** (CONFIRMED, `tools/tp/rtlmap.py` against
+  `tools/tp/rtltest/T4.PAS` / `T2.PAS`): the 31 System entry points called
+  from game code map to: string store `064E` (x695), compare `0724`, `Random`
+  `0980`, typed-file `Read` `108C`, `GetMem` `0329`, char->string `074F`,
+  concat `06C1`/`0634`, `Assign` `0FA9`, `Close` `1058`, `Reset(f)` `0FD7`,
+  `IOResult` `0207`, set `in` `08D4`, `Copy` `0680`, `Str` `0B26`, LongInt
+  multiply `0279`, `Pos` `06ED`, `FreeMem` `0364`, `Val` `0B71`, `Write(t,s)`
+  `0F6B`, `Writeln(t)` `0EEE`, `Delete` `07D0`, `Rewrite(f)` `0FE0`,
+  `Write(f)` `1093`, `Halt` `00D8`, value-parameter copy `025D`, `MemAvail`
+  `03B5`, `Reset(t)` `0C12`, `Rewrite(t)` `0C17`, `FillChar` `117D`, start-up
+  `0000`. Dos: `Intr` (with `MsDos` at `2CC7:0000`), `GetIntVec`,
+  `SetIntVec`. Crt links whole (one `.OBJ`). One use of each, in
+  `src/RTLKEEP.INC`, makes TP 5.0 emit SAM's System, Dos and Crt **byte for
+  byte** (`tools/tp/match.py`, `library` lines).
+- **Heap**: SAM uses the default `{$M 16384,0,655360}` (STRONGLY SUPPORTED).
+  The packed header's min/max (11482/52442, which `unlzexe.py` copies into
+  the unpacked file) are LZEXE's: packing a TP 5.0 build shows LZEXE writes
+  maxalloc = its own minalloc + (original maxalloc - original minalloc), and
+  SAM's difference is 40960 paragraphs = 655360 bytes, the default heapmax
+  with heapmin 0. So the unpacked file's minalloc is not a target.

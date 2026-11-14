@@ -23,6 +23,10 @@ python. Every tool prints its usage with no arguments.
 | `tp/tpc.sh TPDIR SRCDIR FILE.PAS` | compile with Turbo Pascal under stock DOSBox, headless |
 | `tp/rtlcmp.py TARGET.EXE REF[,REF..] [SEG..]` | classify target routines against reference builds of one compiler: `same` (layout bytes as wildcards), `layout` (only numbers differ), `differ` |
 | `tp/pin_version.sh TPDIR` | build `tp/rtltest/*.PAS` with one Turbo Pascal and classify SAM1's System/Crt/Dos: the right compiler has `differ 0` |
+| `tp/rtlmap.py SAM.EXE TEST.EXE TEST.MAP TEST.PAS [SEG]` | which one-line construct of a test program links each runtime routine SAM calls |
+| `tp/dsrefs.py SAM.EXE [SEG] [--lo N]` | absolute DS operands per segment (data ownership) |
+| `tp/gen_scaffold.py` | write `src/` from the recipe, build with TP 5.0, fit every stub to its offset |
+| `tp/match.py [--exe B] [-v]` | the check: layout, runtime bytes, data, matched routines |
 | `tp/inventory.py UNPACKED.EXE OUT.json` | Turbo Pascal MZ: segments from the relocated words, routines by recursive descent, `frame_only` candidates; writes the recipe skeleton |
 
 LE workflow:
