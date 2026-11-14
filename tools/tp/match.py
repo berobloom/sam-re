@@ -74,8 +74,10 @@ def main(argv):
     n_m, bad = 0, []
     for u in rec['units']:
         seg = int(u['seg'], 16)
+        obj_asm = u.get('obj_start') and os.path.exists(os.path.join(ROOT, 'src', 'match', 'OBJ%s.ASM' % u['seg']))
         for f in u['functions']:
             frag = os.path.exists(os.path.join(ROOT, 'src', 'match', '%s_%s.PAS' % (u['seg'], f['addr'][5:])))
+            frag = frag or bool(obj_asm and int(f['addr'][5:], 16) >= int(u['obj_start'], 16))
             if f['status'] != 'matched' and not frag:
                 continue
             n_m += 1
@@ -102,6 +104,12 @@ def main(argv):
     for x in bad:
         print('         ' + x)
     ok &= not bad
+    whole = [u['seg'] for u in rec['units'] if int(u['seg'], 16) not in LIBS and
+             first_diff(t.img, b.img, int(u['seg'], 16) * 16, int(u['seg'], 16) * 16 + u['size']) is None and
+             {r for r in t.rel if 0 <= r - int(u['seg'], 16) * 16 < u['size']} ==
+             {r for r in b.rel if 0 <= r - int(u['seg'], 16) * 16 < u['size']}]
+    print('units    %d of %d game units byte-identical: %s' % (
+        len(whole), len([u for u in rec['units'] if int(u['seg'], 16) not in LIBS]), ' '.join(whole) or '-'))
     if '--update' in argv:
         json.dump(rec, open(os.path.join(ROOT, 'recipe', 'units.json'), 'w'), indent=1)
     return 0 if ok else 1

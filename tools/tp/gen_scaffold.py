@@ -312,6 +312,10 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         o = obj[0]
         n = o[3]                            # never fitted: its size is the region's
         fill[o[1]] = n
+        hand = os.path.join(SRC, 'match', o[1] + '.ASM')     # tools/tp/obj2asm.py: the block as NASM source
+        if os.path.exists(hand):
+            open(os.path.join(SRC, o[1] + '.ASM'), 'w').write(open(hand).read())
+            return
         asm = ['segment CODE public align=1', 'global %s' % o[1], '%s:' % o[1]]
         at = 0
         for e in externals(seg):            # a label at each named asm routine, filler between
