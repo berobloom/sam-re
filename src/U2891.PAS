@@ -6,16 +6,15 @@ uses U29C3;
   names: SAM1RE (../SAM findings: physics.md, code-map.md) or the address. Grouped names share a line. }
 type
   TSlot = record                   { 32 bytes; slot n at DS:3512 + (n-1)*32 }
-    W00, W02, W04, W06, W08, W0A: Integer;
+    W00, X, Y, W06, W08, W0A: Integer;  { +02/+04: position (SAM1RE) }
     B0C: array[$0C..$1D] of Byte;
     Free: Byte;                    { +1E }
     B1F: Byte;
   end;
   TState = record                  { DS:6D3E..6D85, the game-state store; packed: words at odd offsets }
-    W00, W02: Integer;
+    X, Y: Integer;                 { slot 1's position }
     Score: LongInt;                { +04 }
-    W08, Ammo: Integer;
-    B0C, B0D: Byte;
+    W08, Ammo, Gun: Integer;
     Bullets: array[1..20] of Byte; { +0E }
     W22, W24: Integer;
     B26: Byte;
@@ -231,8 +230,8 @@ begin
   W6A08 := 0;
   W6A0A := 0;
   W6A0C := 0;
-  State.W00 := 0;
-  State.W02 := 0;
+  State.X := 0;
+  State.Y := 0;
   State.Score := Score;
   State.W08 := W69C4;
   State.Ammo := Ammo;
@@ -447,8 +446,8 @@ begin
   W6A08 := 0;
   W6A0A := 0;
   W6A0C := 0;
-  State.W00 := 0;
-  State.W02 := 0;
+  State.X := 0;
+  State.Y := 0;
   State.Score := Score;
   State.W08 := W69C4;
   State.Ammo := Ammo;

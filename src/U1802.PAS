@@ -9,6 +9,8 @@ procedure ShowPage;
 procedure FadeIn(D: Integer);
 procedure FadeOut(D: Integer);
 procedure Blackout;
+procedure SaveState;
+procedure RestoreState;
 implementation
 procedure S1802_01E5; forward;
 procedure S1802_0722; forward;
@@ -20,8 +22,7 @@ procedure S1802_33D0; forward;
 procedure S1802_3489; forward;
 procedure S1802_3696; forward;
 procedure S1802_3832; forward;
-procedure S1802_3C3C; forward;
-procedure S1802_3CEF; forward;
+procedure S1802_3DA2; forward;
 procedure S1802_3DAD; forward;
 procedure S1802_3F10; forward;
 procedure S1802_6E2D; forward;
@@ -708,25 +709,68 @@ begin
   for I := 0 to 15 do
     SetPalReg(I, 0);
 end;
-procedure S1802_3C3C;
+{ src: SAM1RE 1802:3C3C (../SAM physics.md: saves the game state into the store DS:6D3E) }
+{ interface }
+{ keep: SaveState; }
+procedure SaveState;
+var
+  I: Integer;
 begin
-Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000)
+  State.X := Slots[1].X;
+  State.Y := Slots[1].Y;
+  State.Score := Score;
+  State.W08 := W69C4;
+  State.Ammo := Ammo;
+  State.Gun := Gun;
+  for I := 1 to 20 do
+    State.Bullets[I] := Bullets[I];
+  State.W22 := W69CA;
+  State.W24 := W69CC;
+  State.B26 := B69D3;
+  State.W27 := W69D0;
+  State.B29 := B69D2;
+  State.B2A := B69D6;
+  State.W2B := W69D4;
+  State.W2D := W69D8;
+  State.W2F := W69DC;
+  State.MapSite := MapSite;
+  for I := 1 to 20 do
+    State.SiteDone[I] := SiteDone[I];
+  State.B47 := B6A02;
 end;
-procedure S1802_3CEF;
+{ src: SAM1RE 1802:3CEF (../SAM physics.md: restores the game state from the store DS:6D3E) }
+{ to: 3DA2 }
+{ interface }
+{ keep: RestoreState; }
+procedure RestoreState;
+var
+  I: Integer;
 begin
-Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/$00)
+  Slots[1].X := State.X;
+  Slots[1].Y := State.Y;
+  Score := State.Score;
+  W69C4 := State.W08;
+  Ammo := State.Ammo;
+  Gun := State.Gun;
+  for I := 1 to 20 do
+    Bullets[I] := State.Bullets[I];
+  W69CA := State.W22;
+  W69CC := State.W24;
+  B69D3 := State.B26;
+  W69D0 := State.W27;
+  B69D2 := State.B29;
+  B69D6 := State.B2A;
+  W69D4 := State.W2B;
+  W69D8 := State.W2D;
+  W69DC := State.W2F;
+  MapSite := State.MapSite;
+  for I := 1 to 20 do
+    SiteDone[I] := State.SiteDone[I];
+  B6A02 := State.B47;
+end;
+procedure S1802_3DA2;
+begin
+Inline(>$0000/>$0000)
 end;
 procedure S1802_3DAD;
 begin
@@ -895,8 +939,7 @@ S1802_33D0;
 S1802_3489;
 S1802_3696;
 S1802_3832;
-S1802_3C3C;
-S1802_3CEF;
+S1802_3DA2;
 S1802_3DAD;
 S1802_3F10;
 S1802_6E2D;
@@ -1219,7 +1262,8 @@ Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/$00)
+>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
+>$0000)
 end;
 procedure S1802_6E2D;
 begin

@@ -58,6 +58,12 @@ def regions(u, rec):
         cuts = [c for c in cuts if c < init]
     for off, frm in lits.items():                       # a routine's string literals precede its code
         cuts = sorted((set(cuts) - {off}) | {frm})
+    d = os.path.join(SRC, 'match')                      # `{ to: XXXX }`: a fragment ends there, the next
+    for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:   # (unmatched) routine's literals follow
+        if f.startswith(seg + '_') and f.endswith('.PAS'):
+            m = re.search(r'\{ to: ([0-9A-F]{4}) \}', open(os.path.join(d, f)).read())
+            if m and h(m.group(1)) < init:
+                cuts = sorted(set(cuts) | {h(m.group(1))})
     if init == 0:
         cuts = []
     merged = []

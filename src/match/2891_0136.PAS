@@ -124,8 +124,8 @@ begin
   W6A08 := 0;
   W6A0A := 0;
   W6A0C := 0;
-  State.W00 := 0;
-  State.W02 := 0;
+  State.X := 0;
+  State.Y := 0;
   State.Score := Score;
   State.W08 := W69C4;
   State.Ammo := Ammo;

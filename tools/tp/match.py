@@ -17,6 +17,7 @@ Checks, in order (MATCHING.md section 5):
 Prints one line per check and the routines that fail, never image bytes. Exit 0 when everything holds.
 """
 import json
+import re
 import os
 import struct
 import sys
@@ -83,6 +84,10 @@ def main(argv):
             n_m += 1
             lo = seg * 16 + int(f['addr'][5:], 16)
             hi = lo + f['size']
+            fp = os.path.join(ROOT, 'src', 'match', '%s_%s.PAS' % (u['seg'], f['addr'][5:]))
+            to = re.search(r'\{ to: ([0-9A-F]{4}) \}', open(fp).read()) if os.path.exists(fp) else None
+            if to:                                      # the next routine's literals follow: not this one's
+                hi = seg * 16 + int(to.group(1), 16)
             k = first_diff(t.img, b.img, lo, hi)
             rt = {r for r in t.rel if lo <= r < hi}
             rb = {r for r in b.rel if lo <= r < hi}
