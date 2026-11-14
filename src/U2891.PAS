@@ -34,7 +34,8 @@ var
   TextLines: array[1..299] of String[40]; { @3838 }
   P_6820: array[1..4] of Byte;
   B6820: array[1..20] of Byte; { @6820 }
-  P_683C: array[1..8] of Byte;
+  P_683A: array[1..6] of Byte;
+  W683A: Integer; { @683A }
   B683C: Byte; { @683C }
   P_6842: array[1..4] of Byte;
   Level: Integer; { @6842 }

@@ -28,6 +28,7 @@ var
   Slots: array[1..25] of TSlot; { @3512 }
   TextLines: array[1..299] of String[40]; { @3838 }
   B6820: array[1..20] of Byte; { @6820 }
+  W683A: Integer; { @683A }
   B683C: Byte; { @683C }
   Level: Integer; { @6842 }
   W6846: Integer; { @6846 }
