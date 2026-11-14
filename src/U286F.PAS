@@ -8,10 +8,11 @@ function JoyPresent: Boolean;
 function JumpButton: Boolean;
 function FireButton: Boolean;
 procedure OBJ286F;
+function ReadAxis(Axis: Word): Word;
 implementation
 {$L OBJ286F.OBJ}
 procedure OBJ286F; external;
-{$F+} function ReadAxis(Axis: Word): Word; external; {$F-}
+function ReadAxis; external;
 { src: GUESS 286F:0000 (confidence: high): both X and Y axis of stick A time out -> no joystick }
 { interface }
 { keep: if JoyPresent then }

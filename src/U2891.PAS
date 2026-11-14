@@ -95,7 +95,8 @@ var
   W6D86: Integer; { @6D86 }
   P_6D8C: array[1..4] of Byte;
   B6D8C: Byte; { @6D8C }
-  P_6EE5: array[1..343] of Byte;
+  JoyCenterX, JoyCenterY: Word; { @6D8E }
+  P_6EE5: array[1..339] of Byte;
   B6EE5, B6EE6, B6EE7, B6EE8, B6EE9, B6EEA, B6EEB, B6EEC, B6EED, B6EEE, B6EEF, B6EF0, B6EF1: Byte; { @6EE5 }
   P_6EF3: array[1..1] of Byte;
   B6EF3: Byte; { @6EF3 }

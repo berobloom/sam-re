@@ -78,6 +78,7 @@ var
   State: TState; { @6D3E }
   W6D86: Integer; { @6D86 }
   B6D8C: Byte; { @6D8C }
+  JoyCenterX, JoyCenterY: Word; { @6D8E }
   B6EE5, B6EE6, B6EE7, B6EE8, B6EE9, B6EEA, B6EEB, B6EEC, B6EED, B6EEE, B6EEF, B6EF0, B6EF1: Byte; { @6EE5 }
   B6EF3: Byte; { @6EF3 }
   KeyUp, KeyDown, KeyLeft, KeyRight, KeyJump, KeyFire: Integer; { @70E0 }
