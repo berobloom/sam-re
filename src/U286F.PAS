@@ -9,7 +9,6 @@ procedure OBJ286F;
 implementation
 {$L OBJ286F.OBJ}
 procedure OBJ286F; external;
-{ src: GUESS 286F:00CC (confidence: high): times game-port axis Axis (bit 1 shl Axis), returns the count, -1 if none }
 {$F+} function ReadAxis(Axis: Word): Word; external; {$F-}
 { src: GUESS 286F:0000 (confidence: high): both X and Y axis of stick A time out -> no joystick }
 { interface }

@@ -213,7 +213,24 @@ that ends in `retf` and is called from other units), `{ keep: STATEMENT }`
 JumpButton then`). Its `begin` stands alone on a line (the fit and the check
 find it through the map's line numbers). `tools/tp/gen_scaffold.py` pastes it
 into the unit in place of the stub; `tools/tp/match.py --update` sets the
-recipe status.
+recipe status. `{ from: XXXX }`: the routine's string literals start at XXXX
+(TP puts a routine's literals in front of its code). `tools/tp/rdiff.py
+SEG:OFF` shows target and build side by side from the first difference.
+
+Other files in `src/match/`: `<SEG>_<OFF>.EXT` an asm entry of the unit's
+`{$L}` block (`{ interface }` exports it); `<SEG>.USES` the unit's uses
+clause; `<SEG>.VAR` the unit's types and variables in place of its byte
+block. In a .VAR, `{ @XXXX }` after a declaration pins its DS address: the
+fit puts a pad before it (`P_XXXX`, sizes in `src/FILL.JSON` under `data`),
+so unknown variables between known ones need no declaration yet.
+
+### Data traps (CONFIRMED by builds)
+
+- TP 5.0 **word-aligns** a variable of 2+ bytes (Integer at an odd address
+  moved up one). A word at an odd DS address is therefore a field of a
+  packed record (e.g. the state store DS:6D3E, `TState` in `2891.VAR`).
+- `array[1..N]` at BASE is indexed as `[di + BASE - size]`: read the base
+  from the displacement plus one element size.
 
 ## 7. Names, after the match, with their source
 

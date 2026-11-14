@@ -1,0 +1,3 @@
+{ src: SAM1RE 29C3:07EE (../SAM: base, count, row, rows) }
+{ interface }
+{$F+} procedure ClearRows(Base, Count, Row, Rows: Integer); external; {$F-}

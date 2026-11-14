@@ -8,6 +8,7 @@ check, do not re-derive; **OPEN** = work remains (say what).
 | Executables: format, size, sha256, entry, compiler, segments, libraries | `executables.md` | OPEN (TP version, segment roles) |
 | The matching process and the recipe | `../MATCHING.md`, `../recipe/units.json` | OPEN |
 | File formats and archives on the disc | `formats.md` | OPEN |
+| Globals of unit 2891 (DS:34D6..70FF): `src/match/2891.VAR` is the source of truth (pinned, matched) | `../src/match/2891.VAR` | OPEN (gaps are pads) |
 | Memory map: segments / LE objects, globals, tables | `memory.md` | OPEN |
 | Startup chain, main loop, frame timing | `game-loop.md` | OPEN |
 | Input: keyboard handler, key table, mouse | `input.md` | OPEN |

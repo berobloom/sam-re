@@ -1,0 +1,81 @@
+{ 2891 data, DS:34D6..70FF. An "@XXXX" comment pins a declaration's address (gen_scaffold.py fits a pad before it);
+  names: SAM1RE (../SAM findings: physics.md, code-map.md) or the address. Grouped names share a line. }
+type
+  TSlot = record                   { 32 bytes; slot n at DS:3512 + (n-1)*32 }
+    W00, W02, W04, W06, W08, W0A: Integer;
+    B0C: array[$0C..$1D] of Byte;
+    Free: Byte;                    { +1E }
+    B1F: Byte;
+  end;
+  TState = record                  { DS:6D3E..6D85, the game-state store; packed: words at odd offsets }
+    W00, W02: Integer;
+    Score: LongInt;                { +04 }
+    W08, Ammo: Integer;
+    B0C, B0D: Byte;
+    Bullets: array[1..20] of Byte; { +0E }
+    W22, W24: Integer;
+    B26: Byte;
+    W27: Integer;
+    B29, B2A: Byte;
+    W2B, W2D, W2F, MapSite: Integer;
+    SiteDone: array[1..20] of Byte; { +33 }
+    B47: Byte;
+  end;
+var
+  JumpUp: array[0..18] of Byte; { @34D6 }
+  JumpDown: array[0..37] of Byte; { @34EA }
+  JumpUpTop: Byte; { @3510 }
+  JumpDownTop: Byte; { @3511 }
+  Slots: array[1..25] of TSlot; { @3512 }
+  B683C: Byte; { @683C }
+  Level: Integer; { @6842 }
+  W6846: Integer; { @6846 }
+  W6852: Integer; { @6852 }
+  W6856: Integer; { @6856 }
+  W6858: Integer; { @6858 }
+  B685C: Byte; { @685C }
+  CamX: Integer; { @685E }
+  CamY: Integer; { @6860 }
+  W6862: Integer; { @6862 }
+  W6864: Integer; { @6864 }
+  W6866: Integer; { @6866 }
+  Bullets: array[1..20] of Byte; { @686A }
+  Ammo: Integer; { @687E }
+  Score: LongInt; { @69C0 }
+  W69C4: Integer; { @69C4 }
+  W69C6: Integer; { @69C6 }
+  Gun: Integer; { @69C8 }
+  W69CA: Integer; { @69CA }
+  W69CC: Integer; { @69CC }
+  W69CE: Integer; { @69CE }
+  W69D0: Integer; { @69D0 }
+  B69D2: Byte; { @69D2 }
+  B69D3: Byte; { @69D3 }
+  W69D4: Integer; { @69D4 }
+  B69D6: Byte; { @69D6 }
+  W69D8: Integer; { @69D8 }
+  B69DA: Byte; { @69DA }
+  W69DC: Integer; { @69DC }
+  MapSite: Integer; { @69DE }
+  SiteDone: array[1..20] of Byte; { @69E0 }
+  B69F4, B69F5, B69F6, B69F7, B69F8, B69F9, B69FA, B69FB, B69FC, B69FD, B69FE, B69FF: Byte; { @69F4 }
+  B6A00, B6A01, B6A02, B6A03, B6A04, B6A05, B6A06: Byte; { @6A00 }
+  W6A08, W6A0A, W6A0C: Integer; { @6A08 }
+  B6A0E, B6A0F, B6A10, B6A11, B6A12, B6A13, B6A14, B6A15, B6A16, B6A17, B6A18, B6A19, B6A1A, B6A1B: Byte; { @6A0E }
+  ArcLen: Byte; { @6A1C }
+  Arc: array[0..34] of Integer; { @6A1E }
+  B6A64: Byte; { @6A64 }
+  RespawnDelay: Byte; { @6A65 }
+  Lives: Byte; { @6A66 }
+  B6A67: Byte; { @6A67 }
+  B6A68: Byte; { @6A68 }
+  HiName: array[1..10] of String[40]; { @6B6A }
+  HiScore: array[1..10] of LongInt; { @6D04 }
+  State: TState; { @6D3E }
+  W6D86: Integer; { @6D86 }
+  B6D8C: Byte; { @6D8C }
+  B6EE5, B6EE6, B6EE7, B6EE8, B6EE9, B6EEA, B6EEB, B6EEC, B6EED, B6EEE, B6EEF, B6EF0, B6EF1: Byte; { @6EE5 }
+  B6EF3: Byte; { @6EF3 }
+  KeyUp, KeyDown, KeyLeft, KeyRight, KeyJump, KeyFire: Integer; { @70E0 }
+  W70EC: Integer; { @70EC }
+  W70EE: Integer; { @70EE }

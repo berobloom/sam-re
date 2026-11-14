@@ -4,9 +4,15 @@ interface
 var V_29C3: array[0..163] of Byte;
 procedure S29C3_0000;
 procedure OBJ29C3;
+procedure SetColor(C: Integer);
+procedure ClearRows(Base, Count, Row, Rows: Integer);
+procedure CopyPage;
 implementation
 {$L OBJ29C3.OBJ}
 procedure OBJ29C3; external;
+procedure SetColor; external;
+procedure ClearRows; external;
+procedure CopyPage; external;
 procedure S29C3_0000;
 begin
 Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
