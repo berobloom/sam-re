@@ -86,7 +86,7 @@ var
   Lives: Byte; { @6A66 }
   B6A67: Byte; { @6A67 }
   B6A68: Byte; { @6A68 }
-  P_6B6A: array[1..256] of Byte;
+  NameInput: String; { @6A6A }
   HiName: array[1..10] of String[40]; { @6B6A }
   HiScore: array[1..10] of LongInt; { @6D04 }
   P_6D3E: array[1..18] of Byte;
