@@ -1,0 +1,2 @@
+{ src: GUESS 286F:00CC (confidence: high): times game-port axis Axis (bit 1 shl Axis), returns the count, -1 if none }
+{$F+} function ReadAxis(Axis: Word): Word; external; {$F-}

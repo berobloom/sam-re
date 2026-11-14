@@ -149,6 +149,23 @@ def main(argv):
         old = {u['seg']: u for u in json.load(open(argv[2]))['units']}
     except (OSError, ValueError, KeyError):
         pass
+    # where a unit's {$L} code starts: right after the init's epilogue (main program: after the program epilogue
+    # `mov sp,bp / pop bp / xor ax,ax / lcall Halt`), if anything but padding zeros follows
+    obj_starts = {}
+    for seg in p.code:
+        u = old.get('%04X' % seg, {})
+        lo, hi = seg * 16, p.ends[seg]
+        if seg == p.entry[0]:
+            k = img.find(b'\x89\xec\x5d\x31\xc0\x9a', lo + p.entry[1], hi)
+            end = k + 10 if k != -1 else None
+        elif u.get('init'):
+            k = img.find(b'\x89\xec\x5d\xcb', lo + int(u['init'], 16), hi)
+            end = k + 4 if k != -1 else None
+        else:
+            end = None
+        if end is not None and img[end:hi].strip(b'\0'):
+            obj_starts[seg] = end - lo
+            p.routines.setdefault((seg, end - lo), 0)
     units = []
     for n, seg in enumerate(p.code):
         size = p.ends[seg] - seg * 16
@@ -164,6 +181,7 @@ def main(argv):
         units.append({'seg': '%04X' % seg, 'index': n, 'image_offset': seg * 16, 'size': size,
                       'unit': prev.get('unit'), 'compiler': prev.get('compiler'),
                       'init': prev.get('init'), 'data': prev.get('data', {}), 'lead_bytes': head,
+                      'obj_start': '%04X' % obj_starts[seg] if seg in obj_starts else None,
                       'functions': fns})
         print('CODE_%-2d %04X  size %6d  routines %4d  bytes before first %d' % (n, seg, size, len(fns), head))
     keep = {k: v for k, v in (json.load(open(argv[2])) if old else {}).items() if k.endswith('_note') or k == 'init_order'}

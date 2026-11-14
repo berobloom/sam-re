@@ -19,10 +19,10 @@ const T_2643: array[0..613] of Byte = (
   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
   0,0,0,0,0,0,0,0,0,0,0,0,0,0);
 var V_2643: array[0..4667] of Byte;
+procedure OBJ2643;
 implementation
 {$L OBJ2643.OBJ}
 procedure OBJ2643; external;
 begin
-OBJ2643;
-Inline(>T_2643/>V_2643/$00)
+Inline(>T_2643/>V_2643/>$0000/>$0000)
 end.

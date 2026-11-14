@@ -2,19 +2,24 @@ unit U286F;
 {$S-,D+,L+}
 interface
 
-procedure S286F_0000;
+function JoyPresent: Boolean;
 function JumpButton: Boolean;
 function FireButton: Boolean;
+procedure OBJ286F;
 implementation
 {$L OBJ286F.OBJ}
 procedure OBJ286F; external;
-procedure S286F_0000;
+{ src: GUESS 286F:00CC (confidence: high): times game-port axis Axis (bit 1 shl Axis), returns the count, -1 if none }
+{$F+} function ReadAxis(Axis: Word): Word; external; {$F-}
+{ src: GUESS 286F:0000 (confidence: high): both X and Y axis of stick A time out -> no joystick }
+{ interface }
+{ keep: if JoyPresent then }
+function JoyPresent: Boolean;
+var A, B: Integer;
 begin
-if JumpButton then;
-if FireButton then;
-OBJ286F;
-Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000)
+  A := ReadAxis(0);
+  B := ReadAxis(1);
+  if (A = -1) and (B = -1) then JoyPresent := False else JoyPresent := True;
 end;
 { src: SAM1RE 286F:0038 (../SAM code-map.md: jump button via game port 0x201) }
 { interface }
@@ -31,7 +36,6 @@ begin
   FireButton := (Port[$201] and $20) = 0;
 end;
 begin
-Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/$00)
+{ init }
+{ src: EXE 286F:0078: the unit has no initialization statements; TP emits an empty frame }
 end.

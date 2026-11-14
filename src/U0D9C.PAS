@@ -1564,5 +1564,6 @@ Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0
 >$0000/>$0000/>$0000/>$0000/>$0000/$00)
 end;
 begin
-Inline($00)
+{ init }
+{ src: EXE 0D9C:A658: the unit has no initialization statements; TP emits an empty frame }
 end.

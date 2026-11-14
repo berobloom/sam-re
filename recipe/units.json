@@ -40,6 +40,7 @@
     ]
    },
    "lead_bytes": 2210,
+   "obj_start": "51CC",
    "functions": [
     {
      "addr": "0000:08A2",
@@ -91,8 +92,16 @@
     },
     {
      "addr": "0000:11C3",
-     "size": 16400,
+     "size": 16393,
      "reached": 16432,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:51CC",
+     "size": 7,
+     "reached": 0,
      "name": null,
      "src": null,
      "status": "unmatched"
@@ -146,6 +155,7 @@
    "init": "8724",
    "data": {},
    "lead_bytes": 0,
+   "obj_start": null,
    "functions": [
     {
      "addr": "0529:0000",
@@ -300,6 +310,7 @@
    "init": "A658",
    "data": {},
    "lead_bytes": 0,
+   "obj_start": null,
    "functions": [
     {
      "addr": "0D9C:0000",
@@ -371,7 +382,7 @@
      "reached": 7,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     }
    ]
   },
@@ -390,6 +401,7 @@
    "init": "DE33",
    "data": {},
    "lead_bytes": 0,
+   "obj_start": null,
    "functions": [
     {
      "addr": "1802:0000",
@@ -824,6 +836,7 @@
    "init": "048C",
    "data": {},
    "lead_bytes": 69,
+   "obj_start": "04A3",
    "functions": [
     {
      "addr": "25E6:0045",
@@ -955,6 +968,7 @@
     ]
    },
    "lead_bytes": 0,
+   "obj_start": "000F",
    "functions": [
     {
      "addr": "2643:0000",
@@ -1109,6 +1123,7 @@
    "init": "0078",
    "data": {},
    "lead_bytes": 0,
+   "obj_start": "007F",
    "functions": [
     {
      "addr": "286F:0000",
@@ -1116,7 +1131,7 @@
      "reached": 56,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "286F:0038",
@@ -1136,8 +1151,16 @@
     },
     {
      "addr": "286F:0078",
-     "size": 84,
+     "size": 7,
      "reached": 7,
+     "name": null,
+     "src": null,
+     "status": "matched"
+    },
+    {
+     "addr": "286F:007F",
+     "size": 77,
+     "reached": 0,
      "name": null,
      "src": null,
      "status": "unmatched"
@@ -1167,6 +1190,7 @@
    "init": "0116",
    "data": {},
    "lead_bytes": 0,
+   "obj_start": null,
    "functions": [
     {
      "addr": "287F:0000",
@@ -1206,6 +1230,7 @@
     ]
    },
    "lead_bytes": 310,
+   "obj_start": "0C14",
    "functions": [
     {
      "addr": "2891:0136",
@@ -1237,7 +1262,7 @@
      "reached": 7,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "2891:0C14",
@@ -1264,6 +1289,7 @@
    "init": "0000",
    "data": {},
    "lead_bytes": 0,
+   "obj_start": "0030",
    "functions": [
     {
      "addr": "2961:0000",
@@ -1471,11 +1497,20 @@
     ]
    },
    "lead_bytes": 112,
+   "obj_start": "00E6",
    "functions": [
     {
      "addr": "29C3:0070",
-     "size": 307,
+     "size": 118,
      "reached": 118,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "29C3:00E6",
+     "size": 189,
+     "reached": 0,
      "name": null,
      "src": null,
      "status": "unmatched"
@@ -1705,6 +1740,7 @@
    "init": null,
    "data": {},
    "lead_bytes": 11,
+   "obj_start": null,
    "functions": [
     {
      "addr": "2CC7:000B",
@@ -1747,6 +1783,7 @@
    "init": "0000",
    "data": {},
    "lead_bytes": 0,
+   "obj_start": null,
    "functions": [
     {
      "addr": "2CD1:0000",
@@ -2192,7 +2229,7 @@
  ],
  "totals": {
   "units": 13,
-  "functions": 238,
+  "functions": 241,
   "code_bytes": 188080
  }
 }

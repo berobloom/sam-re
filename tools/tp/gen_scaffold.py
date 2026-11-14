@@ -50,11 +50,6 @@ def regions(u, rec):
     fns = {h(f['addr'][5:]): f for f in u['functions']}
     starts = sorted(fns)
     init = h(u['init']) if u.get('init') else h(rec['entry'][5:])
-    init_end = init + (fns[init]['reached'] if init in fns else 0)
-    after = [o for o in starts if o >= init_end]
-    if seg == '0000':                                   # main body runs to the next routine
-        init_end = after[0] if after else u['size']
-        after = [o for o in starts if o >= init_end]
     cuts = sorted({0} | {o for o in starts if o < init}
                   | {h(a[5:]) for a in rec['frame_only'] if a[:4] == seg and h(a[5:]) < init})
     if init == 0:
@@ -71,9 +66,7 @@ def regions(u, rec):
     for i, c in enumerate(merged):
         end = merged[i + 1] if i + 1 < len(merged) else init
         out.append(('stub', 'S%s_%04X' % (seg, c), c, end - c))
-    obj_start = after[0] if after else None
-    if obj_start is not None:
-        init_end = obj_start
+    obj_start = h(u['obj_start']) if u.get('obj_start') else None   # recipe: after the init's epilogue
     out.append(('init', 'INIT', init, (obj_start if obj_start is not None else u['code_len']) - init))
     if obj_start is not None:
         out.append(('obj', 'OBJ%s' % seg, obj_start, u['code_len'] - obj_start))
@@ -125,11 +118,46 @@ def fragment(seg, off):
     if not os.path.exists(path):
         return None
     text = open(path).read().replace('\r', '').rstrip('\n')
+    if '{ init }' in text:                          # the unit init / program body: statements only
+        return {'text': text, 'init': True, 'interface': False, 'keep': None, 'name': 'INIT', 'head': None}
     keep = re.search(r'\{ keep: (.*) \}', text)
     head = next(l for l in text.split('\n') if re.match(r'(procedure|function) ', l))
     name = re.match(r'(?:procedure|function) (\w+)', head).group(1)
     return {'text': text, 'keep': keep.group(1) if keep else name, 'head': head, 'name': name,
-            'interface': '{ interface }' in text}
+            'interface': '{ interface }' in text, 'init': False}
+
+
+def externals(seg):
+    """asm routines of a unit's {$L} block that Pascal code calls: src/match/<SEG>_<OFF>.EXT holds the Pascal
+    external declaration (e.g. `{$F+} function ReadAxis(Axis: Word): Word; external; {$F-}`); the generator puts
+    a label of that name at OFF in the unit's .OBJ"""
+    out = []
+    d = os.path.join(SRC, 'match')
+    for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+        if f.startswith(seg + '_') and f.endswith('.EXT'):
+            text = open(os.path.join(d, f)).read().replace('\r', '').strip()
+            name = re.search(r'(?:procedure|function) (\w+)', text).group(1)
+            out.append({'off': h(f[5:9]), 'name': name, 'text': text})
+    return out
+
+
+def outside_keeps(units, regs):
+    """statements the main program body runs to keep what units export: each unit's keeper, its interface
+    routines (their `keep:` statement) and its .OBJ entry"""
+    out = []
+    for u in units:
+        if u['seg'] == '0000':
+            continue
+        k = keeper_of(regs[u['seg']])
+        if k:
+            out.append(k)
+        for kind, rname, off, size in regs[u['seg']]:
+            f = fragment(u['seg'], off) if kind == 'stub' else None
+            if f and f['interface']:
+                out.append(f['keep'])
+            if kind == 'obj':
+                out.append(rname)
+    return out
 
 
 def keeper_of(regs):
@@ -147,7 +175,12 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=()):
     plain = [r for r in stubs if not frags[r[1]]]
     obj = [r for r in regs if r[0] == 'obj']
     keeper = keeper_of(regs) if not main else None
-    calls = [frags[r[1]]['keep'] if frags[r[1]] else r[1] for r in stubs if r[1] != keeper] + [r[1] for r in obj]
+    # the unit keeps its private routines; what other units can see (keeper, interface routines, the .OBJ entry)
+    # is kept from the main program body (outside_keeps)
+    calls = [frags[r[1]]['keep'] if frags[r[1]] else r[1] for r in stubs
+             if r[1] != keeper and not (frags[r[1]] and frags[r[1]]['interface'])]
+    if main:
+        calls += [r[1] for r in obj]
     # links System 025D (structured value parameter); its prologue grows, so the largest stub carries it
     valpar = max(plain, key=lambda r: r[3])[1] if main and plain else None
     L = []
@@ -158,6 +191,7 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=()):
         if keeper:
             L.append('procedure %s;' % keeper)          # exported: the main program calls it (far)
         L += [f['head'] for f in frags.values() if f and f['interface']]
+        L += ['procedure %s;' % r[1] for r in obj]
         L.append('implementation')
     if obj:
         L.append('{$L %s.OBJ}' % obj[0][1])
@@ -169,14 +203,14 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=()):
             L.append('procedure %s%s; forward;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
     for r in obj:
         L.append('procedure %s; external;' % r[1])
+        L += [e['text'] for e in externals(seg)]
 
     def body(rname, extra_calls, refs, rtl=False):
         stmts = []
         if rtl:
             stmts += [l for l in open(os.path.join(SRC, 'RTLKEEP.INC')).read().split('\n')
                       if l.strip() and not l.startswith(('{', '  '))]
-        stmts += ['%s%s;' % (c, '(KR)' if c == valpar else '') for c in extra_calls if c not in keepers_of_units]
-        stmts += ['%s;' % c for c in extra_calls if c in keepers_of_units]
+        stmts += ['%s%s;' % (c, '(KR)' if c == valpar else '') for c in extra_calls]
         inl = inline_items(fill.get(rname, 0), refs)
         if inl:
             stmts.append(inl)
@@ -192,17 +226,33 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=()):
         L.append('end;')
     L.append('begin')
     if main:
-        L += body('INIT', calls + keepers_of_units, dnames, rtl=True)
+        L += body('INIT', calls + list(keepers_of_units), dnames, rtl=True)
     else:
-        L += body('INIT', [] if keeper else calls, [] if keeper else dnames)
+        init_off = next(r[2] for r in regs if r[0] == 'init')
+        fi = fragment(seg, init_off)
+        if fi:
+            if not keeper and (calls or dnames):
+                raise ValueError('%s: a hand-written init but nothing else keeps %s' % (name, calls + dnames))
+            L += [l for l in fi['text'].split('\n') if l.strip()]
+        else:
+            L += body('INIT', [] if keeper else calls, [] if keeper else dnames)
     L.append('end.')
     text = '\n'.join(x for x in L if x is not None) + '\n'
     open(os.path.join(SRC, name + '.PAS'), 'w').write(text.replace('\n', '\r\n'))
     if obj:
         o = obj[0]
-        n = fill.get(o[1], o[3])
-        open(os.path.join(SRC, o[1] + '.ASM'), 'w').write(
-            'segment CODE public align=1\nglobal %s\n%s:\n    times %d db 0\n' % (o[1], o[1], n))
+        n = o[3]                            # never fitted: its size is the region's
+        fill[o[1]] = n
+        asm = ['segment CODE public align=1', 'global %s' % o[1], '%s:' % o[1]]
+        at = 0
+        for e in externals(seg):            # a label at each named asm routine, filler between
+            rel = e['off'] - o[2]
+            if not 0 <= rel <= n or rel < at:
+                raise ValueError('%s_%04X.EXT lies outside the .OBJ block' % (seg, e['off']))
+            asm += ['    times %d db 0' % (rel - at), 'global %s' % e['name'].upper(), '%s:' % e['name'].upper()]
+            at = rel
+        asm.append('    times %d db 0' % (n - at))
+        open(os.path.join(SRC, o[1] + '.ASM'), 'w').write('\n'.join(asm) + '\n')
 
 
 def begin_lines(path):
@@ -211,7 +261,9 @@ def begin_lines(path):
     out, cur = {}, None
     for i, l in enumerate(open(path, encoding='latin1').read().replace('\r', '').split('\n'), 1):
         m = re.match(r'(?:procedure|function) (\w+)\b(?!.*\b(?:forward|external);)', l)
-        if m:
+        if l == 'implementation':
+            cur = None                                  # interface headers have no body here
+        elif m:
             cur = m.group(1)
         elif l == 'begin':
             out[cur or 'INIT'] = i
@@ -262,7 +314,7 @@ def main(argv):
                 over = 7 if kind == 'stub' else 7 if kind == 'init' else 0
                 f[name] = max(0, size - over)
     for rnd in range(rounds):
-        keepers = [keeper_of(regs[u['seg']]) for u in units if u['seg'] != '0000']
+        keepers = outside_keeps(units, regs)
         for u in units:
             gen_unit(u, rec, fill[u['seg']], regs[u['seg']], [k for k in keepers if k])
         json.dump(fill, open(fill_path, 'w'), indent=1, sort_keys=True)
@@ -304,9 +356,12 @@ def main(argv):
                 if start != off:
                     bad += 1
                 got = nxt - start
+                last = i + 1 == len(order)
+                if last and got <= size < got + 16 and (base + start + got + 15) // 16 * 16 == base + u['size']:
+                    got = size                          # the segment's paragraph padding follows the last region
                 if got != size:
                     bad += 1
-                    if kind == 'stub' and fragment(u['seg'], off):
+                    if kind in ('stub', 'init') and fragment(u['seg'], off):
                         report.append('%s %s is %d bytes, wants %d' % (name, rname, got, size))
                     elif kind != 'obj':
                         fill[u['seg']][rname] = max(0, fill[u['seg']][rname] + size - got)
