@@ -64,7 +64,7 @@ def regions(u, rec):
             m = re.search(r'\{ to: ([0-9A-F]{4}) \}', open(os.path.join(d, f)).read())
             if m and h(m.group(1)) < init:              # the next routine's region starts at its literals
                 to = h(m.group(1))
-                nxt = [c for c in cuts if c > to][:1]
+                nxt = [c for c in cuts if c > to][:1] if to not in cuts else []   # `from:` made it already
                 cuts = sorted((set(cuts) - set(nxt)) | {to})
     if init == 0:
         cuts = []
@@ -238,6 +238,14 @@ def signature(seg, off):
     matched code can call its stub; `{ keep: STATEMENT }` keeps it from the keeper (default: none, a matched
     caller keeps it)"""
     path = os.path.join(SRC, 'match', '%s_%04X.SIG' % (seg, off))
+    d = os.path.join(SRC, 'match')
+    tos = {h(m) for f in os.listdir(d) if f.startswith(seg + '_') and f.endswith('.PAS')
+           for m in re.findall(r'\{ to: ([0-9A-F]{4}) \}', open(os.path.join(d, f)).read())}
+    if not os.path.exists(path) and off in tos:         # the region starts at the routine's literals
+        sigs = sorted(h(f[5:9]) for f in os.listdir(d) if f.startswith(seg + '_') and f.endswith('.SIG'))
+        nxt = [o for o in sigs if off < o < off + 0x100]
+        if nxt:
+            path = os.path.join(d, '%s_%04X.SIG' % (seg, nxt[0]))
     if not os.path.exists(path):
         return None
     text = open(path).read().replace('\r', '')
@@ -246,7 +254,7 @@ def signature(seg, off):
     head = re.sub(r'\{\$F[+-]\}', '', head).strip()
     keep = re.search(r'\{ keep: (.*) \}', text)
     return {'head': head, 'far': far, 'name': re.search(r'(?:procedure|function) (\w+)', head).group(1),
-            'keep': keep.group(1) if keep else '-'}
+            'keep': keep.group(1) if keep else '-', 'lit': h(os.path.basename(path)[5:9]) - off}
 
 
 def keeper_of(regs):
@@ -326,7 +334,11 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         if g and g['far']:
             L.append('{$F+}')
         L.append(g['head'] if g else 'procedure %s%s;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
-        L.append('begin')
+        if g and g['lit'] > 1:                      # a string literal of the same size before the code, as the
+            L += ['var', '  Q_: String;', 'begin',     # original (a 1-char constant is a Char unless compared
+                  "  if Q_ = '%s' then;" % ('x' * (g['lit'] - 1))]           # with a string)
+        else:
+            L.append('begin')
         L += body(r[1], calls if r[1] == keeper else [], dnames if r[1] == keeper else [])
         L.append('end;')
         if g and g['far']:
@@ -460,6 +472,8 @@ def main(argv):
                 else:
                     g = signature(u['seg'], off) if kind == 'stub' else None
                     a = ln.get(bl.get(g['name'] if g else rname))
+                    if g and a is not None:
+                        a -= g['lit']
                     fi = fragment(u['seg'], off) if kind == 'init' else None
                     if fi and a is not None:
                         a -= fi['lit']

@@ -250,6 +250,9 @@ so unknown variables between known ones need no declaration yet.
 - Stubs called by matched code need their header: `src/match/<SEG>_<OFF>.SIG`
   (e.g. `{$F+} function MainMenu: Char;`); `{ to: XXXX }` ends a fragment
   where the next routine's literals begin.
+- A one-character constant is a Char: `Write('x')` stores no literal, and
+  `'x' = ''` is folded away. `S = 'x'` with S a String variable stores the
+  1-char string literal (used for signature stubs whose literals precede them).
 - An OBJ may declare `segment DATA public` (empty) and use `dw DATA` / `dw
   CODE` for segment fixups; TP links them (Genus, 106 fixups).
 - `{ keep: - }` on a private routine reached through exported ones: no keeper
