@@ -51,6 +51,7 @@ def hexn(n):
 PROFILES = {   # routine -> (X, Y, FO, S) operands as tdis prints them
     '2E88': ('word ptr [bp + 0xc]', 'word ptr [bp + 0xa]', 'byte ptr [bp - 0x105]', '[bp - 0x100]'),
     '68A9': ('word ptr [bp - 0x2c]', 'word ptr [bp + 0xa]', 'byte ptr [bp - 0x131]', '[bp - 0x12c]'),
+    '3A91': ('word ptr [bp + 0xe]', 'word ptr [bp + 0xc]', 'byte ptr [bp + 6]', '[bp - 0x100]'),
 }
 PX, PY, PFO, PS = PROFILES['2E88']
 XN = 'X'
@@ -164,7 +165,7 @@ def stmts(body):
         elif t.startswith('mov cx, ') or (t.startswith('mov cl, ') and body[i + 1][1] == 'shl ax, cl'):
             cx = int(t.split(', ')[1], 0)
         elif t == 'shl ax, cl':
-            ax = '%s shl %d' % (ax, cx)
+            ax = '%s shl %d' % ('(%s)' % ax if ' + ' in ax or ' - ' in ax else ax, cx)
         elif t == 'mov dx, 0xa0' or t == 'mul dx':
             idx = ax
         elif t.startswith('les di, ptr [0x'):
@@ -188,6 +189,8 @@ def stmts(body):
         elif t.startswith('inc word ptr [0x') or t.startswith('inc byte ptr [0x'):
             out.append('Inc(%s)' % opnd(t[4:]))
         elif t in CALLS:
+            if t == 'call 0x2c6e' and stack[-1] in ('0', '1'):   # FrontOnly: Boolean
+                stack[-1] = ['False', 'True'][int(stack[-1])]
             out.append('%s(%s)' % (CALLS[t], ', '.join(stack)))
             stack = []
         elif t == 'lcall 0x2cd1, 0x980 R':
