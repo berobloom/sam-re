@@ -24,15 +24,18 @@ keep a session diary here.
   asm entry points in `.EXT`, the data in `<SEG>.VAR`. The largest routines
   (Touch, ActorAI, ActorFrame, the program body) are unedited output of
   `tools/tp/pasgen.py`, a pattern decompiler for TP 5.0 code.
-- Names: SAM1RE notes (../SAM) and GUESS; many globals are still
-  `W<addr>`/`B<addr>`, the slot fields `W0A`..`W1C`.
+- Names: SAM1RE notes (../SAM) and GUESS, each with its source in the
+  `.VAR` comment; `tools/tp/rename.py` renames (code only, refuses a clash).
+  27 globals are still `W<addr>`/`B<addr>`: mostly no reader in the image or
+  no SAM1RE meaning (`69C4`/`69C6`/`69CE`/`685C`/`6856`, `6A0E..6A11`,
+  `6EE8`, `6EEC..6EEF`); slot fields `W00`, `W0C`..`W12`.
 - Compiler: TP 5.0 / 5.5 / 6.0 compile headless (`tools/tp/tpc.sh`); 5.0 is
   SAM's (`tools/tp/pin_version.sh`).
 - Harness: DOSBox-X + MCP built (`./setup.sh` says ready); not used here.
 
 ## Next
 
-- Names: the `W`/`B` globals, the slot fields, the 29C3 and Genus asm
-  routines; `match.py` must stay green after each rename.
+- Names: the 29C3 and Genus asm routines; the last 27 globals need an
+  experiment or a closer read; `match.py` must stay green after each rename.
 - `gen_scaffold.py` still carries the stub, fill and keeper machinery that the
   finished source no longer uses.
