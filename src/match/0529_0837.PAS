@@ -1,7 +1,7 @@
 { src: SAM1RE 0529:0837 (../SAM objects.md, physics.md: the actor behaviour switch on Slots[I].W1C (kind), the
   first of the two chains (kinds below $1E); NewX, NewY: the frame pass's proposed position; CX, CY: never
   written by the caller, the kind-$16 body's cell loop counters) }
-{ keep: ActorAI(0, 0, 0, 0, 0); }
+{ keep: - }
 {$F+}
 procedure ActorAI(NewX, NewY, I, CX, CY: Integer);
 var

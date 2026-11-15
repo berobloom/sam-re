@@ -732,8 +732,44 @@ class Dec:
             return ('if', self.boolexpr(tests, T, F), th, None), self.idx[F]
         return self.simple(i, end)
 
+    def for_tmp(self, i, end):
+        """for with a variable limit: `tmp := hi; ax := lo; cmp ax, tmp; jg END; V := ax; jmp L1; L0: inc V;
+        L1: S; mov ax, V; cmp ax, tmp; jne L0` (tmp: a frame word with no name)"""
+        save = self.save()
+        k = i
+        while k < len(self.L) and self.step(k):
+            k += 1
+        m = re.match(r'mov word ptr \[bp - (0x[0-9a-f]+|\d+)\], ax$', self.L[k][1])
+        if not m or 'bp-%d' % int(m.group(1), 0) in self.frame:
+            self.restore(save)
+            return None
+        tmp = '[bp - %s]' % m.group(1)
+        hi = self.ax
+        k += 1
+        while k < len(self.L) and self.step(k):
+            k += 1
+        if self.L[k][1] != 'cmp ax, word ptr %s' % tmp:
+            self.restore(save)
+            return None
+        lo = self.ax
+        op, END, w = self.jinfo(k + 1)
+        k += 1 + w
+        mv = re.match(r'mov (word|byte) ptr (\[.*\]), ax$', self.L[k][1])
+        mi = re.match(r'(inc|dec) (word|byte) ptr (\[.*\])$', self.L[k + 2][1])
+        assert mv and mi and mi.group(3) == mv.group(2), self.L[k:k + 3]
+        v = self.mem('%s ptr %s' % (mv.group(1), mv.group(2)))
+        L0 = self.addr(k + 2)
+        q = self.idx[END] - 1                       # jne L0 or je +; jmp L0
+        c = q - 2 if self.L[q][1].startswith('jmp ') else q - 1
+        assert self.L[c][1] == 'cmp ax, word ptr %s' % tmp, self.L[c]
+        body, _ = self.block(k + 3, self.addr(c - 1))
+        return ('for', v, lo, {'jg': 'to', 'jl': 'downto'}[op], hi, body), q + 1
+
     def for_at(self, i, end):
         """for V := lo to|downto hi do S: `V := lo; jmp L1; L0: inc|dec V; L1: S; cmp V, hi; jne L0`"""
+        f = self.for_tmp(i, end)
+        if f:
+            return f
         k = i
         save = self.save()
         while k < len(self.L) and self.step(k):

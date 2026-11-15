@@ -1,6 +1,6 @@
 { src: GUESS 0529:027C (does a live shot overlap X, Y? the first one that does is marked spent (B1F) and the
   cells under it repainted, with the neighbours when X is not on a 16-pixel column) }
-{ keep: if ShotHit(0, 0) then; }
+{ keep: - }
 {$F+}
 function ShotHit(X, Y: Integer): Boolean;
 var

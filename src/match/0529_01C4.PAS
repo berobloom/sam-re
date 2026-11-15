@@ -1,6 +1,6 @@
 { src: GUESS 0529:01C4 (a hit on the player when X, Y overlaps slot 1 (10 x 16): unless B6A1B or GOD mode, a
   life goes (B6A67 a short guard, sound 7), or with the last life sound $16 and the death arc starts) }
-{ keep: HitPlayer(0, 0); }
+{ keep: - }
 {$F+}
 procedure HitPlayer(X, Y: Integer);
 begin

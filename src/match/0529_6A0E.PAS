@@ -2,6 +2,7 @@
   (B6EF3) or the joystick's jump button, when the two cells above the head are clear: pose, sound 1;
   JumpUpTop then climbs to 10 through JumpUp, the camera following up to 0, a blocked step ends it) }
 { to: 6B8E }
+{ interface }
 { keep: Jump; }
 {$F+}
 procedure Jump;

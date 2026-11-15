@@ -1,7 +1,7 @@
 { src: GUESS 0529:0584 (plays sound 3 and puts an object of kind T at X, Y into the first free slot of
   Slots, facing Dir (-1 or 1; W0A 21 or 1); X snaps to 8 pixels except for kind $89. W1C is set by kind:
   0 (becomes $27) and $1D6/$7D/$7E 7, $339/$33B $13, $72 $25, $C7 (becomes $72) $89, $89 $28, else $E) }
-{ keep: SpawnObject(0, 0, 0, 0, 0); }
+{ keep: - }
 {$F+}
 procedure SpawnObject(X, Y, Dir, A, T: Integer);
 var

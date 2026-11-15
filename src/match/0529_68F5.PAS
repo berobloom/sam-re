@@ -1,6 +1,7 @@
 { src: GUESS 0529:68F5 (moves the player by the held directions: right/left (B6EF1/B6EF0) W6846 pixels after
   Ramp, down/up (B6EEA/B6EE9) 4 pixels, each only when CanMove allows it; the camera follows, clamped to
   0..$140 and 0..$B8; W06/W08 keep the old position) }
+{ interface }
 { keep: MovePlayer; }
 {$F+}
 procedure MovePlayer;
