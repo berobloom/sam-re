@@ -6,7 +6,14 @@ var KF: file of KRec absolute TextLines; KT: Text absolute TextLines; KR: KRec a
     KS: string absolute TextLines; KS2: string absolute TextLines; KRegs: Registers absolute TextLines;
     KL: LongInt absolute TextLines; KP: Pointer absolute TextLines; KI: Integer absolute TextLines;
     KC: Char absolute TextLines; KB: Boolean absolute TextLines;
-var V_0000: array[0..25] of Byte;
+{ main's data: typed constants DS:0000..000D, variables DS:02A2..02BB }
+const
+  VideoTab: array[0..12] of Byte = (5, 0, 1, 5, 3, 3, 5, 4, 4, 5, 1, 1, 1); { @0000; adapter by display code (int $10 $1A) }
+var
+  W02A2: Integer; { @02A2 }
+  Regs: Registers; { @02A4 }
+  VideoMode: Integer; { @02B8; the mode at start, bit 7 off }
+  Adapter: Byte; { @02BA; 0 mono, 1 CGA, 3 EGA, 4 VGA, 5 other (VideoTab), GUESS }
 {$L OBJ0000.OBJ}
 procedure KeyISR; interrupt; forward;
 procedure S0000_08A2(x: KRec); forward;
@@ -16,7 +23,8 @@ procedure InstallHandlers; forward;
 procedure RestoreInts; forward;
 {$F+} procedure SaveConfig; forward; {$F-}
 {$F+} procedure LoadConfig; forward; {$F-}
-procedure S0000_107A; forward;
+{$F+} procedure DetectVideo; forward; {$F-}
+procedure S0000_10F6; forward;
 procedure OBJ0000; external;
 procedure KeyISR;
 begin
@@ -209,7 +217,7 @@ end;
 {$F-}
 {$I+}
 { src: GUESS 0000:0F75 (reads SAM1.CFG into Config and takes the sound switch and keys from it, the joystick
-  when K70EE = 1 and one is present; without the file: sound on, the arrow keys, Alt jumps, Ctrl fires) }
+  when K70EE = 1 and one is present; without the file: sound on, the arrow keys, Ctrl ($1D) jumps, Alt ($38) fires) }
 { from: 0F6C }
 {$I-}
 {$F+}
@@ -257,19 +265,41 @@ begin
 end;
 {$F-}
 {$I+}
-procedure S0000_107A;
+{ src: GUESS 0000:107A (finds the video adapter: the start mode; int $10 $1A00 gives the display code and
+  VideoTab the adapter, else int $10 $12/$10 tells an EGA (3); default 1) }
+{ to: 10F6 }
+{$F+}
+procedure DetectVideo;
+begin
+  Adapter := 1;
+  Regs.AH := $0F;
+  Intr($10, Regs);
+  VideoMode := Regs.AL and $7F;
+  Regs.AX := $1A00;
+  Intr($10, Regs);
+  if Regs.AL = $1A then
+  begin
+    if Regs.BL <> $FF then
+      Adapter := VideoTab[Regs.BL];
+  end
+  else
+  begin
+    Regs.AH := $12;
+    Regs.BL := $10;
+    Intr($10, Regs);
+    if Regs.BL <> $10 then
+      Adapter := 3;
+  end;
+end;
+{$F-}
+procedure S0000_10F6;
 begin
 Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/$00)
+>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/$00)
 end;
 begin
 Assign(KF, '');
@@ -318,7 +348,8 @@ InstallHandlers;
 RestoreInts;
 SaveConfig;
 LoadConfig;
-S0000_107A;
+DetectVideo;
+S0000_10F6;
 OBJ0000;
 S0529_2F6B;
 if OnScreen(0, 1) then;;
@@ -361,20 +392,20 @@ NewGame;;
 LevelReset;;
 OBJ2891;
 OBJ29C3;
-Inline(>V_0000/>Map/>VideoSeg/>B21FE/>L2200/>W2204/>T_2643/>V_2643/>JoyOn/>Bank1/>Bank2/>Bank3/>SndFile/
->CurSound/>NoteIdx/>Playing/>SoundOn/>JumpUp/>JumpDown/>JumpUpTop/>JumpDownTop/>Slots/>P_3838/
->TextLines/>P681C/>B6820/>P_683A/>W683A/>B683C/>W683E/>P_6842/>Level/>W6844/>W6846/>P_684A/>W684A/
->W684C/>W684E/>W6850/>W6852/>P_6856/>W6856/>W6858/>P_685C/>B685C/>CamX/>CamY/>W6862/>W6864/>W6866/
->P_686A/>Bullets/>Ammo/>Shots/>Score/>W69C4/>W69C6/>Gun/>W69CA/>W69CC/>W69CE/>W69D0/>B69D2/>B69D3/
->W69D4/>B69D6/>W69D8/>B69DA/>W69DC/>MapSite/>SiteDone/>B69F4/>B69F5/>B69F6/>B69F7/>B69F8/>B69F9/
->B69FA/>B69FB/>B69FC/>B69FD/>B69FE/>B69FF/>B6A00/>B6A01/>B6A02/>B6A03/>B6A04/>B6A05/>B6A06/>W6A08/
->W6A0A/>W6A0C/>B6A0E/>B6A0F/>B6A10/>B6A11/>B6A12/>B6A13/>B6A14/>B6A15/>B6A16/>B6A17/>B6A18/>B6A19/
->B6A1A/>B6A1B/>ArcLen/>Arc/>B6A64/>RespawnDelay/>Lives/>B6A67/>B6A68/>NameInput/>HiName/>HiScore/
->Config/>P_6D3E/>State/>W6D86/>P_6D8C/>B6D8C/>JoyCenterX/>JoyCenterY/>P_6D98/>Gfx/>GfxFile/
->GfxSmall/>GfxSmallFile/>P_6EE5/>B6EE5/>B6EE6/>B6EE7/>B6EE8/>B6EE9/>B6EEA/>B6EEB/>B6EEC/>B6EED/
->B6EEE/>B6EEF/>B6EF0/>B6EF1/>B6EF2/>B6EF3/>NameUp/>NameDown/>NameFire/>NameRight/>NameJump/
->NameLeft/>KeyUp/>KeyDown/>KeyLeft/>KeyRight/>KeyFire/>KeyJump/>W70EC/>W70EE/>OldExit/>OldInt1C/
->OldInt9/>P_2891_END/>V7114/>Copyright/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
+Inline(>VideoTab/>W02A2/>Regs/>VideoMode/>Adapter/>Map/>VideoSeg/>B21FE/>L2200/>W2204/>T_2643/>V_2643/
+>JoyOn/>Bank1/>Bank2/>Bank3/>SndFile/>CurSound/>NoteIdx/>Playing/>SoundOn/>JumpUp/>JumpDown/
+>JumpUpTop/>JumpDownTop/>Slots/>P_3838/>TextLines/>P681C/>B6820/>P_683A/>W683A/>B683C/>W683E/
+>P_6842/>Level/>W6844/>W6846/>P_684A/>W684A/>W684C/>W684E/>W6850/>W6852/>P_6856/>W6856/>W6858/
+>P_685C/>B685C/>CamX/>CamY/>W6862/>W6864/>W6866/>P_686A/>Bullets/>Ammo/>Shots/>Score/>W69C4/>W69C6/
+>Gun/>W69CA/>W69CC/>W69CE/>W69D0/>B69D2/>B69D3/>W69D4/>B69D6/>W69D8/>B69DA/>W69DC/>MapSite/
+>SiteDone/>B69F4/>B69F5/>B69F6/>B69F7/>B69F8/>B69F9/>B69FA/>B69FB/>B69FC/>B69FD/>B69FE/>B69FF/
+>B6A00/>B6A01/>B6A02/>B6A03/>B6A04/>B6A05/>B6A06/>W6A08/>W6A0A/>W6A0C/>B6A0E/>B6A0F/>B6A10/>B6A11/
+>B6A12/>B6A13/>B6A14/>B6A15/>B6A16/>B6A17/>B6A18/>B6A19/>B6A1A/>B6A1B/>ArcLen/>Arc/>B6A64/
+>RespawnDelay/>Lives/>B6A67/>B6A68/>NameInput/>HiName/>HiScore/>Config/>P_6D3E/>State/>W6D86/
+>P_6D8C/>B6D8C/>JoyCenterX/>JoyCenterY/>P_6D98/>Gfx/>GfxFile/>GfxSmall/>GfxSmallFile/>P_6EE5/>B6EE5/
+>B6EE6/>B6EE7/>B6EE8/>B6EE9/>B6EEA/>B6EEB/>B6EEC/>B6EED/>B6EEE/>B6EEF/>B6EF0/>B6EF1/>B6EF2/>B6EF3/
+>NameUp/>NameDown/>NameFire/>NameRight/>NameJump/>NameLeft/>KeyUp/>KeyDown/>KeyLeft/>KeyRight/
+>KeyFire/>KeyJump/>W70EC/>W70EE/>OldExit/>OldInt1C/>OldInt9/>P_2891_END/>V7114/>Copyright/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
@@ -908,5 +939,6 @@ Inline(>V_0000/>Map/>VideoSeg/>B21FE/>L2200/>W2204/>T_2643/>V_2643/>JoyOn/>Bank1
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/$00)
+>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
+$00)
 end.

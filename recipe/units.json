@@ -34,6 +34,10 @@
    "compiler": "TP 5.0, switches OPEN",
    "init": null,
    "data": {
+    "tconsts": [
+     "0000",
+     "000E"
+    ],
     "vars": [
      "02A2",
      "02BC"
@@ -88,7 +92,7 @@
      "reached": 124,
      "name": null,
      "src": null,
-     "status": "unmatched"
+     "status": "matched"
     },
     {
      "addr": "0000:11C3",
@@ -977,7 +981,7 @@
    "init": "0000",
    "data": {
     "tconsts": [
-     "0000",
+     "000E",
      "0266"
     ],
     "vars": [

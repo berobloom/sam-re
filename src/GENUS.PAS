@@ -1,10 +1,11 @@
 unit GENUS;
 {$S-,D+,L+}
 interface
-{ 2643 (Genus PCX Toolkit 3.56) data. Typed constants DS:0000..0265: banner, EMMXXXX at DS:0090, the video-mode
-  table at DS:0098 (bytes as in SAM1.EXE; structure open). Variables DS:2206..3441: one block, structure open. }
-const T_2643: array[0..613] of Byte = (
-  $05,$00,$01,$05,$03,$03,$05,$04,$04,$05,$01,$01,$01,$00,$20,$50,
+{ 2643 (Genus PCX Toolkit 3.56) data. Typed constants DS:000E..0265 (0000..000D is main's VideoTab):
+  banner, EMMXXXX at DS:0090, the video-mode table at DS:0098 (bytes as in SAM1.EXE; structure open).
+  Variables DS:2206..3441: one block, structure open. }
+const T_2643: array[0..599] of Byte = (
+  $20,$50,
   $43,$58,$20,$50,$72,$6F,$67,$72,$61,$6D,$6D,$65,$72,$27,$73,$20,
   $54,$6F,$6F,$6C,$6B,$69,$74,$20,$33,$2E,$35,$36,$20,$00,$20,$43,
   $6F,$70,$79,$72,$69,$67,$68,$74,$20,$28,$63,$29,$20,$47,$65,$6E,

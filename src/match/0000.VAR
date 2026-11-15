@@ -1,0 +1,8 @@
+{ main's data: typed constants DS:0000..000D, variables DS:02A2..02BB }
+const
+  VideoTab: array[0..12] of Byte = (5, 0, 1, 5, 3, 3, 5, 4, 4, 5, 1, 1, 1); { @0000; adapter by display code (int $10 $1A) }
+var
+  W02A2: Integer; { @02A2 }
+  Regs: Registers; { @02A4 }
+  VideoMode: Integer; { @02B8; the mode at start, bit 7 off }
+  Adapter: Byte; { @02BA; 0 mono, 1 CGA, 3 EGA, 4 VGA, 5 other (VideoTab), GUESS }
