@@ -224,7 +224,7 @@ SIGS = {}           # (seg, off) -> (name, [(pname, type, var)], result type or 
 
 def load_sigs():
     for f in os.listdir(MATCH):
-        m = re.match(r'([0-9A-F]{4})_([0-9A-F]{4})\.(PAS|EXT|SIG)$', f)
+        m = re.match(r'([0-9A-F]{4})_([0-9A-F]{4})(?:_\w+)?\.(PAS|EXT|SIG)$', f)
         if not m:
             continue
         text = strip(open(os.path.join(MATCH, f), encoding='latin1').read())

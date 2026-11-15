@@ -13,9 +13,9 @@ generated from it or comes from outside.
 
 | Files | What they are | Written by |
 |---|---|---|
-| `src/match/<SEG>_<OFF>.PAS` (107 files, 10 800 lines) | The Pascal routines, one region of the original segment `SEG` at offset `OFF` per file (165 routines; nested ones live in their parent), plus each unit's init and the program body (`{ init }`) | by hand, or `tools/tp/pasgen.py` output kept as is (Touch, ActorAI, ActorFrame, the program body) |
+| `src/match/<SEG>_<OFF>_<Name>.PAS` (107 files, 10 800 lines) | The Pascal routines, one region of the original segment `SEG` at offset `OFF` per file (165 routines; nested ones live in their parent), plus each unit's init and the program body (`{ init }`) | by hand, or `tools/tp/pasgen.py` output kept as is (Touch, ActorAI, ActorFrame, the program body) |
 | `src/match/<SEG>.VAR` (8) | Each unit's types, variables and typed constants, with `{ @XXXX }` pins to their DS addresses and a note on where each name comes from | by hand |
-| `src/match/<SEG>_<OFF>.EXT` (38) | The Pascal `external` declarations of the assembly routines | by hand |
+| `src/match/<SEG>_<OFF>_<Name>.EXT` (38) | The Pascal `external` declarations of the assembly routines | by hand |
 | `src/match/OBJ<SEG>.ASM` (6, 4 700 lines) | Each unit's `{$L}` assembly block as NASM source | **generated from the original binary** by `tools/tp/obj2asm.py`, names from `.EXT`/`.LABELS` |
 | `src/match/<SEG>.USES`, `<SEG>.LABELS` | A unit's uses clause; names of internal asm routines | by hand |
 | `recipe/units.json` | The layout: each unit's segment, size, base, init offset, routine offsets, data ranges | derived from the binary (`tools/tp/inventory.py`) |
@@ -106,8 +106,8 @@ The central data, all in `src/match/2891.VAR`:
 
 ## Reading it
 
-Start at the program body, `src/match/0000_11C3.PAS`: it runs the title
+Start at the program body, `src/match/0000_11C3_Main.PAS`: it runs the title
 loop and then the game loop, and every frame calls into `U0529` (movement,
 actors), `U0D9C` (map drawing) and `U1802` (status line, menus). A routine's
-file name is its address in the original, so `tools/tp/rdiff.py SEG:OFF`
+file name is its address in the original plus its name (`0529_6D0E_Touch.PAS`), so `tools/tp/rdiff.py SEG:OFF`
 compares it with the original's bytes.

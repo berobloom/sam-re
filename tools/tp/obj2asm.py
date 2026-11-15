@@ -5,7 +5,7 @@ same bytes.
 usage: obj2asm.py SEG
 
 Reads the block [obj_start, size) of SEG from recipe/units.json and the unpacked target. Code is found by recursive
-descent from the block start, the unit's .EXT entries (src/match/SEG_OFF.EXT: their names become the labels the
+descent from the block start, the unit's .EXT entries (src/match/SEG_OFF_Name.EXT: their names become the labels the
 Pascal side declares external) and every routine start the inventory has in the block; the rest is `db`. Each
 decoded instruction is written in NASM syntax with branch targets as labels; NASM assembles the file (-f bin, with a
 listing) and every instruction whose bytes differ, or that NASM rejects, becomes `db` with the instruction as a

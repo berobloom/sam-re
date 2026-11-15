@@ -10,10 +10,10 @@ so the map's line-number table gives its address), and every pinned variable at 
 are fitted (`{ @XXXX }` pins, src/FILL.JSON under `data`); they are saved after a round that is all right, so a
 failed build never leaves pads fitted to a broken layout. Up to N rounds (default 6).
 
-Per unit, from src/match/: `<SEG>_<OFF>.PAS` the routines (directives: `{ interface }` declares it in the
+Per unit, from src/match/: `<SEG>_<OFF>_<Name>.PAS` the routines (directives: `{ interface }` declares it in the
 interface, `{ init }` marks the unit init / program body, `{ from: XXXX }` its string literals start there,
 `{ to: XXXX }` the next routine's literals start there, `{ nested: XXXX .. }` routines declared inside it),
-`<SEG>_<OFF>.EXT` the asm entry points, `OBJ<SEG>.ASM` the `{$L}` block (tools/tp/obj2asm.py), `<SEG>.VAR` the
+`<SEG>_<OFF>_<Name>.EXT` the asm entry points, `OBJ<SEG>.ASM` the `{$L}` block (tools/tp/obj2asm.py), `<SEG>.VAR` the
 data, `<SEG>.USES` the uses clause. The routine regions come from recipe/units.json; nothing reads image bytes.
 """
 import json
@@ -22,6 +22,8 @@ import re
 import shutil
 import subprocess
 import sys
+
+import srcfiles
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(ROOT, 'src')
@@ -94,14 +96,15 @@ def regions(u, rec):
 
 
 def fragment(seg, off):
-    """the routine whose region starts at OFF: src/match/<SEG>_<OFF>.PAS (or the one whose `{ from: }` is OFF);
-    its header is the first procedure/function line, its `begin` stands alone on a line"""
-    path, lit = os.path.join(MATCH, '%s_%04X.PAS' % (seg, off)), 0
+    """the routine whose region starts at OFF: src/match/<SEG>_<OFF>_<Name>.PAS (or the one whose `{ from: }` is
+    OFF); its header is the first procedure/function line, its `begin` stands alone on a line"""
+    path, lit = srcfiles.find(seg, off), 0
     for r, frm in literal_starts(seg).items():
         if frm == off:
-            path, lit = os.path.join(MATCH, '%s_%04X.PAS' % (seg, r)), r - frm
-    if not os.path.exists(path):
-        raise SystemExit('%s: no routine for %s:%04X (src/match/%s_%04X.PAS)' % (unit_name(seg), seg, off, seg, off))
+            path, lit = srcfiles.find(seg, r), r - frm
+    if not path:
+        raise SystemExit('%s: no routine for %s:%04X (src/match/%s_%04X_<Name>.PAS)' % (unit_name(seg), seg, off,
+                                                                                        seg, off))
     text = read(path).rstrip('\n')
     if '{ init }' in text:                          # the unit init / program body: statements only
         return {'text': text, 'init': True, 'interface': False, 'name': 'INIT', 'head': None, 'lit': lit}
@@ -111,7 +114,7 @@ def fragment(seg, off):
 
 
 def externals(seg):
-    """asm routines of a unit's {$L} block: src/match/<SEG>_<OFF>.EXT holds the Pascal external declaration
+    """asm routines of a unit's {$L} block: src/match/<SEG>_<OFF>_<Name>.EXT holds the Pascal external declaration
     (e.g. `{$F+} function ReadAxis(Axis: Word): Word; external; {$F-}`)"""
     out = []
     for f in match_files(seg, '.EXT'):

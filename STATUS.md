@@ -23,7 +23,7 @@ keep a session diary here.
 - Build: `tools/tp/gen_scaffold.py` assembles `src/match/` into `src/`,
   builds, checks every routine's offset and size and fits the data pads
   (the stub/keeper scaffold that led here is in git up to `36f8b8f`).
-- Source: 165 Pascal routines in `src/match/<SEG>_<OFF>.PAS`, the `.OBJ`
+- Source: 165 Pascal routines in `src/match/<SEG>_<OFF>_<Name>.PAS`, the `.OBJ`
   blocks as NASM in `src/match/OBJ<SEG>.ASM` (`tools/tp/obj2asm.py`), the
   asm entry points in `.EXT`, the data in `<SEG>.VAR`. The largest routines
   (Touch, ActorAI, ActorFrame, the program body) are unedited output of

@@ -16,7 +16,7 @@
 
 ## PlaySound (287F:0000), CONFIRMED by match
 
-Source: `src/match/287F_0000.PAS`. If nothing plays, start the sound.
+Source: `src/match/287F_0000_PlaySound.PAS`. If nothing plays, start the sound.
 Otherwise two `case` lookups both assign **NewPri** (requested, then current
 sound's priority), and `if NewPri >= CurPri` compares with **CurPri, a local
 that is never assigned** (`[bp-4]`, stack garbage from the caller's frame).

@@ -3,12 +3,15 @@
 rename.py --field TYPE OLD NEW  rename a record field: its declaration in TYPE and every `.OLD` reached through a
                                 variable of that type (the variables are found in the .VAR files)
 
-Files: src/match/*.PAS, .VAR, .SIG, .EXT (latin1, line endings kept). Refuses when NEW is already an identifier
+Files: src/match/*.PAS, .VAR, .SIG, .EXT (latin1, line endings kept); a routine's file `SEG_OFF_OLD.*` becomes
+`SEG_OFF_NEW.*`. Refuses when NEW is already an identifier
 there, or when OLD is not found. Names are not in the image, so a rename never changes the build; run
 gen_scaffold.py and match.py after it anyway (MATCHING.md section 7)."""
 import os
 import re
 import sys
+
+import srcfiles
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 MATCH = os.path.join(ROOT, 'src', 'match')
@@ -103,6 +106,12 @@ def main(argv):
         if n:
             write(p, s)
             total += n
+    for f in sorted(os.listdir(MATCH)):                     # a routine's file carries its name
+        m = srcfiles.PATTERN.match(f)
+        if m and (m.group(3) or '').lower() == old.lower():
+            g = '%s_%s_%s.%s' % (m.group(1), m.group(2), new, m.group(4))
+            os.rename(os.path.join(MATCH, f), os.path.join(MATCH, g))
+            print('%s -> %s' % (f, g))
     print('%s -> %s: %d places' % (old, new, total))
     return 0 if total else 1
 

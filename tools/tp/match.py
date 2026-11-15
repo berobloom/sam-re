@@ -10,7 +10,7 @@ Checks, in order (MATCHING.md section 5):
   library   System / Crt / Dos (from TP 5.0's TURBO.TPL) byte for byte, and their relocations;
   data      the initialised data DS:0000..end of image; the Genus typed constants are zeros in the scaffold
             until the Genus unit is matched, so differences there are counted apart and do not fail;
-  matched   every routine with status `matched` in recipe/units.json or a hand-written src/match/<SEG>_<OFF>.PAS:
+  matched   every routine with status `matched` in recipe/units.json or a hand-written src/match/<SEG>_<OFF>_<Name>.PAS:
             the bytes of its span and its relocations. --update writes status `matched` / `unmatched` back to the
             recipe for routines with a src/match file (a matched routine that stops matching fails either way).
 
@@ -23,6 +23,7 @@ import struct
 import sys
 
 from inventory import Prog
+import srcfiles
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 LIBS = (0x2961, 0x2CC7, 0x2CD1)
@@ -81,7 +82,8 @@ def main(argv):
                   for m in re.findall(r'\{ nested: ([0-9A-F ]+) \}', open(os.path.join(md, fn), encoding='latin1').read())
                   for x in m.split()}                   # procedures declared inside a matched one
         for f in u['functions']:
-            frag = os.path.exists(os.path.join(ROOT, 'src', 'match', '%s_%s.PAS' % (u['seg'], f['addr'][5:])))
+            fp = srcfiles.find(u['seg'], f['addr'][5:])
+            frag = fp is not None
             frag = frag or f['addr'][5:] in nested
             frag = frag or bool(obj_asm and int(f['addr'][5:], 16) >= int(u['obj_start'], 16))
             if f['status'] != 'matched' and not frag:
@@ -89,8 +91,7 @@ def main(argv):
             n_m += 1
             lo = seg * 16 + int(f['addr'][5:], 16)
             hi = lo + f['size']
-            fp = os.path.join(ROOT, 'src', 'match', '%s_%s.PAS' % (u['seg'], f['addr'][5:]))
-            to = re.search(r'\{ to: ([0-9A-F]{4}) \}', open(fp, encoding='latin1').read()) if os.path.exists(fp) else None
+            to = re.search(r'\{ to: ([0-9A-F]{4}) \}', open(fp, encoding='latin1').read()) if fp else None
             if to:                                      # the next routine's literals follow: not this one's
                 hi = seg * 16 + int(to.group(1), 16)
             k = first_diff(t.img, b.img, lo, hi)

@@ -217,7 +217,7 @@ routine's source output and see it named.
 
 ### Where a matched routine lives
 
-`src/match/<SEG>_<OFF>.PAS` holds the routine as written, plus directive
+`src/match/<SEG>_<OFF>_<Name>.PAS` holds the routine as written, plus directive
 comments: `{ interface }` (declare it in the interface, i.e. far; a routine
 that ends in `retf` and is called from other units), `{ init }` (the unit
 init or program body: statements only), `{ nested: XXXX .. }` (routines
@@ -230,7 +230,7 @@ recipe status. `{ from: XXXX }`: the routine's string literals start at XXXX
 (TP puts a routine's literals in front of its code). `tools/tp/rdiff.py
 SEG:OFF` shows target and build side by side from the first difference.
 
-Other files in `src/match/`: `<SEG>_<OFF>.EXT` an asm entry of the unit's
+Other files in `src/match/`: `<SEG>_<OFF>_<Name>.EXT` an asm entry of the unit's
 `{$L}` block (`{ interface }` exports it); `<SEG>.LABELS` names for the
 block's internal routines (`OFF Name  # source`, read by `obj2asm.py`, not
 exported); `<SEG>.USES` the unit's uses
@@ -288,7 +288,7 @@ refuses such names.
 - The program's own typed constants come first in DS (main's 13-byte
   `VideoTab` at DS:0000, then a pad byte, then Genus's at 000E), like its
   variables (02A2): a `[di + 0]` table read in main code is one.
-- Stubs called by matched code need their header: `src/match/<SEG>_<OFF>.SIG`
+- Stubs called by matched code need their header: `src/match/<SEG>_<OFF>_<Name>.SIG`
   (e.g. `{$F+} function MainMenu: Char;`); `{ to: XXXX }` ends a fragment
   where the next routine's literals begin.
 - A one-character constant is a Char: `Write('x')` stores no literal, and
@@ -343,7 +343,7 @@ refuses such names.
   is a single else-less if needs `begin..end` (pasgen does it).
 - A typed `file of T` passes SizeOf(T) to Reset/Rewrite; an untyped `File`
   gets "Invalid file type" from `Read` (287F SndFile).
-- The program body (`src/match/0000_11C3.PAS`, `{ init }`) replaced the
+- The program body (`src/match/0000_11C3_Main.PAS`, `{ init }`) replaced the
   generated keeper; every routine another unit or main calls must be
   `{ interface }`. A routine nothing calls is dropped by the smart linker,
   and the layout check reports the hole.
