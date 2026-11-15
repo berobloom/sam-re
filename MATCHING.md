@@ -148,6 +148,11 @@ size and order. Hence:
   comes first in DS, so the scaffold can declare the whole region of the
   program and units `0529`..`25E6` (DS:02A2 up to Genus's first variable) in
   the program, and split it into units as they are matched;
+  split so far: main 02A2..02BC, 0D9C 02BC..21FC (Map, 40x25 cells of 8
+  bytes; 0529:65D9 and SAM1RE's base DS:01EC put it there). The runtime
+  keeper's own variables (`KF`, `KT`, `KS`, ...) are declared `absolute
+  TextLines` (a U2891 variable): the keeper never runs, so they take no DS
+  bytes, and main's region is only the game's;
 - the switches: `{$S-}` everywhere (CONFIRMED: no call to the stack check
   `2CD1:0244` anywhere); the rest are set per unit as matching shows them.
 
@@ -231,6 +236,9 @@ so unknown variables between known ones need no declaration yet.
   packed record (e.g. the state store DS:6D3E, `TState` in `2891.VAR`).
 - `array[1..N]` at BASE is indexed as `[di + BASE - size]`: read the base
   from the displacement plus one element size.
+- A two-dimensional `array[1..A, 1..B]` of N-byte elements at BASE: the
+  displacement is BASE - B*N - N + field offset (Map: 01F2 = 02BC - 200 - 8
+  + 6); the first index is `mov dx, B*N; mul dx`, the second `shl` by log2 N.
 - A nonzero LongInt constant is stored as two `mov word [x], imm`; an
   Integer/Word one as one, and zero as `xor ax,ax` + `mov` (25E6 init).
 

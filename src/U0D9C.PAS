@@ -1,7 +1,14 @@
 unit U0D9C;
 {$S-,D+,L+}
 interface
-
+{ 0D9C data, DS:02BC..21FC; names: SAM1RE (../SAM level-load.md: base DS:01EC, 200 bytes a column, 8 a cell) }
+type
+  TCell = record                   { SAM1RE level-load.md }
+    Back, Mid, Front: Integer;     { tile values }
+    Solid, FlagB: Byte;            { +6 flagA (solid), +7 flagB }
+  end;
+var
+  Map: array[1..40, 1..25] of TCell; { @02BC; column-major: Map[X, Y], 40x24 visible plus row 25 }
 procedure S0D9C_68A9;
 procedure DrawBack(X, Y: Integer);
 procedure DrawFront(X, Y: Integer);

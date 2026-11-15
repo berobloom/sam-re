@@ -2,9 +2,11 @@ program SAM1;
 {$S-,D+,L+}
 uses Dos, U29C3, Crt, U2891, U287F, U286F, GENUS, U25E6, U1802, U0D9C, U0529;
 type KRec = array[0..41] of Byte;
-var KF: file of KRec; KT: Text; KR: KRec; KS, KS2: string; KRegs: Registers;
-    KL: LongInt; KP: Pointer; KI: Integer; KC: Char; KB: Boolean;
-var V_0000: array[0..7055] of Byte;
+var KF: file of KRec absolute TextLines; KT: Text absolute TextLines; KR: KRec absolute TextLines;
+    KS: string absolute TextLines; KS2: string absolute TextLines; KRegs: Registers absolute TextLines;
+    KL: LongInt absolute TextLines; KP: Pointer absolute TextLines; KI: Integer absolute TextLines;
+    KC: Char absolute TextLines; KB: Boolean absolute TextLines;
+var V_0000: array[0..25] of Byte;
 {$L OBJ0000.OBJ}
 procedure S0000_0000; forward;
 procedure S0000_0008(x: KRec); forward;
@@ -303,7 +305,7 @@ NewGame;;
 LevelReset;;
 OBJ2891;
 OBJ29C3;
-Inline(>V_0000/>VideoSeg/>B21FE/>L2200/>W2204/>T_2643/>V_2643/>JoyOn/>Bank1/>Bank2/>Bank3/>SndFile/
+Inline(>V_0000/>Map/>VideoSeg/>B21FE/>L2200/>W2204/>T_2643/>V_2643/>JoyOn/>Bank1/>Bank2/>Bank3/>SndFile/
 >CurSound/>NoteIdx/>Playing/>SoundOn/>JumpUp/>JumpDown/>JumpUpTop/>JumpDownTop/>Slots/>P_3838/
 >TextLines/>P681C/>B6820/>P_683A/>W683A/>B683C/>P_6842/>Level/>W6844/>W6846/>P_684A/>W684A/>W684C/
 >W684E/>W6850/>W6852/>P_6856/>W6856/>W6858/>P_685C/>B685C/>CamX/>CamY/>W6862/>W6864/>W6866/>P_686A/
@@ -850,5 +852,5 @@ Inline(>V_0000/>VideoSeg/>B21FE/>L2200/>W2204/>T_2643/>V_2643/>JoyOn/>Bank1/>Ban
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000)
+>$0000/>$0000/>$0000/>$0000/>$0000/>$0000)
 end.

@@ -31,9 +31,12 @@ TP = os.path.join(ROOT, '.work', 'toolchains', 'tp50')
 LIBS = {'2961', '2CC7', '2CD1'}
 USES = ['Dos', 'U29C3', 'Crt', 'U2891', 'U287F', 'U286F', 'GENUS', 'U25E6', 'U1802', 'U0D9C', 'U0529']
 KEEPVARS = '''type KRec = array[0..41] of Byte;
-var KF: file of KRec; KT: Text; KR: KRec; KS, KS2: string; KRegs: Registers;
-    KL: LongInt; KP: Pointer; KI: Integer; KC: Char; KB: Boolean;'''
-KEEPVARS_SIZE = 128 + 256 + 42 + 256 + 256 + 20 + 4 + 4 + 2 + 1 + 1
+var KF: file of KRec absolute TextLines; KT: Text absolute TextLines; KR: KRec absolute TextLines;
+    KS: string absolute TextLines; KS2: string absolute TextLines; KRegs: Registers absolute TextLines;
+    KL: LongInt absolute TextLines; KP: Pointer absolute TextLines; KI: Integer absolute TextLines;
+    KC: Char absolute TextLines; KB: Boolean absolute TextLines;'''
+# the keeper never runs: its variables overlay U2891's TextLines and take no DS space of main's
+KEEPVARS_SIZE = 0
 
 
 def h(x):
