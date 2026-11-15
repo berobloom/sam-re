@@ -269,6 +269,13 @@ so unknown variables between known ones need no declaration yet.
   only the parent (1802:88AF RedefineKeys with 850B, 8781). A nested procedure
   that reads nothing of its parent also matches as a top-level one with one
   unused word parameter, which is how 8781 was first matched.
+- Literals hold CP437 bytes (0xB0 shade, 0xAB for 1/2, '@' drawn as an
+  apostrophe by the game font): fragments are latin1 files and the tools read
+  and write them as latin1. Write such a fragment from Python with
+  `encoding='latin1'`.
+- Crt in SAM1 (CONFIRMED by 1802:DB46 matching): 2961:016D TextMode,
+  01C2 ClrScr, 0215 GotoXY, 0259 TextColor, 0273 TextBackground.
+- `tdis.py SEG:OFF SIZE` takes SIZE in hex.
 
 ## 7. Names, after the match, with their source
 

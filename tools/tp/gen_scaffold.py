@@ -62,7 +62,7 @@ def regions(u, rec):
     d = os.path.join(SRC, 'match')                      # `{ to: XXXX }`: a fragment ends there, the next
     for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:   # (unmatched) routine's literals follow
         if f.startswith(seg + '_') and f.endswith('.PAS'):
-            m = re.search(r'\{ to: ([0-9A-F]{4}) \}', open(os.path.join(d, f)).read())
+            m = re.search(r'\{ to: ([0-9A-F]{4}) \}', open(os.path.join(d, f), encoding='latin1').read())
             if m and h(m.group(1)) < init:              # the next routine's region starts at its literals
                 to = h(m.group(1))
                 nxt = [c for c in cuts if c > to][:1] if to not in cuts else []   # `from:` made it already
@@ -116,7 +116,7 @@ def var_pins(u):
     if not os.path.exists(vf):
         return []
     out = []
-    for l in open(vf).read().replace('\r', '').split('\n'):
+    for l in open(vf, encoding='latin1').read().replace('\r', '').split('\n'):
         m = re.match(r'\s*(?:var\s+|const\s+)?(\w+)[\w, ]*:.*\{ @([0-9A-F]{4}) \}', l)
         if m:
             out.append((m.group(1), m.group(2)))
@@ -130,7 +130,7 @@ def data_decls(u, public):
     d = u.get('data', {})
     vf = os.path.join(SRC, 'match', u['seg'] + '.VAR')
     if os.path.exists(vf):
-        text = open(vf).read().replace('\r', '').strip()
+        text = open(vf, encoding='latin1').read().replace('\r', '').strip()
         pads = DATAFILL.setdefault(u['seg'], {})
         lines = []
         for l in text.split('\n'):            # `{ @XXXX }` pins a variable's address: a fitted pad goes before it
@@ -174,7 +174,7 @@ def literal_starts(seg):
     d = os.path.join(SRC, 'match')
     for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
         if f.startswith(seg + '_') and f.endswith('.PAS'):
-            m = re.search(r'\{ from: ([0-9A-F]{4}) \}', open(os.path.join(d, f)).read())
+            m = re.search(r'\{ from: ([0-9A-F]{4}) \}', open(os.path.join(d, f), encoding='latin1').read())
             if m:
                 out[h(f[5:9])] = h(m.group(1))
     return out
@@ -187,7 +187,7 @@ def nested_starts(seg):
     d = os.path.join(SRC, 'match')
     for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
         if f.startswith(seg + '_') and f.endswith('.PAS'):
-            m = re.search(r'\{ nested: ([0-9A-F ]+) \}', open(os.path.join(d, f)).read())
+            m = re.search(r'\{ nested: ([0-9A-F ]+) \}', open(os.path.join(d, f), encoding='latin1').read())
             if m:
                 out |= {h(x) for x in m.group(1).split()}
     return out
@@ -203,7 +203,7 @@ def fragment(seg, off):
             path, lit = os.path.join(SRC, 'match', '%s_%04X.PAS' % (seg, r)), r - frm
     if not os.path.exists(path):
         return None
-    text = open(path).read().replace('\r', '').rstrip('\n')
+    text = open(path, encoding='latin1').read().replace('\r', '').rstrip('\n')
     if '{ init }' in text:                          # the unit init / program body: statements only
         return {'text': text, 'init': True, 'interface': False, 'keep': None, 'name': 'INIT', 'head': None, 'lit': lit}
     keep = re.search(r'\{ keep: (.*) \}', text)
@@ -221,7 +221,7 @@ def externals(seg):
     d = os.path.join(SRC, 'match')
     for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
         if f.startswith(seg + '_') and f.endswith('.EXT'):
-            text = open(os.path.join(d, f)).read().replace('\r', '').strip()
+            text = open(os.path.join(d, f), encoding='latin1').read().replace('\r', '').strip()
             kind, name = re.search(r'(procedure|function) (\w+)', text).groups()
             iface = '{ interface }' in text
             text = re.sub(r'\{ (src|interface)[^}]*\}\s*', '', text).strip()
@@ -255,7 +255,7 @@ def signature(seg, off):
     path = os.path.join(SRC, 'match', '%s_%04X.SIG' % (seg, off))
     d = os.path.join(SRC, 'match')
     tos = {h(m) for f in os.listdir(d) if f.startswith(seg + '_') and f.endswith('.PAS')
-           for m in re.findall(r'\{ to: ([0-9A-F]{4}) \}', open(os.path.join(d, f)).read())}
+           for m in re.findall(r'\{ to: ([0-9A-F]{4}) \}', open(os.path.join(d, f), encoding='latin1').read())}
     if not os.path.exists(path) and off in tos:         # the region starts at the routine's literals
         sigs = sorted(h(f[5:9]) for f in os.listdir(d) if f.startswith(seg + '_') and f.endswith('.SIG'))
         nxt = [o for o in sigs if off < o < off + 0x100]
@@ -263,7 +263,7 @@ def signature(seg, off):
             path = os.path.join(d, '%s_%04X.SIG' % (seg, nxt[0]))
     if not os.path.exists(path):
         return None
-    text = open(path).read().replace('\r', '')
+    text = open(path, encoding='latin1').read().replace('\r', '')
     head = next(l for l in text.split('\n') if re.search(r'\b(procedure|function) ', l))
     far = '{$F+}' in head
     head = re.sub(r'\{\$F[+-]\}', '', head).strip()
@@ -306,7 +306,7 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         L += ['unit %s;' % name, '{$S-,D+,L+}', 'interface']
         uf = os.path.join(SRC, 'match', seg + '.USES')      # the units this one uses, e.g. `uses U29C3;`
         if os.path.exists(uf):
-            L.append(open(uf).read().replace('\r', '').strip())
+            L.append(open(uf, encoding='latin1').read().replace('\r', '').strip())
         L.append(decl)
         if keeper:
             L.append('procedure %s;' % keeper)          # exported: the main program calls it (far)
@@ -333,7 +333,7 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
     def body(rname, extra_calls, refs, rtl=False):
         stmts = []
         if rtl:
-            stmts += [l for l in open(os.path.join(SRC, 'RTLKEEP.INC')).read().split('\n')
+            stmts += [l for l in open(os.path.join(SRC, 'RTLKEEP.INC'), encoding='latin1').read().split('\n')
                       if l.strip() and not l.startswith(('{', '  '))]
         stmts += ['%s%s;' % (c, '(KR)' if c == valpar else '') for c in extra_calls]
         inl = inline_items(fill.get(rname, 0), refs)
@@ -376,14 +376,14 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
             L += body('INIT', [] if keeper else calls, [] if keeper else dnames)
     L.append('end.')
     text = '\n'.join(x for x in L if x is not None) + '\n'
-    open(os.path.join(SRC, name + '.PAS'), 'w').write(text.replace('\n', '\r\n'))
+    open(os.path.join(SRC, name + '.PAS'), 'w', encoding='latin1').write(text.replace('\n', '\r\n'))
     if obj:
         o = obj[0]
         n = o[3]                            # never fitted: its size is the region's
         fill[o[1]] = n
         hand = os.path.join(SRC, 'match', o[1] + '.ASM')     # tools/tp/obj2asm.py: the block as NASM source
         if os.path.exists(hand):
-            open(os.path.join(SRC, o[1] + '.ASM'), 'w').write(open(hand).read())
+            open(os.path.join(SRC, o[1] + '.ASM'), 'w').write(open(hand, encoding='latin1').read())
             return
         asm = ['segment CODE public align=1', 'global %s' % o[1], '%s:' % o[1]]
         at = 0
@@ -517,7 +517,7 @@ def main(argv):
                         report.append('%s %s is %d bytes, wants %d' % (name, rname, got, size))
                     elif kind != 'obj':
                         fill[u['seg']][rname] = max(0, fill[u['seg']][rname] + size - got)
-        ds = int(re.search(r'\s([0-9A-F]{5})H [0-9A-F]{5}H [0-9A-F]{5}H DATA\s', open(os.path.join(BUILD, 'SAM1.MAP')).read()).group(1), 16)
+        ds = int(re.search(r'\s([0-9A-F]{5})H [0-9A-F]{5}H [0-9A-F]{5}H DATA\s', open(os.path.join(BUILD, 'SAM1.MAP'), encoding='latin1').read()).group(1), 16)
         for u in units:
             d = u.get('data', {}) if u['seg'] != '0000' else {}   # main's vars follow the RTL keeper vars
             for kind in ('tconsts', 'vars'):

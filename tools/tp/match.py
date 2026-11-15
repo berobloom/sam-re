@@ -78,7 +78,7 @@ def main(argv):
         obj_asm = u.get('obj_start') and os.path.exists(os.path.join(ROOT, 'src', 'match', 'OBJ%s.ASM' % u['seg']))
         md = os.path.join(ROOT, 'src', 'match')
         nested = {x for fn in os.listdir(md) if fn.startswith(u['seg'] + '_') and fn.endswith('.PAS')
-                  for m in re.findall(r'\{ nested: ([0-9A-F ]+) \}', open(os.path.join(md, fn)).read())
+                  for m in re.findall(r'\{ nested: ([0-9A-F ]+) \}', open(os.path.join(md, fn), encoding='latin1').read())
                   for x in m.split()}                   # procedures declared inside a matched one
         for f in u['functions']:
             frag = os.path.exists(os.path.join(ROOT, 'src', 'match', '%s_%s.PAS' % (u['seg'], f['addr'][5:])))
@@ -90,7 +90,7 @@ def main(argv):
             lo = seg * 16 + int(f['addr'][5:], 16)
             hi = lo + f['size']
             fp = os.path.join(ROOT, 'src', 'match', '%s_%s.PAS' % (u['seg'], f['addr'][5:]))
-            to = re.search(r'\{ to: ([0-9A-F]{4}) \}', open(fp).read()) if os.path.exists(fp) else None
+            to = re.search(r'\{ to: ([0-9A-F]{4}) \}', open(fp, encoding='latin1').read()) if os.path.exists(fp) else None
             if to:                                      # the next routine's literals follow: not this one's
                 hi = seg * 16 + int(to.group(1), 16)
             k = first_diff(t.img, b.img, lo, hi)
