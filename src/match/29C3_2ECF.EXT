@@ -1,3 +1,4 @@
-{ src: GUESS 29C3:2ECF (asm, four Integer arguments; the title calls it with 200, 0, 0, 0 between two pictures) }
+{ src: EXE 29C3:2ECF (copies 40 bytes x 200 rows, all planes through the latches (write mode 1), from
+  SrcX + SrcY * stride to DstX + DstY * stride; the title copies the credits picture to the second page, row 200) }
 { interface }
-{$F+} procedure Proc2ECF(A, B, C, D: Integer); external; {$F-}
+{$F+} procedure CopyScreen(SrcX, SrcY, DstX, DstY: Integer); external; {$F-}

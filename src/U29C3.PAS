@@ -27,7 +27,7 @@ procedure DrawSprite(var Src; X, Y: Integer);
 procedure DrawTileO(var Src; X, Y: Integer);
 procedure DrawCell(var Src; X, Y: Integer);
 procedure CopySheet(X, Y, Slot: Integer);
-procedure Proc2ECF(A, B, C, D: Integer);
+procedure CopyScreen(SrcX, SrcY, DstX, DstY: Integer);
 procedure CopyPage;
 implementation
 {$L OBJ29C3.OBJ}
@@ -51,11 +51,11 @@ procedure DrawTileB; external;
 procedure DrawCellX; external;
 procedure DrawSprite; external;
 {$F+} procedure GetRomFonts; external; {$F-}
-{$F+} procedure Proc2981(X: Integer); external; {$F-}
+{$F+} procedure SelectFont(Small: Integer); external; {$F-}
 procedure DrawTileO; external;
 procedure DrawCell; external;
 procedure CopySheet; external;
-procedure Proc2ECF; external;
+procedure CopyScreen; external;
 procedure CopyPage; external;
 begin
 { src: 29C3:0070, the unit init (SAM1RE: sets the video mode; copies the notice to DS:7166) }
@@ -63,7 +63,7 @@ begin
 { init }
   SetGraphMode(1);
   GetRomFonts;
-  Proc2981(0);
+  SelectFont(0);
   SetBiosMode($10);
   SetColor($F);
   Copyright := 'Copyright 1991 Peder Jungck';

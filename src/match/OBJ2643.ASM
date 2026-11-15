@@ -4,14 +4,14 @@ segment DATA public
 segment CODE
 extern T_2643
 extern V_2643
-global GENUS000F
-global GENUS0047
+global PCXSETDISPLAY
+global PCXSETMODE
 global GENUSINIT1
 global SHOWPICTURE
 global GENUSINIT2
 global OBJ2643
 OBJ2643:
-GENUS000F:
+PCXSETDISPLAY:
     push bp                                 ; 000F
     db 0x8B, 0xEC   ; mov bp, sp
     sub sp, 2                               ; 0012
@@ -43,7 +43,7 @@ L003A:
     db 0x8B, 0xE5   ; mov sp, bp
     pop bp                                  ; 0043
     retf 2                                  ; 0044
-GENUS0047:
+PCXSETMODE:
     push bp                                 ; 0047
     db 0x8B, 0xEC   ; mov bp, sp
     sub sp, 2                               ; 004A

@@ -1,6 +1,6 @@
 { 25E6 data, DS:21FC..2205 }
 var
   VideoSeg: Word; { @21FC }
-  B21FE: Boolean; { @21FE }
+  SnowWait: Boolean; { @21FE; FastWrite waits for retrace per character (25E6:04CC): DetectAdapter = 1, CGA }
   L2200: LongInt; { @2200 }
   BiosMode: Integer; { @2204; BIOS mode at the adapter detect (SAM1RE code-map.md 4:054f) }

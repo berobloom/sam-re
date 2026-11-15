@@ -1,3 +1,4 @@
-{ src: GUESS 2643:0047 (Genus asm, returns AX; called with 1 after Genus000F(2)) }
+{ src: EXE 2643:0047 (looks up the display set by PcxSetDisplay; Mode 1 switches to its BIOS video mode unless
+  already in it; returns <0 on error). Name LIKELY: the Genus PCX Toolkit's set-mode call }
 { interface }
-{$F+} function Genus0047(X: Integer): Integer; external; {$F-}
+{$F+} function PcxSetMode(Mode: Integer): Integer; external; {$F-}

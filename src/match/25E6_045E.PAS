@@ -7,6 +7,6 @@ begin
     VideoSeg := $B000
   else
     VideoSeg := $B800;
-  B21FE := Func0557 = 1;
+  SnowWait := DetectAdapter = 1;
 end;
 {$F-}

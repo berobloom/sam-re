@@ -35,8 +35,14 @@ def code(s):
 
 
 def used(name):
+    """NEW is in use in src/match, or public in the last build's map: that also covers System/Dos/Crt, whose
+    names (Crt's CheckSnow, say) would otherwise shadow or be shadowed without a compile error"""
     rx = re.compile(r'\b%s\b' % re.escape(name), re.I)
-    return any(rx.search(code(read(p))) for p in files())
+    if any(rx.search(code(read(p))) for p in files()):
+        return True
+    mp = os.path.join(ROOT, '.work', 'scaffold', 'SAM1.MAP')
+    return os.path.exists(mp) and re.search(r'^\s*[0-9A-F]{4}:[0-9A-F]{4}\s+%s\s*$' % re.escape(name.upper()),
+                                            open(mp, encoding='latin1').read(), re.M) is not None
 
 
 def sub_code(s, rx, repl):

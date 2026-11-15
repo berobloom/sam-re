@@ -1,2 +1,4 @@
-{ src: GUESS 25E6:0557 (asm, returns a byte; InitVideo stores (result = 1) in B21FE) }
-{$F+} function Func0557: Byte; external; {$F-}
+{ src: EXE 25E6:0557 (also DS:2205): 4 = VGA (int 10h AX=1C00h answers), 3 = MCGA (AX=1200h BL=32h answers),
+  2 = EGA (AX=1200h BL=10h answers), 1 = other colour (CGA), 0 = mono (BIOS mode 7). SAM1RE code-map.md lists
+  the codes as VGA/EGA/MCGA/CGA/none; the probe order says 3 = MCGA, 2 = EGA }
+{$F+} function DetectAdapter: Byte; external; {$F-}

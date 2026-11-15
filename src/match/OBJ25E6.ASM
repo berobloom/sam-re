@@ -2,7 +2,7 @@
 segment CODE public align=1
 global OBJ25E6
 global FASTWRITE
-global FUNC0557
+global DETECTADAPTER
 global GETVIDEOMODE
 OBJ25E6:
     db 0x33, 0xC0   ; xor ax, ax
@@ -76,7 +76,7 @@ L054F:
     int 0x10                                ; 0551
     mov byte [0x2204], al                   ; 0553
     ret                                     ; 0556
-FUNC0557:
+DETECTADAPTER:
     call L054F                              ; 0557
     mov byte [0x2205], 4                    ; 055A
     mov cx, 0xffff                          ; 055F

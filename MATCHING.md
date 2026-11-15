@@ -232,7 +232,10 @@ goes after a semicolon, `{ @XXXX; note }`; any other text inside the braces
 leaves the variable unpinned. A comment line over 126 characters stops TP
 (Error 11), so long notes wrap. A build that fails part-way can leave
 `src/FILL.JSON` with pads fitted to the broken layout; restore it from the
-last green commit before rebuilding.
+last green commit before rebuilding. A game name equal to a System/Dos/Crt public
+(Crt's `CheckSnow`) compiles, but the fit then reads the library variable's
+address from the map and drives the pads off by kilobytes; `rename.py`
+refuses such names.
 
 ### Data traps (CONFIRMED by builds)
 

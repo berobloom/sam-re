@@ -47,14 +47,14 @@ const T_2643: array[0..599] of Byte = (
   $78,$32,$35,$36,$20,$20);
 var V_2643: array[0..4667] of Byte; { @2206 }
 procedure OBJ2643;
-function Genus000F(X: Integer): Integer;
-function Genus0047(X: Integer): Integer;
+function PcxSetDisplay(Display: Integer): Integer;
+function PcxSetMode(Mode: Integer): Integer;
 function ShowPicture(Name: String; A, B, C: Integer): Integer;
 implementation
 {$L OBJ2643.OBJ}
 procedure OBJ2643; external;
-function Genus000F; external;
-function Genus0047; external;
+function PcxSetDisplay; external;
+function PcxSetMode; external;
 {$F+} procedure GenusInit1; external; {$F-}
 function ShowPicture; external;
 {$F+} procedure GenusInit2; external; {$F-}

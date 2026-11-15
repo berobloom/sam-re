@@ -1,2 +1,3 @@
-{ src: GUESS 29C3:2981 (one Integer argument, called with 0 by the init; role open) }
-{$F+} procedure Proc2981(X: Integer); external; {$F-}
+{ src: EXE 29C3:2981 (copies the ROM font GetRomFonts stored into the current font cs:26CF..26D3:
+  Small = 1 the 8x8 font, else the 8x14 one; the init passes 0) }
+{$F+} procedure SelectFont(Small: Integer); external; {$F-}

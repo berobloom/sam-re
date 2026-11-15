@@ -4,7 +4,7 @@ interface
 { 25E6 data, DS:21FC..2205 }
 var
   VideoSeg: Word; { @21FC }
-  B21FE: Boolean; { @21FE }
+  SnowWait: Boolean; { @21FE; FastWrite waits for retrace per character (25E6:04CC): DetectAdapter = 1, CGA }
   L2200: LongInt; { @2200 }
   BiosMode: Integer; { @2204; BIOS mode at the adapter detect (SAM1RE code-map.md 4:054f) }
 procedure Window(X1, Y1, X2, Y2, Fg, Bg, Frame: Integer);
@@ -20,7 +20,7 @@ implementation
 {$F+} procedure InitVideo; forward; {$F-}
 procedure OBJ25E6; external;
 {$F+} procedure FastWrite(Col, Row, Attr: Byte; S: String); external; {$F-}
-{$F+} function Func0557: Byte; external; {$F-}
+{$F+} function DetectAdapter: Byte; external; {$F-}
 {$F+} function GetVideoMode: Byte; external; {$F-}
 { src: GUESS 25E6:0000 (text attribute from foreground and background) }
 { keep: - }
@@ -175,7 +175,7 @@ begin
     VideoSeg := $B000
   else
     VideoSeg := $B800;
-  B21FE := Func0557 = 1;
+  SnowWait := DetectAdapter = 1;
 end;
 {$F-}
 begin

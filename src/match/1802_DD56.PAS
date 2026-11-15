@@ -8,8 +8,8 @@ var
   I, R: Integer;
 begin
   SetGraphMode(0);
-  R := Genus000F(2);
-  R := Genus0047(1);
+  R := PcxSetDisplay(2);
+  R := PcxSetMode(1);
   R := SetStride($28);
   CamX := 0;
   CamY := 0;

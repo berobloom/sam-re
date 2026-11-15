@@ -1,3 +1,4 @@
-{ src: GUESS 2643:000F (Genus asm, returns AX; the title calls it with 2 before loading a picture) }
+{ src: EXE 2643:000F (stores a display type 0..21 in V_2643, else returns -6; the title passes 2). Name LIKELY:
+  the Genus PCX Toolkit's set-display call }
 { interface }
-{$F+} function Genus000F(X: Integer): Integer; external; {$F-}
+{$F+} function PcxSetDisplay(Display: Integer): Integer; external; {$F-}

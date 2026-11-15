@@ -889,8 +889,8 @@ var
   V1, V2, R, V4: Integer;
 begin
   FadeOut(0);
-  R := Genus000F(2);
-  R := Genus0047(1);
+  R := PcxSetDisplay(2);
+  R := PcxSetMode(1);
   R := SetStride($28);
   CamX := 0;
   CamY := 0;
@@ -918,15 +918,15 @@ var
   Key: Char;
 begin
   FadeOut(0);
-  R := Genus000F(2);
-  R := Genus0047(1);
+  R := PcxSetDisplay(2);
+  R := PcxSetMode(1);
   R := SetStride($28);
   CamX := 0;
   CamY := 0;
   ScanPage := 0;
   PageY := 0;
   R := ShowPicture('sam1.crd', 1, 0, 0);
-  Proc2ECF(0, 0, 0, 200);
+  CopyScreen(0, 0, 0, 200);
   R := ShowPicture('sam1.ttl', 1, 0, 0);
   FadeIn($14);
   Dir := 1;
@@ -3647,8 +3647,8 @@ var
   I, R: Integer;
 begin
   SetGraphMode(0);
-  R := Genus000F(2);
-  R := Genus0047(1);
+  R := PcxSetDisplay(2);
+  R := PcxSetMode(1);
   R := SetStride($28);
   CamX := 0;
   CamY := 0;

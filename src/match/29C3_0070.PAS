@@ -3,7 +3,7 @@
 { init }
   SetGraphMode(1);
   GetRomFonts;
-  Proc2981(0);
+  SelectFont(0);
   SetBiosMode($10);
   SetColor($F);
   Copyright := 'Copyright 1991 Peder Jungck';
