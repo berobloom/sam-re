@@ -14,10 +14,13 @@ keep a session diary here.
   WriteCenter, WriteVert over an asm FastWrite), 2643 (Genus PCX Toolkit:
   init + 8.9 KB asm with 106 segment fixups + its typed constants), 1802
   (menus, text windows, window font, save/load, status line; 52 routines incl.
-  the nested ones of RedefineKeys). The data segment is identical. 83254 of
-  185405 routine bytes (44.90%).
-- Data: per-unit ranges in the recipe; a unit's hand-written variables go in
-  `src/match/<SEG>.VAR` (287F's is the first).
+  the nested ones of RedefineKeys). The data segment is identical. 93550 of
+  187615 routine bytes (49.86%). In progress: main (KeyISR, ReadJoystick,
+  TimerISR, the handlers, config, DetectVideo matched; the 16 KB main block
+  left), 0529 (12 routines; Touch, 0837, 2F6B left), 0D9C (SetCell,
+  LoadLevel; the draw routines, ParseRow, 2E88, 3A91 left).
+- Data: per-unit ranges in the recipe (main 02A2..02BC + VideoTab at 0000,
+  0D9C's Map 02BC..21FC); hand-written variables in `src/match/<SEG>.VAR`.
 - Compiler: TP 5.0 / 5.5 / 6.0 compile headless (`tools/tp/tpc.sh`); 5.0 is
   SAM's (`tools/tp/pin_version.sh`).
 - Units mapped (Q3): 3 Borland, Genus `2643`, 9 game (incl. Jungck's
