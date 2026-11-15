@@ -10,7 +10,7 @@ begin
     Slots[I].Free := 1;
   CamX := 0;
   CopyPage;
-  W6858 := -1;
+  StatusCamX := -1;
   CamY := 0;
   W6852 := 0;
   B6EE5 := 0;
@@ -29,7 +29,7 @@ begin
   B6EE6 := 0;
   Level := 1;
   W6856 := 0;
-  W6866 := $10;
+  PageY := $10;
   W6864 := 0;
   W6862 := 0;
   W6846 := 0;
@@ -50,7 +50,7 @@ begin
   B69D6 := 0;
   W69D4 := 0;
   W69D8 := 0;
-  B6A15 := 0;
+  VGunOff := 0;
   B6A12 := 0;
   B6A13 := 0;
   B6A0E := 0;
@@ -70,7 +70,7 @@ begin
     SiteDone[I] := 0;
   B6A1B := 0;
   ArcLen := $23;
-  B69F4 := 0;
+  ExitArmed := 0;
   B6A64 := 0;
   RespawnDelay := 8;
   Lives := 3;

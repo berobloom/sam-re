@@ -6,11 +6,11 @@ begin
   if W6864 = 0 then
   begin
     W6864 := 1;
-    W6866 := $1A0;
+    PageY := $1A0;
   end
   else
   begin
     W6864 := 0;
-    W6866 := $10;
+    PageY := $10;
   end;
 end;

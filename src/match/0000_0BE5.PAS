@@ -16,7 +16,7 @@ begin
       if W69CC = 0 then
       begin
         W69CA := 0;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end;
     if W69D4 > 0 then
@@ -25,7 +25,7 @@ begin
       if W69D4 = 0 then
       begin
         B69D6 := 0;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end;
     if W69D0 > 0 then
@@ -35,7 +35,7 @@ begin
       begin
         B69D2 := 1;
         B69D3 := 0;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end;
   end;

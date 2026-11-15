@@ -15,57 +15,57 @@ begin
       0:
         ;
       1..$32:
-        DrawTile(Gfx[1]^.Tile[Map[CX + 1, CY + 1].Front], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[1]^.Tile[Map[CX + 1, CY + 1].Front], CX shl 1, (CY shl 4) + PageY);
       $B3:
-        if W6866 = $10 then
-          DrawTile(Gfx[10]^.Tile[29], CX shl 1, (CY shl 4) + W6866)
+        if PageY = $10 then
+          DrawTile(Gfx[10]^.Tile[29], CX shl 1, (CY shl 4) + PageY)
         else
-          DrawTile(Gfx[10]^.Tile[30], CX shl 1, (CY shl 4) + W6866);
+          DrawTile(Gfx[10]^.Tile[30], CX shl 1, (CY shl 4) + PageY);
       $64..$96:
-        DrawTile(Gfx[2]^.Tile[Map[CX + 1, CY + 1].Front - $64], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[2]^.Tile[Map[CX + 1, CY + 1].Front - $64], CX shl 1, (CY shl 4) + PageY);
       $97..$C8:
-        DrawTile(Gfx[10]^.Tile[Map[CX + 1, CY + 1].Front - $96], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[10]^.Tile[Map[CX + 1, CY + 1].Front - $96], CX shl 1, (CY shl 4) + PageY);
       $C9..$FA:
-        DrawTile(Gfx[11]^.Tile[Map[CX + 1, CY + 1].Front - $C8], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[11]^.Tile[Map[CX + 1, CY + 1].Front - $C8], CX shl 1, (CY shl 4) + PageY);
       $FB..$12C:
-        DrawTile(Gfx[15]^.Tile[Map[CX + 1, CY + 1].Front - $FA], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[15]^.Tile[Map[CX + 1, CY + 1].Front - $FA], CX shl 1, (CY shl 4) + PageY);
       $12D..$15E:
-        DrawTile(Gfx[13]^.Tile[Map[CX + 1, CY + 1].Front - $12C], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[13]^.Tile[Map[CX + 1, CY + 1].Front - $12C], CX shl 1, (CY shl 4) + PageY);
       $15F..$190:
-        DrawTile(Gfx[16]^.Tile[Map[CX + 1, CY + 1].Front - $15E], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[16]^.Tile[Map[CX + 1, CY + 1].Front - $15E], CX shl 1, (CY shl 4) + PageY);
       $191..$1C2:
-        DrawTile(Gfx[4]^.Tile[Map[CX + 1, CY + 1].Front - $190], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[4]^.Tile[Map[CX + 1, CY + 1].Front - $190], CX shl 1, (CY shl 4) + PageY);
       $1F3:
-        if W6866 = $10 then
-          DrawTile(Gfx[5]^.Tile[49], CX shl 1, (CY shl 4) + W6866)
+        if PageY = $10 then
+          DrawTile(Gfx[5]^.Tile[49], CX shl 1, (CY shl 4) + PageY)
         else
-          DrawTile(Gfx[5]^.Tile[1], CX shl 1, (CY shl 4) + W6866);
+          DrawTile(Gfx[5]^.Tile[1], CX shl 1, (CY shl 4) + PageY);
       $1C3..$1F4:
-        DrawTile(Gfx[5]^.Tile[Map[CX + 1, CY + 1].Front - $1C2], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[5]^.Tile[Map[CX + 1, CY + 1].Front - $1C2], CX shl 1, (CY shl 4) + PageY);
       $265:
-        if W6866 = $10 then
-          DrawTile(Gfx[6]^.Tile[13], CX shl 1, (CY shl 4) + W6866)
+        if PageY = $10 then
+          DrawTile(Gfx[6]^.Tile[13], CX shl 1, (CY shl 4) + PageY)
         else
-          DrawTile(Gfx[6]^.Tile[17], CX shl 1, (CY shl 4) + W6866);
+          DrawTile(Gfx[6]^.Tile[17], CX shl 1, (CY shl 4) + PageY);
       $259..$25A:
-        DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $258], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $258], CX shl 1, (CY shl 4) + PageY);
       $25B:
-        if W6866 = $1A0 then
-          DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $258], CX shl 1, (CY shl 4) + W6866);
+        if PageY = $1A0 then
+          DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $258], CX shl 1, (CY shl 4) + PageY);
       $25C..$26F:
-        DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $258], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $258], CX shl 1, (CY shl 4) + PageY);
       $270:
-        if W6866 = $1A0 then
-          DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $258], CX shl 1, (CY shl 4) + W6866)
+        if PageY = $1A0 then
+          DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $258], CX shl 1, (CY shl 4) + PageY)
         else
-          DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $246], CX shl 1, (CY shl 4) + W6866);
+          DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $246], CX shl 1, (CY shl 4) + PageY);
       $271..$28A:
-        DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $258], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[6]^.Tile[Map[CX + 1, CY + 1].Front - $258], CX shl 1, (CY shl 4) + PageY);
       $28B..$2BC:
-        DrawTile(Gfx[7]^.Tile[Map[CX + 1, CY + 1].Front - $28A], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[7]^.Tile[Map[CX + 1, CY + 1].Front - $28A], CX shl 1, (CY shl 4) + PageY);
       $2BD..$2EE:
-        DrawTile(Gfx[8]^.Tile[Map[CX + 1, CY + 1].Front - $2BC], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[8]^.Tile[Map[CX + 1, CY + 1].Front - $2BC], CX shl 1, (CY shl 4) + PageY);
       $2EF..$320:
-        DrawTile(Gfx[9]^.Tile[Map[CX + 1, CY + 1].Front - $2EE], CX shl 1, (CY shl 4) + W6866);
+        DrawTile(Gfx[9]^.Tile[Map[CX + 1, CY + 1].Front - $2EE], CX shl 1, (CY shl 4) + PageY);
     end;
 end;

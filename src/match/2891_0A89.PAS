@@ -9,7 +9,7 @@ begin
   SetColor(0);
   ClearRows(0, $50, 0, 8);
   CopyPage;
-  W6858 := -1;
+  StatusCamX := -1;
   B6EE5 := 0;
   B6EF0 := 0;
   B6EF1 := 0;
@@ -26,7 +26,7 @@ begin
   B6EE6 := 0;
   W6856 := 0;
   W6846 := 0;
-  B6A15 := 0;
+  VGunOff := 0;
   B6A12 := 0;
   B6A13 := 0;
   B6A0E := 0;
@@ -55,7 +55,7 @@ begin
   B6A68 := 0;
   B6A1B := 0;
   ArcLen := $23;
-  B69F4 := 0;
+  ExitArmed := 0;
   B69FA := 0;
   B69FB := 0;
   B69FC := 0;

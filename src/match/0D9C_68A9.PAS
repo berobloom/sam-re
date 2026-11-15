@@ -130,9 +130,9 @@ begin
       if S = 'K' then
         SetCell(I, Y, 2, 0, $25E, 0, 0, FO);
       if S = 'I' then
-        SetCell(I, Y, W6840, 0, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, 0, 0, 0, 1, FO);
       if S = #211 then
-        SetCell(I, Y, W6840, 0, -1, 0, 0, FO);
+        SetCell(I, Y, BackTile, 0, -1, 0, 0, FO);
       if S = 'r' then
         SetCell(I, Y, 2, 0, $25F, 0, 0, FO);
       if S = 's' then
@@ -168,16 +168,16 @@ begin
       end;
       if S = #139 then
       begin
-        SetCell(I - 1, Y, W6840, $A3, 0, 1, 0, FO);
-        SetCell(I, Y, W6840, $A4, 0, 1, 0, FO);
+        SetCell(I - 1, Y, BackTile, $A3, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $A4, 0, 1, 0, FO);
       end;
       if S = #154 then
       begin
-        SetCell(I - 1, Y, W6840, $A6, 0, 1, 0, FO);
-        SetCell(I, Y, W6840, $A5, 0, 1, 0, FO);
+        SetCell(I - 1, Y, BackTile, $A6, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $A5, 0, 1, 0, FO);
       end;
       if S = #31 then
-        SetCell(I, Y, W6840, $A6, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $A6, 0, 1, 0, FO);
       if S = #168 then
         SetCell(I, Y, 2, 0, $AF, 0, 0, FO);
       if S = #169 then
@@ -219,15 +219,15 @@ begin
       if S = '4' then
         SetCell(I, Y, 2, 0, $1AA, 1, 0, FO);
       if S = 'o' then
-        SetCell(I, Y, W6840, $1A1, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $1A1, 0, 1, 0, FO);
       if S = 'i' then
         SetCell(I, Y, $1B9, 0, 0, 0, 0, FO);
       if S = 'j' then
-        SetCell(I, Y, W6840, $1BA, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $1BA, 0, 0, 1, FO);
       if S = 'k' then
-        SetCell(I, Y, W6840, $1BB, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $1BB, 0, 1, 0, FO);
       if S = 'l' then
-        SetCell(I, Y, W6840, $1BC, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $1BC, 0, 0, 1, FO);
       if S = #149 then
         SetCell(I, Y, 2, $1C1, 0, 0, 0, FO);
       if S = '|' then
@@ -237,27 +237,27 @@ begin
       if S = 'm' then
       begin
         SetCell(I, Y, 2, 0, 0, 0, 0, FO);
-        Inc(W6854);
+        Inc(SlotCount);
         DrawTileB(Gfx[4]^.Tile[45], I shl 4, (Y shl 4) + $10);
         DrawTileB(Gfx[4]^.Tile[45], I shl 4, (Y shl 4) + $1A0);
-        Slots[W6854].W00 := 0;
-        Slots[W6854].W14 := $1BD;
-        Slots[W6854].X := I shl 4;
-        Slots[W6854].Y := Y shl 4;
-        Slots[W6854].W06 := I shl 4;
-        Slots[W6854].W08 := Y shl 4;
+        Slots[SlotCount].W00 := 0;
+        Slots[SlotCount].Sprite := $1BD;
+        Slots[SlotCount].X := I shl 4;
+        Slots[SlotCount].Y := Y shl 4;
+        Slots[SlotCount].PrevX := I shl 4;
+        Slots[SlotCount].PrevY := Y shl 4;
         if Random(2) > 0 then
-          Slots[W6854].W16 := 1
+          Slots[SlotCount].DirX := 1
         else
-          Slots[W6854].W16 := -1;
-        Slots[W6854].W18 := 0;
-        Slots[W6854].W0A := 1;
-        Slots[W6854].W1A := 1;
-        Slots[W6854].W0C := 0;
-        Slots[W6854].W0E := 0;
-        Slots[W6854].W1C := $14;
-        Slots[W6854].Free := 0;
-        Slots[W6854].B1F := 0;
+          Slots[SlotCount].DirX := -1;
+        Slots[SlotCount].DirY := 0;
+        Slots[SlotCount].Anim := 1;
+        Slots[SlotCount].Speed := 1;
+        Slots[SlotCount].W0C := 0;
+        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Kind := $14;
+        Slots[SlotCount].Free := 0;
+        Slots[SlotCount].Remove := 0;
       end;
       if S = 'a' then
         SetCell(I, Y, $1F4, 0, 0, 1, 0, FO);
@@ -266,35 +266,35 @@ begin
       if S = '_' then
       begin
         SetCell(I, Y, 2, 0, 0, 0, 0, FO);
-        Inc(W6854);
+        Inc(SlotCount);
         DrawTileB(Gfx[5]^.Tile[45], I shl 4, (Y shl 4) + $10);
         DrawTileB(Gfx[5]^.Tile[45], I shl 4, (Y shl 4) + $1A0);
-        Slots[W6854].W00 := 0;
-        Slots[W6854].X := I shl 4;
-        Slots[W6854].Y := Y shl 4;
-        Slots[W6854].W06 := I shl 4;
-        Slots[W6854].W08 := Y shl 4;
+        Slots[SlotCount].W00 := 0;
+        Slots[SlotCount].X := I shl 4;
+        Slots[SlotCount].Y := Y shl 4;
+        Slots[SlotCount].PrevX := I shl 4;
+        Slots[SlotCount].PrevY := Y shl 4;
         if Random(2) > 0 then
-          Slots[W6854].W16 := 1
+          Slots[SlotCount].DirX := 1
         else
-          Slots[W6854].W16 := -1;
-        if Slots[W6854].W16 = 1 then
-          Slots[W6854].W14 := $1F1
+          Slots[SlotCount].DirX := -1;
+        if Slots[SlotCount].DirX = 1 then
+          Slots[SlotCount].Sprite := $1F1
         else
-          Slots[W6854].W14 := $1EF;
-        Slots[W6854].W18 := 0;
-        Slots[W6854].W0A := 1;
-        Slots[W6854].W1A := 1;
-        Slots[W6854].W0C := 0;
-        Slots[W6854].W0E := 0;
-        Slots[W6854].W1C := $15;
-        Slots[W6854].Free := 0;
-        Slots[W6854].B1F := 0;
+          Slots[SlotCount].Sprite := $1EF;
+        Slots[SlotCount].DirY := 0;
+        Slots[SlotCount].Anim := 1;
+        Slots[SlotCount].Speed := 1;
+        Slots[SlotCount].W0C := 0;
+        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Kind := $15;
+        Slots[SlotCount].Free := 0;
+        Slots[SlotCount].Remove := 0;
       end;
       if S = 'D' then
         SetCell(I, Y, 2, 0, $265, 0, 0, FO);
       if S = 'E' then
-        SetCell(I, Y, W6840, 0, $266, 0, 1, FO);
+        SetCell(I, Y, BackTile, 0, $266, 0, 1, FO);
       if S = 'O' then
         SetCell(I, Y, 2, 0, $267, 0, 0, FO);
       if S = 'U' then
@@ -350,13 +350,13 @@ begin
       if S = #175 then
         SetCell(I, Y, $15D, 0, 0, 0, 0, FO);
       if S = #143 then
-        SetCell(I, Y, W6840, $28B, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $28B, 0, 1, 0, FO);
       if S = #144 then
         SetCell(I, Y, $28C, 0, 0, 1, 0, FO);
       if S = #145 then
-        SetCell(I, Y, W6840, $28D, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $28D, 0, 1, 0, FO);
       if S = #146 then
-        SetCell(I, Y, W6840, $28E, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $28E, 0, 0, 1, FO);
       if S = #147 then
         SetCell(I, Y, $28F, 0, 0, 1, 0, FO);
       if S = #148 then
@@ -378,13 +378,13 @@ begin
       if S = #158 then
         SetCell(I, Y, 2, $29A, 0, 0, 0, FO);
       if S = #163 then
-        SetCell(I, Y, W6840, $29F, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $29F, 0, 0, 1, FO);
       if S = #164 then
-        SetCell(I, Y, W6840, $2A0, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $2A0, 0, 0, 1, FO);
       if S = #165 then
-        SetCell(I, Y, W6840, $2A1, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $2A1, 0, 0, 1, FO);
       if S = #166 then
-        SetCell(I, Y, W6840, $2A2, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $2A2, 0, 0, 1, FO);
       if S = #176 then
         SetCell(I, Y, 2, 0, $2AC, 0, 0, FO);
       if S = #177 then
@@ -469,11 +469,11 @@ begin
       if S = #202 then
         SetCell(I, Y, 2, 0, $2C6, 0, 0, FO);
       if S = #203 then
-        SetCell(I, Y, W6840, 0, $2C7, 0, 1, FO);
+        SetCell(I, Y, BackTile, 0, $2C7, 0, 1, FO);
       if S = #204 then
-        SetCell(I, Y, W6840, 0, $2C8, 0, 1, FO);
+        SetCell(I, Y, BackTile, 0, $2C8, 0, 1, FO);
       if S = #205 then
-        SetCell(I, Y, W6840, 0, $2C9, 0, 1, FO);
+        SetCell(I, Y, BackTile, 0, $2C9, 0, 1, FO);
       if S = #206 then
         SetCell(I, Y, 2, 0, $2CA, 0, 0, FO);
       if S = #207 then
@@ -483,24 +483,24 @@ begin
       if S = #209 then
       begin
         SetCell(I, Y, 2, 0, 0, 0, 0, FO);
-        Inc(W6854);
+        Inc(SlotCount);
         DrawTileB(Gfx[16]^.Tile[1], I shl 4, (Y shl 4) + $10);
         DrawTileB(Gfx[16]^.Tile[1], I shl 4, (Y shl 4) + $1A0);
-        Slots[W6854].W00 := 0;
-        Slots[W6854].W14 := $2CD;
-        Slots[W6854].X := I shl 4;
-        Slots[W6854].Y := Y shl 4;
-        Slots[W6854].W06 := I shl 4;
-        Slots[W6854].W08 := Y shl 4;
-        Slots[W6854].W16 := 1;
-        Slots[W6854].W18 := 0;
-        Slots[W6854].W0A := 1;
-        Slots[W6854].W1A := 0;
-        Slots[W6854].W0C := 0;
-        Slots[W6854].W0E := 0;
-        Slots[W6854].W1C := $1A;
-        Slots[W6854].Free := 0;
-        Slots[W6854].B1F := 0;
+        Slots[SlotCount].W00 := 0;
+        Slots[SlotCount].Sprite := $2CD;
+        Slots[SlotCount].X := I shl 4;
+        Slots[SlotCount].Y := Y shl 4;
+        Slots[SlotCount].PrevX := I shl 4;
+        Slots[SlotCount].PrevY := Y shl 4;
+        Slots[SlotCount].DirX := 1;
+        Slots[SlotCount].DirY := 0;
+        Slots[SlotCount].Anim := 1;
+        Slots[SlotCount].Speed := 0;
+        Slots[SlotCount].W0C := 0;
+        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Kind := $1A;
+        Slots[SlotCount].Free := 0;
+        Slots[SlotCount].Remove := 0;
       end;
       if S = #210 then
       begin
@@ -510,23 +510,23 @@ begin
         SetCell(I, Y, $C4, 0, 0, 0, 0, FO);
       end;
       if S = #213 then
-        SetCell(I, Y, W6840, $2D1, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $2D1, 0, 0, 1, FO);
       if S = #214 then
-        SetCell(I, Y, W6840, $2D2, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $2D2, 0, 0, 1, FO);
       if S = #215 then
-        SetCell(I, Y, W6840, $2D3, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $2D3, 0, 0, 1, FO);
       if S = #217 then
         SetCell(I, Y, 2, $2D5, 0, 0, 0, FO);
       if S = #218 then
-        SetCell(I, Y, W6840, $2D6, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $2D6, 0, 0, 1, FO);
       if S = #219 then
-        SetCell(I, Y, W6840, $2D7, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $2D7, 0, 0, 1, FO);
       if S = #220 then
-        SetCell(I, Y, W6840, $2D8, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $2D8, 0, 0, 1, FO);
       if S = #221 then
         SetCell(I, Y, 2, $2D9, 0, 0, 0, FO);
       if S = #222 then
-        SetCell(I, Y, W6840, $2DA, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $2DA, 0, 0, 1, FO);
       if S = #223 then
         SetCell(I, Y, $C9, 0, 0, 0, 1, FO);
       if S = #224 then
@@ -542,13 +542,13 @@ begin
       if S = '!' then
         SetCell(I, Y, $2EF, 0, 0, 0, 0, FO);
       if S = 'B' then
-        SetCell(I, Y, W6840, $2F1, 0, 0, 1, FO);
+        SetCell(I, Y, BackTile, $2F1, 0, 0, 1, FO);
       if S = 'C' then
         SetCell(I, Y, $2F3, 0, 0, 1, 0, FO);
       if S = 'F' then
-        SetCell(I, Y, W6840, $2F4, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $2F4, 0, 1, 0, FO);
       if S = 'J' then
-        SetCell(I, Y, W6840, $2F5, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $2F5, 0, 1, 0, FO);
       if S = #229 then
         SetCell(I, Y, $2F6, 0, 0, 1, 0, FO);
       if S = #230 then
@@ -611,17 +611,17 @@ begin
       if S = #252 then
         SetCell(I, Y, $312, 0, 0, 1, 0, FO);
       if S = #253 then
-        SetCell(I, Y, W6840, $313, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $313, 0, 1, 0, FO);
       if S = #254 then
         SetCell(I, Y, $314, 0, 0, 1, 0, FO);
       if S = 'L' then
-        SetCell(I, Y, W6840, $315, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $315, 0, 1, 0, FO);
       if S = #159 then
-        SetCell(I, Y, W6840, $317, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $317, 0, 1, 0, FO);
       if S = #160 then
         SetCell(I, Y, $318, 0, 0, 1, 0, FO);
       if S = #161 then
-        SetCell(I, Y, W6840, $319, 0, 1, 0, FO);
+        SetCell(I, Y, BackTile, $319, 0, 1, 0, FO);
       if S = 'S' then
         SetCell(I, Y, 2, 0, $316, 0, 0, FO);
       if S = 'Z' then
@@ -634,49 +634,49 @@ begin
       if S = #167 then
       begin
         SetCell(I, Y, 2, 0, 0, 0, 0, FO);
-        Inc(W6854);
+        Inc(SlotCount);
         DrawTileB(Gfx[7]^.Tile[25], I shl 4, (Y shl 4) + $10);
         DrawTileB(Gfx[7]^.Tile[25], I shl 4, (Y shl 4) + $1A0);
-        Slots[W6854].W00 := 0;
-        Slots[W6854].W14 := $2A3;
-        Slots[W6854].X := I shl 4;
-        Slots[W6854].Y := Y shl 4;
-        Slots[W6854].W06 := I shl 4;
-        Slots[W6854].W08 := Y shl 4;
-        Slots[W6854].W16 := 1;
-        Slots[W6854].W18 := 0;
-        Slots[W6854].W0A := 1;
-        Slots[W6854].W1A := 0;
-        Slots[W6854].W0C := 0;
-        Slots[W6854].W0E := 0;
-        Slots[W6854].W1C := $1B;
-        Slots[W6854].Free := 0;
-        Slots[W6854].B1F := 0;
+        Slots[SlotCount].W00 := 0;
+        Slots[SlotCount].Sprite := $2A3;
+        Slots[SlotCount].X := I shl 4;
+        Slots[SlotCount].Y := Y shl 4;
+        Slots[SlotCount].PrevX := I shl 4;
+        Slots[SlotCount].PrevY := Y shl 4;
+        Slots[SlotCount].DirX := 1;
+        Slots[SlotCount].DirY := 0;
+        Slots[SlotCount].Anim := 1;
+        Slots[SlotCount].Speed := 0;
+        Slots[SlotCount].W0C := 0;
+        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Kind := $1B;
+        Slots[SlotCount].Free := 0;
+        Slots[SlotCount].Remove := 0;
       end;
       if S = 'b' then
       begin
         SetCell(I, Y, 2, 0, 0, 0, 0, FO);
-        Inc(W6854);
+        Inc(SlotCount);
         DrawTileB(Gfx[7]^.Tile[26], I shl 4, (Y shl 4) + $10);
         DrawTileB(Gfx[7]^.Tile[26], I shl 4, (Y shl 4) + $1A0);
-        Slots[W6854].W00 := 0;
-        Slots[W6854].W14 := $2A4;
-        Slots[W6854].X := I shl 4;
-        Slots[W6854].Y := Y shl 4;
-        Slots[W6854].W06 := I shl 4;
-        Slots[W6854].W08 := Y shl 4;
+        Slots[SlotCount].W00 := 0;
+        Slots[SlotCount].Sprite := $2A4;
+        Slots[SlotCount].X := I shl 4;
+        Slots[SlotCount].Y := Y shl 4;
+        Slots[SlotCount].PrevX := I shl 4;
+        Slots[SlotCount].PrevY := Y shl 4;
         if Random(2) > 0 then
-          Slots[W6854].W16 := 1
+          Slots[SlotCount].DirX := 1
         else
-          Slots[W6854].W16 := -1;
-        Slots[W6854].W18 := 0;
-        Slots[W6854].W0A := 1;
-        Slots[W6854].W1A := 2;
-        Slots[W6854].W0C := 0;
-        Slots[W6854].W0E := 0;
-        Slots[W6854].W1C := $1C;
-        Slots[W6854].Free := 0;
-        Slots[W6854].B1F := 0;
+          Slots[SlotCount].DirX := -1;
+        Slots[SlotCount].DirY := 0;
+        Slots[SlotCount].Anim := 1;
+        Slots[SlotCount].Speed := 2;
+        Slots[SlotCount].W0C := 0;
+        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Kind := $1C;
+        Slots[SlotCount].Free := 0;
+        Slots[SlotCount].Remove := 0;
       end;
     end;
     WorldCell(I, Y, S);
@@ -693,19 +693,19 @@ begin
       DrawTileB(Gfx[3]^.Tile[1], I shl 4, (Y shl 4) + $10);
       DrawTileB(Gfx[3]^.Tile[1], I shl 4, (Y shl 4) + $1A0);
       Slots[1].W00 := 0;
-      Slots[1].W14 := 9;
+      Slots[1].Sprite := 9;
       Slots[1].X := I shl 4;
       Slots[1].Y := Y shl 4;
-      Slots[1].W06 := I shl 4;
-      Slots[1].W08 := Y shl 4;
-      Slots[1].W16 := 1;
-      Slots[1].W18 := 0;
-      Slots[1].W0A := 1;
-      Slots[1].W1A := 2;
+      Slots[1].PrevX := I shl 4;
+      Slots[1].PrevY := Y shl 4;
+      Slots[1].DirX := 1;
+      Slots[1].DirY := 0;
+      Slots[1].Anim := 1;
+      Slots[1].Speed := 2;
       Slots[1].W0C := 0;
-      Slots[1].W1C := $63;
+      Slots[1].Kind := $63;
       Slots[1].Free := 0;
-      Slots[1].B1F := 0;
+      Slots[1].Remove := 0;
       CamX := (I shl 4) - $A0;
       if CamX < 0 then
         CamX := 0;

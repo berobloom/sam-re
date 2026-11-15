@@ -9,7 +9,7 @@ var
   S: String[11];
 begin
   CopyPage;
-  W6858 := CamX;
+  StatusCamX := CamX;
   Sh := CamX and 7;
   Str(Score:6, S);
   for I := 1 to 6 do

@@ -16,7 +16,7 @@ begin
   CamX := 0;
   CamY := 0;
   W6862 := 0;
-  W6866 := 0;
+  PageY := 0;
   R := ShowPicture('sam1.crd', 1, 0, 0);
   Proc2ECF(0, 0, 0, 200);
   R := ShowPicture('sam1.ttl', 1, 0, 0);

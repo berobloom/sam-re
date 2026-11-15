@@ -22,7 +22,7 @@ begin
       end;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
-      W6858 := -1;
+      StatusCamX := -1;
     end;
     $1A6, $1A8, $1AA:
     begin
@@ -52,7 +52,7 @@ begin
         Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
         Map[X shr 4 + 1, Y shr 4 + 1].Solid := 0;
         PlaySound(6);
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end;
     $12D:
@@ -61,14 +61,14 @@ begin
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       if Ammo > $63 then
         Ammo := $63;
-      W6858 := -1;
+      StatusCamX := -1;
       PlaySound(5);
     end;
     $13C:
     begin
       Score := Score + $3E8;
       Spawn(X and $FFF0, Y and $FFF0, $14);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(4);
     end;
@@ -76,7 +76,7 @@ begin
     begin
       Score := Score + $FA;
       Spawn(X and $FFF0, Y and $FFF0, $12);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(4);
     end;
@@ -84,7 +84,7 @@ begin
     begin
       Score := Score + $3E8;
       Spawn(X and $FFF0, Y and $FFF0, $14);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(4);
     end;
@@ -92,7 +92,7 @@ begin
     begin
       Score := Score + $1F4;
       Spawn(X and $FFF0, Y and $FFF0, $13);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(4);
     end;
@@ -100,7 +100,7 @@ begin
     begin
       Score := Score + $64;
       Spawn(X and $FFF0, Y and $FFF0, $11);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(4);
     end;
@@ -108,7 +108,7 @@ begin
     begin
       Score := Score + $3E8;
       Spawn(X and $FFF0, Y and $FFF0, $14);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(4);
     end;
@@ -116,7 +116,7 @@ begin
     begin
       Score := Score + $1F4;
       Spawn(X and $FFF0, Y and $FFF0, $13);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(4);
     end;
@@ -124,7 +124,7 @@ begin
     begin
       Score := Score + $64;
       Spawn(X and $FFF0, Y and $FFF0, $11);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(4);
     end;
@@ -132,7 +132,7 @@ begin
     begin
       Score := Score + $1F4;
       Spawn(X and $FFF0, Y and $FFF0, $13);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(4);
     end;
@@ -144,7 +144,7 @@ begin
           B6A16 := 1;
           Score := Score + $64;
           Spawn(X and $FFF0, Y and $FFF0, $11);
-          W6858 := -1;
+          StatusCamX := -1;
           PlaySound(4);
         end;
         $26E:
@@ -153,7 +153,7 @@ begin
             B6A17 := 1;
             Score := Score + $64;
             Spawn(X and $FFF0, Y and $FFF0, $11);
-            W6858 := -1;
+            StatusCamX := -1;
             PlaySound(4);
           end
           else
@@ -162,7 +162,7 @@ begin
             B6A18 := 0;
             Score := Score + $64;
             Spawn(X and $FFF0, Y and $FFF0, $11);
-            W6858 := -1;
+            StatusCamX := -1;
             PlaySound(4);
           end;
         $26F:
@@ -170,14 +170,14 @@ begin
           begin
             Score := Score + $2710;
             Spawn(X and $FFF0, Y and $FFF0, $17);
-            W6858 := -1;
+            StatusCamX := -1;
             PlaySound($C);
           end
           else
           begin
             Score := Score + $64;
             Spawn(X and $FFF0, Y and $FFF0, $11);
-            W6858 := -1;
+            StatusCamX := -1;
             B6A18 := 0;
             PlaySound(4);
           end;
@@ -188,17 +188,17 @@ begin
     begin
       Score := Score + $1F4;
       Spawn(X and $FFF0, Y and $FFF0, $13);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(4);
-      W6858 := -1;
+      StatusCamX := -1;
     end;
     $130:
     begin
       Bullets[Level] := 1;
       Score := Score + $7D0;
       Spawn(X and $FFF0, Y and $FFF0, $15);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
       B6D8C := 1;
@@ -216,10 +216,10 @@ begin
             Map[X, Y].FlagB := 1;
             DrawBack((X - 1) shl 4, (Y - 1) shl 4);
             DrawFront((X - 1) shl 4, (Y - 1) shl 4);
-            W6866 := $1B0 - W6866;
+            PageY := $1B0 - PageY;
             DrawBack((X - 1) shl 4, (Y - 1) shl 4);
             DrawFront((X - 1) shl 4, (Y - 1) shl 4);
-            W6866 := $1B0 - W6866;
+            PageY := $1B0 - PageY;
             PlaySound(7);
             Delay($64);
           end;
@@ -273,7 +273,7 @@ begin
       B6A1A := 1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
-      W6858 := -1;
+      StatusCamX := -1;
       Spawn(X and $FFF0, Y and $FFF0, $13);
       Score := Score + $1F4;
     end;
@@ -282,7 +282,7 @@ begin
       begin
         B6A1A := 0;
         PlaySound($B);
-        W6858 := -1;
+        StatusCamX := -1;
         if Slots[1].X + 5 > X then
         begin
           PX := (X shr 4 + 1) shl 4;
@@ -300,20 +300,20 @@ begin
           Inc(I);
         until (Slots[I].Free = 1) or (I = $19);
         Slots[I].W00 := 0;
-        Slots[I].W14 := $27B;
+        Slots[I].Sprite := $27B;
         Slots[I].X := PX;
         Slots[I].Y := PY;
-        Slots[I].W06 := PX;
-        Slots[I].W08 := PY;
-        Slots[I].W16 := 1;
-        Slots[I].W18 := 0;
-        Slots[I].W0A := 1;
-        Slots[I].W1A := 0;
+        Slots[I].PrevX := PX;
+        Slots[I].PrevY := PY;
+        Slots[I].DirX := 1;
+        Slots[I].DirY := 0;
+        Slots[I].Anim := 1;
+        Slots[I].Speed := 0;
         Slots[I].W0C := $28;
         Slots[I].W0E := 0;
-        Slots[I].W1C := $16;
+        Slots[I].Kind := $16;
         Slots[I].Free := 0;
-        Slots[I].B1F := 0;
+        Slots[I].Remove := 0;
         B6A14 := 1;
       end
       else
@@ -332,7 +332,7 @@ begin
           B683C := 0;
         end;
     $27E:
-      if B69F4 <> 0 then
+      if ExitArmed <> 0 then
       begin
         if B6D8C <> 0 then
           B6EEC := 1;
@@ -342,16 +342,16 @@ begin
         begin
           HealthBonus;
           Score := Score + $61A8;
-          W6858 := -1;
+          StatusCamX := -1;
         end;
         if (X shr 4 = 0) or (Map[X shr 4 + 1 - 1, Y shr 4 + 1].Solid = 1) then
         begin
-          Slots[1].W06 := Slots[1].X;
-          Slots[1].W08 := Slots[1].Y;
+          Slots[1].PrevX := Slots[1].X;
+          Slots[1].PrevY := Slots[1].Y;
           Slots[1].X := X and $FFF0 + $10;
           Slots[1].Y := Y and $FFF0;
-          Slots[1].W16 := -1;
-          Slots[1].W14 := 5;
+          Slots[1].DirX := -1;
+          Slots[1].Sprite := 5;
           B6EE7 := 0;
           B6EE6 := 0;
           B6EF0 := 1;
@@ -359,12 +359,12 @@ begin
         end
         else
         begin
-          Slots[1].W06 := Slots[1].X;
-          Slots[1].W08 := Slots[1].Y;
+          Slots[1].PrevX := Slots[1].X;
+          Slots[1].PrevY := Slots[1].Y;
           Slots[1].X := X and $FFF0 - $10;
           Slots[1].Y := Y and $FFF0;
-          Slots[1].W16 := 1;
-          Slots[1].W14 := 1;
+          Slots[1].DirX := 1;
+          Slots[1].Sprite := 1;
           B6EE7 := 0;
           B6EE6 := 0;
           B6EF0 := 0;
@@ -390,11 +390,11 @@ begin
           B683C := 0;
           if (X shr 4 = 0) or (Map[X shr 4 + 1 - 1, Y shr 4 + 1].Solid = 1) then
           begin
-            Slots[1].W06 := Slots[1].X;
-            Slots[1].W08 := Slots[1].Y;
+            Slots[1].PrevX := Slots[1].X;
+            Slots[1].PrevY := Slots[1].Y;
             Slots[1].X := X and $FFF0 + $10;
             Slots[1].Y := Y and $FFF0;
-            Slots[1].W14 := $A;
+            Slots[1].Sprite := $A;
             B6EE7 := 0;
             B6EE6 := 0;
             B6EF0 := 0;
@@ -402,11 +402,11 @@ begin
           end
           else
           begin
-            Slots[1].W06 := Slots[1].X;
-            Slots[1].W08 := Slots[1].Y;
+            Slots[1].PrevX := Slots[1].X;
+            Slots[1].PrevY := Slots[1].Y;
             Slots[1].X := X and $FFF0 - $10;
             Slots[1].Y := Y and $FFF0;
-            Slots[1].W14 := 9;
+            Slots[1].Sprite := 9;
             B6EE7 := 0;
             B6EE6 := 0;
             B6EF0 := 0;
@@ -421,20 +421,20 @@ begin
       until (Slots[I].Free = 1) or (I = $19);
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       Slots[I].W00 := 0;
-      Slots[I].W14 := $271;
+      Slots[I].Sprite := $271;
       Slots[I].X := X and $FFF0;
       Slots[I].Y := Y and $FFF0;
-      Slots[I].W06 := X and $FFF0;
-      Slots[I].W08 := Y and $FFF0;
-      Slots[I].W16 := 1;
-      Slots[I].W18 := 0;
-      Slots[I].W0A := 1;
-      Slots[I].W1A := 0;
+      Slots[I].PrevX := X and $FFF0;
+      Slots[I].PrevY := Y and $FFF0;
+      Slots[I].DirX := 1;
+      Slots[I].DirY := 0;
+      Slots[I].Anim := 1;
+      Slots[I].Speed := 0;
       Slots[I].W0C := $28;
       Slots[I].W0E := 0;
-      Slots[I].W1C := $17;
+      Slots[I].Kind := $17;
       Slots[I].Free := 0;
-      Slots[I].B1F := 0;
+      Slots[I].Remove := 0;
       if B6A19 = 0 then
         B69DA := 1;
       if (B6A1B = 0) and (B6A19 = 0) then
@@ -469,10 +469,10 @@ begin
               Map[X, Y].Front := 0;
               DrawBack((X - 1) shl 4, (Y - 1) shl 4);
               DrawFront((X - 1) shl 4, (Y - 1) shl 4);
-              W6866 := $1B0 - W6866;
+              PageY := $1B0 - PageY;
               DrawBack((X - 1) shl 4, (Y - 1) shl 4);
               DrawFront((X - 1) shl 4, (Y - 1) shl 4);
-              W6866 := $1B0 - W6866;
+              PageY := $1B0 - PageY;
             end;
         ShowMessage('Laser Field has been De-Activated.');
       end
@@ -497,7 +497,7 @@ begin
       B6A12 := 1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
-      W6858 := -1;
+      StatusCamX := -1;
       Spawn(X and $FFF0, Y and $FFF0, $13);
       Score := Score + $1F4;
     end;
@@ -506,7 +506,7 @@ begin
       X := X and $FFF0;
       if ((Slots[1].X > X) and (Slots[1].X - X <= 2) or (Slots[1].X < X) and (X - Slots[1].X <= 2)) and (B6A06 = 0) then
       begin
-        W6858 := -1;
+        StatusCamX := -1;
         PlaySound($17);
         for PY := 1 to $18 do
           for PX := 1 to $28 do
@@ -524,10 +524,10 @@ begin
         B6A06 := 1;
         W6A08 := $13;
         B69DA := 1;
-        if (B6EF1 = 1) or (Slots[1].W14 = 1) then
-          Slots[1].W14 := 9
+        if (B6EF1 = 1) or (Slots[1].Sprite = 1) then
+          Slots[1].Sprite := 9
         else
-          Slots[1].W14 := $A;
+          Slots[1].Sprite := $A;
         B6EE9 := 0;
         B6EEA := 0;
         B6EF0 := 0;
@@ -539,7 +539,7 @@ begin
     begin
       Score := Score + $FA;
       Spawn(X and $FFF0, Y and $FFF0, $12);
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
       W69CA := 4;
@@ -548,7 +548,7 @@ begin
     $143..$145:
     begin
       Score := Score + $64;
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       Map[X shr 4 + 1, Y shr 4 + 1].FlagB := 0;
       PlaySound(4);
@@ -556,7 +556,7 @@ begin
     $142:
     begin
       Score := Score + $3E8;
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
       B685C := 2;
@@ -565,7 +565,7 @@ begin
     $31:
     begin
       Score := Score + $64;
-      W6858 := -1;
+      StatusCamX := -1;
       Inc(W69C6);
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
@@ -573,7 +573,7 @@ begin
     $13A:
     begin
       Score := Score + $1388;
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
       Inc(Gun);
@@ -600,7 +600,7 @@ begin
     end;
     $269:
     begin
-      W6858 := -1;
+      StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
       Inc(W69C4);

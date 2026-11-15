@@ -6,8 +6,8 @@
 {$F+}
 procedure MovePlayer;
 begin
-  Slots[1].W06 := Slots[1].X;
-  Slots[1].W08 := Slots[1].Y;
+  Slots[1].PrevX := Slots[1].X;
+  Slots[1].PrevY := Slots[1].Y;
   if B6EF1 <> 0 then
   begin
     Ramp;

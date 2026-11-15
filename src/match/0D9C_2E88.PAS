@@ -10,14 +10,14 @@ var
   I, N: Integer;
   FO: Boolean;
 begin
-  B6868 := 0;
+  AllDone := 0;
   FO := False;
   N := 0;
   for I := 2 to $11 do
     if SiteDone[I] = 1 then
       Inc(N);
   if N = 15 then
-    B6868 := 1;
+    AllDone := 1;
   if Level = 1 then
   begin
     if S = 'A' then
@@ -35,15 +35,15 @@ begin
     if S = 'G' then
       SetCell(X, Y, $1FB, 0, 0, 1, 0, FO);
     if S = 'H' then
-      SetCell(X, Y, W6840, 0, 0, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, 0, 0, 0, FO);
     if S = 'I' then
-      SetCell(X, Y, W6840, 0, 0, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, 0, 0, 0, FO);
     if S = 'J' then
       SetCell(X, Y, $295, 0, 0, 0, 0, FO);
     if S = 'K' then
-      SetCell(X, Y, W6840, 0, 0, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, 0, 0, 0, FO);
     if S = 'L' then
-      SetCell(X, Y, W6840, 0, 0, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, 0, 0, 0, FO);
     if S = 'M' then
       if SiteDone[W685A + 2] <> 0 then
         SetCell(X, Y, W685A + 2, 0, $205, 0, 0, FO)
@@ -116,38 +116,38 @@ begin
     if S = 'k' then
       SetCell(X, Y, $219, 0, 0, 0, 0, FO);
     if S = 'l' then
-      if B6868 = 0 then
+      if AllDone = 0 then
         SetCell(X, Y, $1FC, 0, 0, 1, 0, FO)
       else
-        SetCell(X, Y, W6840, 0, 0, 0, 0, FO);
+        SetCell(X, Y, BackTile, 0, 0, 0, 0, FO);
     if S = 'm' then
-      SetCell(X, Y, W6840, 0, $299, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, $299, 0, 0, FO);
     if S = 'n' then
-      SetCell(X, Y, W6840, 0, $29A, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, $29A, 0, 0, FO);
     if S = 'o' then
-      SetCell(X, Y, W6840, $29F, 0, 0, 1, FO);
+      SetCell(X, Y, BackTile, $29F, 0, 0, 1, FO);
     if S = 'p' then
-      SetCell(X, Y, W6840, $2A0, 0, 0, 1, FO);
+      SetCell(X, Y, BackTile, $2A0, 0, 0, 1, FO);
     if S = 'q' then
-      SetCell(X, Y, W6840, $2A1, 0, 0, 1, FO);
+      SetCell(X, Y, BackTile, $2A1, 0, 0, 1, FO);
     if S = 'r' then
-      SetCell(X, Y, W6840, $2A2, 0, 0, 1, FO);
+      SetCell(X, Y, BackTile, $2A2, 0, 0, 1, FO);
     if S = 's' then
       SetCell(X, Y, $2AB, 0, 0, 0, 0, FO);
     if S = 't' then
-      SetCell(X, Y, W6840, 0, $2AC, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, $2AC, 0, 0, FO);
     if S = 'u' then
-      SetCell(X, Y, W6840, 0, $2AD, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, $2AD, 0, 0, FO);
     if S = 'v' then
-      SetCell(X, Y, W6840, 0, $2AE, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, $2AE, 0, 0, FO);
     if S = 'x' then
-      SetCell(X, Y, W6840, 0, $2B0, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, $2B0, 0, 0, FO);
     if S = 'y' then
-      SetCell(X, Y, W6840, 0, $2B1, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, $2B1, 0, 0, FO);
     if S = 'z' then
       SetCell(X, Y, $2B2, 0, 0, 0, 0, FO);
     if S = 'w' then
-      SetCell(X, Y, W6840, 0, $2AF, 0, 0, FO);
+      SetCell(X, Y, BackTile, 0, $2AF, 0, 0, FO);
     if S = 'w' then
     begin
       SetCell(X, Y - 1, 2, 0, $B3, 1, 0, FO);

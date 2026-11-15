@@ -14,7 +14,7 @@ begin
   CamX := 0;
   CamY := 0;
   W6862 := 0;
-  W6866 := 0;
+  PageY := 0;
   R := ShowPicture('SAM1.END', 1, 0, 0);
   FadeIn(0);
   for I := 1 to 30 do

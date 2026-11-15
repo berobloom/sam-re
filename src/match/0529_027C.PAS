@@ -12,7 +12,7 @@ begin
       and (Shots[I].Y <= Y + 8) then
     begin
       ShotHit := True;
-      Shots[I].B1F := 1;
+      Shots[I].Remove := 1;
       DrawBack(Shots[I].X, Shots[I].Y);
       DrawFront(Shots[I].X, Shots[I].Y);
       if X and $F > 0 then

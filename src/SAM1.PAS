@@ -56,9 +56,9 @@ begin
       B6EF0 := 1;
       B6EF1 := 0;
       B6EE8 := 0;
-      Slots[1].W14 := 5;
+      Slots[1].Sprite := 5;
       if B6EE7 <> 0 then
-        Slots[1].W14 := $E;
+        Slots[1].Sprite := $E;
     end
     else if KeyLeft + $80 = W684A then
     begin
@@ -66,23 +66,23 @@ begin
       if B6EE7 = 0 then
       begin
         if B6EF1 = 0 then
-          Slots[1].W14 := $A
+          Slots[1].Sprite := $A
         else
-          Slots[1].W14 := 1;
+          Slots[1].Sprite := 1;
       end
       else if B6EF1 = 1 then
-        Slots[1].W14 := $D
+        Slots[1].Sprite := $D
       else
-        Slots[1].W14 := $E;
+        Slots[1].Sprite := $E;
     end
     else if W684A = KeyRight then
     begin
       B6EF1 := 1;
       B6EF0 := 0;
       B6EE8 := 0;
-      Slots[1].W14 := 1;
+      Slots[1].Sprite := 1;
       if B6EE7 <> 0 then
-        Slots[1].W14 := $D;
+        Slots[1].Sprite := $D;
     end
     else if KeyRight + $80 = W684A then
     begin
@@ -90,14 +90,14 @@ begin
       if B6EE7 = 0 then
       begin
         if B6EF0 = 0 then
-          Slots[1].W14 := 9
+          Slots[1].Sprite := 9
         else
-          Slots[1].W14 := 5;
+          Slots[1].Sprite := 5;
       end
       else if B6EF0 = 1 then
-        Slots[1].W14 := $E
+        Slots[1].Sprite := $E
       else
-        Slots[1].W14 := $D;
+        Slots[1].Sprite := $D;
     end
     else if W684A = KeyFire then
     begin
@@ -113,45 +113,45 @@ begin
           begin
             Shots[I].X := Slots[1].X;
             Shots[I].Y := Slots[1].Y;
-            Shots[I].W06 := Slots[1].W06;
-            Shots[I].W08 := Slots[1].W08;
-            Shots[I].W14 := $27;
-            if (Slots[1].W14 = 1) or (Slots[1].W14 = $D) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
+            Shots[I].PrevX := Slots[1].PrevX;
+            Shots[I].PrevY := Slots[1].PrevY;
+            Shots[I].Sprite := $27;
+            if (Slots[1].Sprite = 1) or (Slots[1].Sprite = $D) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
             begin
-              Shots[I].W16 := 1;
-              Slots[1].W14 := $B;
+              Shots[I].DirX := 1;
+              Slots[1].Sprite := $B;
             end
             else
             begin
-              Shots[I].W16 := -1;
-              Slots[1].W14 := $C;
+              Shots[I].DirX := -1;
+              Slots[1].Sprite := $C;
             end;
-            Shots[I].W18 := 0;
-            Shots[I].W0A := 1;
-            Shots[I].W1A := 8;
+            Shots[I].DirY := 0;
+            Shots[I].Anim := 1;
+            Shots[I].Speed := 8;
             Shots[I].W0C := 0;
             Shots[I].W0E := 0;
-            Shots[I].W1C := 7;
+            Shots[I].Kind := 7;
             Shots[I].Free := 0;
-            Shots[I].B1F := 0;
+            Shots[I].Remove := 0;
             Fired := True;
             Dec(Ammo);
-            W6858 := -1;
+            StatusCamX := -1;
             PlaySound(2);
-            if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $D) or (Slots[1].W14 = $B) then
-              Slots[1].W14 := $B
+            if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $D) or (Slots[1].Sprite = $B) then
+              Slots[1].Sprite := $B
             else
-              Slots[1].W14 := $C;
+              Slots[1].Sprite := $C;
           end;
         until (I = Gun) or Fired;
       end;
     end
     else if KeyFire + $80 = W684A then
     begin
-      if Slots[1].W14 = $B then
-        Slots[1].W14 := 9
-      else if Slots[1].W14 = $C then
-        Slots[1].W14 := $A;
+      if Slots[1].Sprite = $B then
+        Slots[1].Sprite := 9
+      else if Slots[1].Sprite = $C then
+        Slots[1].Sprite := $A;
     end
     else if W684A = KeyJump then
       B6EF3 := 1
@@ -163,10 +163,10 @@ begin
       begin
         B6EE9 := 1;
         B6EEA := 0;
-        if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
-          Slots[1].W14 := 1
+        if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
+          Slots[1].Sprite := 1
         else
-          Slots[1].W14 := 5;
+          Slots[1].Sprite := 5;
       end;
     end
     else if KeyUp + $80 = W684A then
@@ -174,10 +174,10 @@ begin
       if Level = 1 then
       begin
         B6EE9 := 0;
-        if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
-          Slots[1].W14 := 9
+        if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
+          Slots[1].Sprite := 9
         else
-          Slots[1].W14 := $A;
+          Slots[1].Sprite := $A;
       end;
     end
     else if W684A = KeyDown then
@@ -186,10 +186,10 @@ begin
       begin
         B6EEA := 1;
         B6EE9 := 0;
-        if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
-          Slots[1].W14 := 1
+        if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
+          Slots[1].Sprite := 1
         else
-          Slots[1].W14 := 5;
+          Slots[1].Sprite := 5;
       end;
     end
     else if KeyDown + $80 = W684A then
@@ -197,10 +197,10 @@ begin
       if Level = 1 then
       begin
         B6EEA := 0;
-        if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
-          Slots[1].W14 := 9
+        if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
+          Slots[1].Sprite := 9
         else
-          Slots[1].W14 := $A;
+          Slots[1].Sprite := $A;
       end;
     end
     else if W684A = 1 then
@@ -237,7 +237,7 @@ begin
       begin
         Ammo := Ammo + $19;
         B6A02 := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $96 then
@@ -249,7 +249,7 @@ begin
       begin
         Ammo := Ammo + $19;
         B6A02 := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $AF then
@@ -261,7 +261,7 @@ begin
       begin
         Ammo := Ammo + $19;
         B6A02 := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $A5 then
@@ -273,7 +273,7 @@ begin
       begin
         B6A12 := 1;
         B6A1A := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $AC then
@@ -285,7 +285,7 @@ begin
       begin
         B6A12 := 1;
         B6A1A := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $A2 then
@@ -297,7 +297,7 @@ begin
       begin
         B6A12 := 1;
         B6A1A := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $97 then
@@ -398,10 +398,10 @@ begin
   if B6EE5 <> 0 then
   begin
     B6EE5 := 0;
-    if Slots[1].W14 = $B then
-      Slots[1].W14 := 9
-    else if Slots[1].W14 = $C then
-      Slots[1].W14 := $A;
+    if Slots[1].Sprite = $B then
+      Slots[1].Sprite := 9
+    else if Slots[1].Sprite = $C then
+      Slots[1].Sprite := $A;
   end;
   if JoyCenterX - $32 > JoyX then
   begin
@@ -410,9 +410,9 @@ begin
     B6EE8 := 0;
     JoyMovedX := True;
     if (B6EE7 = 0) and (B6EE6 = 0) then
-      Slots[1].W14 := 5
+      Slots[1].Sprite := 5
     else
-      Slots[1].W14 := $E;
+      Slots[1].Sprite := $E;
   end
   else if JoyCenterX + $32 < JoyX then
   begin
@@ -421,16 +421,16 @@ begin
     B6EE8 := 0;
     JoyMovedX := True;
     if (B6EE7 = 0) and (B6EE6 = 0) then
-      Slots[1].W14 := 1
+      Slots[1].Sprite := 1
     else
-      Slots[1].W14 := $D;
+      Slots[1].Sprite := $D;
   end
   else if JoyMovedX then
   begin
-    if (B6EF1 = 1) or (Slots[1].W14 = 1) then
-      Slots[1].W14 := 9
+    if (B6EF1 = 1) or (Slots[1].Sprite = 1) then
+      Slots[1].Sprite := 9
     else
-      Slots[1].W14 := $A;
+      Slots[1].Sprite := $A;
     B6EF1 := 0;
     B6EF0 := 0;
     JoyMovedX := False;
@@ -440,29 +440,29 @@ begin
     begin
       B6EE9 := 1;
       JoyMovedY := True;
-      if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
-        Slots[1].W14 := 1
+      if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
+        Slots[1].Sprite := 1
       else
-        Slots[1].W14 := 5;
+        Slots[1].Sprite := 5;
     end
     else if JoyCenterY + $32 < JoyY then
     begin
       B6EEA := 1;
       JoyMovedY := True;
-      if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
-        Slots[1].W14 := 1
+      if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
+        Slots[1].Sprite := 1
       else
-        Slots[1].W14 := 5;
+        Slots[1].Sprite := 5;
     end
     else if JoyMovedY then
     begin
       JoyMovedY := False;
       B6EE9 := 0;
       B6EEA := 0;
-      if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
-        Slots[1].W14 := 9
+      if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
+        Slots[1].Sprite := 9
       else
-        Slots[1].W14 := $A;
+        Slots[1].Sprite := $A;
     end;
   if FireButton and (Ammo > 0) and (Level > 1) and (B6A1B = 0) then
   begin
@@ -474,37 +474,37 @@ begin
       begin
         Shots[I].X := Slots[1].X;
         Shots[I].Y := Slots[1].Y;
-        Shots[I].W06 := Slots[1].W06;
-        Shots[I].W08 := Slots[1].W08;
-        Shots[I].W14 := $27;
-        if (Slots[1].W14 = 1) or (Slots[1].W14 = $D) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
+        Shots[I].PrevX := Slots[1].PrevX;
+        Shots[I].PrevY := Slots[1].PrevY;
+        Shots[I].Sprite := $27;
+        if (Slots[1].Sprite = 1) or (Slots[1].Sprite = $D) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
         begin
-          Shots[I].W16 := 1;
+          Shots[I].DirX := 1;
           B6EE5 := 1;
-          Slots[1].W14 := $B;
+          Slots[1].Sprite := $B;
         end
         else
         begin
-          Shots[I].W16 := -1;
+          Shots[I].DirX := -1;
           B6EE5 := 1;
-          Slots[1].W14 := $C;
+          Slots[1].Sprite := $C;
         end;
-        Shots[I].W18 := 0;
-        Shots[I].W0A := 1;
-        Shots[I].W1A := 8;
+        Shots[I].DirY := 0;
+        Shots[I].Anim := 1;
+        Shots[I].Speed := 8;
         Shots[I].W0C := 0;
         Shots[I].W0E := 0;
-        Shots[I].W1C := 7;
+        Shots[I].Kind := 7;
         Shots[I].Free := 0;
-        Shots[I].B1F := 0;
+        Shots[I].Remove := 0;
         Fired := True;
         Dec(Ammo);
-        W6858 := -1;
+        StatusCamX := -1;
         PlaySound(2);
-        if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $D) or (Slots[1].W14 = $B) then
-          Slots[1].W14 := $B
+        if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $D) or (Slots[1].Sprite = $B) then
+          Slots[1].Sprite := $B
         else
-          Slots[1].W14 := $C;
+          Slots[1].Sprite := $C;
       end;
     until (I = Gun) or Fired;
   end;
@@ -528,7 +528,7 @@ begin
       if W69CC = 0 then
       begin
         W69CA := 0;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end;
     if W69D4 > 0 then
@@ -537,7 +537,7 @@ begin
       if W69D4 = 0 then
       begin
         B69D6 := 0;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end;
     if W69D0 > 0 then
@@ -547,7 +547,7 @@ begin
       begin
         B69D2 := 1;
         B69D3 := 0;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end;
   end;
@@ -813,91 +813,91 @@ begin
           SetSplit($BE);
         while (B6EEC = 0) and (B6EED = 0) do
         begin
-          if W6858 <> CamX then
+          if StatusCamX <> CamX then
             DrawStatus;
           if W6852 > 7 then
           begin
             W6852 := 0;
             if JoyOn then
               ReadJoystick;
-            if (Slots[1].W14 = 9) and (B6EF1 <> 0) then
-              Slots[1].W14 := 1
+            if (Slots[1].Sprite = 9) and (B6EF1 <> 0) then
+              Slots[1].Sprite := 1
             else
-              if (Slots[1].W14 = $A) and (B6EF0 <> 0) then
-                Slots[1].W14 := 5
+              if (Slots[1].Sprite = $A) and (B6EF0 <> 0) then
+                Slots[1].Sprite := 5
               else
-                if ((Slots[1].W14 = $A) or (Slots[1].W14 = 9)) and ((B6EEA <> 0) or (B6EE9 <> 0)) then
-                  Slots[1].W14 := 1;
+                if ((Slots[1].Sprite = $A) or (Slots[1].Sprite = 9)) and ((B6EEA <> 0) or (B6EE9 <> 0)) then
+                  Slots[1].Sprite := 1;
             FlipPage;
-            DrawBack(Slots[1].W06 - $10, Slots[1].W08 - $10);
-            DrawBack(Slots[1].W06 - $10, Slots[1].W08);
-            DrawBack(Slots[1].W06 - $10, Slots[1].W08 + $10);
-            DrawBack(Slots[1].W06, Slots[1].W08 - $10);
-            DrawBack(Slots[1].W06, Slots[1].W08);
-            DrawBack(Slots[1].W06, Slots[1].W08 + $10);
-            DrawBack(Slots[1].W06 + $10, Slots[1].W08 - $10);
-            DrawBack(Slots[1].W06 + $10, Slots[1].W08);
-            DrawBack(Slots[1].W06 + $10, Slots[1].W08 + $10);
-            for W684C := 2 to $19 do
-              if Slots[W684C].Free = 0 then
-                if Slots[W684C].B1F <> 0 then
+            DrawBack(Slots[1].PrevX - $10, Slots[1].PrevY - $10);
+            DrawBack(Slots[1].PrevX - $10, Slots[1].PrevY);
+            DrawBack(Slots[1].PrevX - $10, Slots[1].PrevY + $10);
+            DrawBack(Slots[1].PrevX, Slots[1].PrevY - $10);
+            DrawBack(Slots[1].PrevX, Slots[1].PrevY);
+            DrawBack(Slots[1].PrevX, Slots[1].PrevY + $10);
+            DrawBack(Slots[1].PrevX + $10, Slots[1].PrevY - $10);
+            DrawBack(Slots[1].PrevX + $10, Slots[1].PrevY);
+            DrawBack(Slots[1].PrevX + $10, Slots[1].PrevY + $10);
+            for SlotIdx := 2 to $19 do
+              if Slots[SlotIdx].Free = 0 then
+                if Slots[SlotIdx].Remove <> 0 then
                 begin
-                  Slots[W684C].Free := 1;
-                  DrawBack(Slots[W684C].W06, Slots[W684C].W08);
-                  DrawBack(Slots[W684C].W06 - $10, Slots[W684C].W08);
-                  DrawBack(Slots[W684C].W06 + $10, Slots[W684C].W08);
-                  DrawBack(Slots[W684C].W06 + $20, Slots[W684C].W08);
-                  DrawBack(Slots[W684C].W06 - $10, Slots[W684C].W08 - $10);
-                  DrawBack(Slots[W684C].W06 - $10, Slots[W684C].W08 + $10);
-                  DrawBack(Slots[W684C].W06 + $10, Slots[W684C].W08 - $10);
-                  DrawBack(Slots[W684C].W06 + $10, Slots[W684C].W08 + $10);
-                  DrawBack(Slots[W684C].W06, Slots[W684C].W08 - $10);
-                  DrawBack(Slots[W684C].W06, Slots[W684C].W08 + $10);
+                  Slots[SlotIdx].Free := 1;
+                  DrawBack(Slots[SlotIdx].PrevX, Slots[SlotIdx].PrevY);
+                  DrawBack(Slots[SlotIdx].PrevX - $10, Slots[SlotIdx].PrevY);
+                  DrawBack(Slots[SlotIdx].PrevX + $10, Slots[SlotIdx].PrevY);
+                  DrawBack(Slots[SlotIdx].PrevX + $20, Slots[SlotIdx].PrevY);
+                  DrawBack(Slots[SlotIdx].PrevX - $10, Slots[SlotIdx].PrevY - $10);
+                  DrawBack(Slots[SlotIdx].PrevX - $10, Slots[SlotIdx].PrevY + $10);
+                  DrawBack(Slots[SlotIdx].PrevX + $10, Slots[SlotIdx].PrevY - $10);
+                  DrawBack(Slots[SlotIdx].PrevX + $10, Slots[SlotIdx].PrevY + $10);
+                  DrawBack(Slots[SlotIdx].PrevX, Slots[SlotIdx].PrevY - $10);
+                  DrawBack(Slots[SlotIdx].PrevX, Slots[SlotIdx].PrevY + $10);
                 end
                 else
-                  if OnScreen($28, W684C) or (Slots[W684C].W1C = $1C) or (Slots[W684C].W1C = $15)
-                      or (Slots[W684E].W1C = $E) or (Slots[W684E].B1F <> 0) then
+                  if OnScreen($28, SlotIdx) or (Slots[SlotIdx].Kind = $1C) or (Slots[SlotIdx].Kind = $15)
+                      or (Slots[RowIdx].Kind = $E) or (Slots[RowIdx].Remove <> 0) then
                   begin
-                    DrawBack(Slots[W684C].W06, Slots[W684C].W08);
-                    if Slots[W684C].W06 and $F > 0 then
-                      DrawBack(Slots[W684C].W06 + $10, Slots[W684C].W08);
-                    case Slots[W684C].W14 of
+                    DrawBack(Slots[SlotIdx].PrevX, Slots[SlotIdx].PrevY);
+                    if Slots[SlotIdx].PrevX and $F > 0 then
+                      DrawBack(Slots[SlotIdx].PrevX + $10, Slots[SlotIdx].PrevY);
+                    case Slots[SlotIdx].Sprite of
                       $353:
                       begin
-                        DrawBack(Slots[W684C].W06 + $30, Slots[W684C].W08);
-                        DrawBack(Slots[W684C].W06 + $20, Slots[W684C].W08);
-                        DrawBack(Slots[W684C].W06 + $10, Slots[W684C].W08);
+                        DrawBack(Slots[SlotIdx].PrevX + $30, Slots[SlotIdx].PrevY);
+                        DrawBack(Slots[SlotIdx].PrevX + $20, Slots[SlotIdx].PrevY);
+                        DrawBack(Slots[SlotIdx].PrevX + $10, Slots[SlotIdx].PrevY);
                       end;
                       $321..$383, $1389:
                       begin
-                        DrawBack(Slots[W684C].W06, Slots[W684C].W08 - $10);
-                        if Slots[W684C].W06 and $F > 0 then
-                          DrawBack(Slots[W684C].W06 + $F, Slots[W684C].W08 - $10);
+                        DrawBack(Slots[SlotIdx].PrevX, Slots[SlotIdx].PrevY - $10);
+                        if Slots[SlotIdx].PrevX and $F > 0 then
+                          DrawBack(Slots[SlotIdx].PrevX + $F, Slots[SlotIdx].PrevY - $10);
                       end;
                       $72:
                       begin
-                        DrawBack(Slots[W684C].W06, Slots[W684C].W08 - $10);
-                        DrawBack(Slots[W684C].W06, Slots[W684C].W08 + $10);
-                        if Slots[W684C].W06 and $F > 0 then
+                        DrawBack(Slots[SlotIdx].PrevX, Slots[SlotIdx].PrevY - $10);
+                        DrawBack(Slots[SlotIdx].PrevX, Slots[SlotIdx].PrevY + $10);
+                        if Slots[SlotIdx].PrevX and $F > 0 then
                         begin
-                          DrawBack(Slots[W684C].W06 + $F, Slots[W684C].W08 + $10);
-                          DrawBack(Slots[W684C].W06 + $F, Slots[W684C].W08 - $10);
+                          DrawBack(Slots[SlotIdx].PrevX + $F, Slots[SlotIdx].PrevY + $10);
+                          DrawBack(Slots[SlotIdx].PrevX + $F, Slots[SlotIdx].PrevY - $10);
                         end;
                       end;
                       $65:
                       begin
-                        DrawBack(Slots[W684C].W06, Slots[W684C].W08 - $10);
-                        if Slots[W684C].W06 and $F > 0 then
-                          DrawBack(Slots[W684C].W06 + $F, Slots[W684C].W08 - $10);
+                        DrawBack(Slots[SlotIdx].PrevX, Slots[SlotIdx].PrevY - $10);
+                        if Slots[SlotIdx].PrevX and $F > 0 then
+                          DrawBack(Slots[SlotIdx].PrevX + $F, Slots[SlotIdx].PrevY - $10);
                       end;
                     end;
                   end;
-            for W684C := 1 to Gun do
+            for SlotIdx := 1 to Gun do
             begin
-              DrawBack(Shots[W684C].W06, Shots[W684C].W08);
-              DrawBack(Shots[W684C].W06 + $10, Shots[W684C].W08);
-              DrawBack(Shots[W684C].W06, Shots[W684C].W08 + $10);
-              DrawBack(Shots[W684C].W06 + $10, Shots[W684C].W08 + $10);
+              DrawBack(Shots[SlotIdx].PrevX, Shots[SlotIdx].PrevY);
+              DrawBack(Shots[SlotIdx].PrevX + $10, Shots[SlotIdx].PrevY);
+              DrawBack(Shots[SlotIdx].PrevX, Shots[SlotIdx].PrevY + $10);
+              DrawBack(Shots[SlotIdx].PrevX + $10, Shots[SlotIdx].PrevY + $10);
             end;
             if (B6A1B = 0) and (B6A64 = 0) then
             begin
@@ -911,12 +911,12 @@ begin
             else
               if B6A1B <> 0 then
               begin
-                Slots[1].W06 := Slots[1].X;
-                Slots[1].W08 := Slots[1].Y;
-                if Slots[1].W14 <> $F then
-                  Slots[1].W14 := $F
+                Slots[1].PrevX := Slots[1].X;
+                Slots[1].PrevY := Slots[1].Y;
+                if Slots[1].Sprite <> $F then
+                  Slots[1].Sprite := $F
                 else
-                  Slots[1].W14 := $10;
+                  Slots[1].Sprite := $10;
                 if ArcLen = $23 then
                   PlaySound($16);
                 Dec(ArcLen);
@@ -935,8 +935,8 @@ begin
               else
                 if B6A64 <> 0 then
                 begin
-                  Slots[1].W06 := Slots[1].X;
-                  Slots[1].W08 := Slots[1].Y;
+                  Slots[1].PrevX := Slots[1].X;
+                  Slots[1].PrevY := Slots[1].Y;
                   if RespawnDelay = 8 then
                     PlaySound(8);
                   Dec(RespawnDelay);
@@ -946,71 +946,71 @@ begin
                     Level := 1;
                     LevelReset;
                     LoadLevel(Level);
-                    if B6868 <> 0 then
+                    if AllDone <> 0 then
                       SecurityDone;
                   end
                   else
                     if RespawnDelay > 0 then
-                      if Slots[1].W16 = -1 then
+                      if Slots[1].DirX = -1 then
                         Dec(Slots[1].X, 2)
                       else
                         Inc(Slots[1].X, 2);
                 end;
             ActorFrame;
-            for W684C := 1 to Gun do
-              if Shots[W684C].Free = 0 then
-                if Shots[W684C].B1F <> 0 then
+            for SlotIdx := 1 to Gun do
+              if Shots[SlotIdx].Free = 0 then
+                if Shots[SlotIdx].Remove <> 0 then
                 begin
-                  DrawBack(Shots[W684C].X, Shots[W684C].Y);
-                  DrawBack(Shots[W684C].X + $10, Shots[W684C].Y);
-                  DrawFront(Shots[W684C].X, Shots[W684C].Y);
-                  DrawFront(Shots[W684C].X + $10, Shots[W684C].Y);
-                  DrawBack(Shots[W684C].X, Shots[W684C].Y + $10);
-                  DrawBack(Shots[W684C].X + $10, Shots[W684C].Y + $10);
-                  DrawFront(Shots[W684C].X, Shots[W684C].Y + $10);
-                  DrawFront(Shots[W684C].X + $10, Shots[W684C].Y + $10);
-                  Shots[W684C].Free := 1;
+                  DrawBack(Shots[SlotIdx].X, Shots[SlotIdx].Y);
+                  DrawBack(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y);
+                  DrawFront(Shots[SlotIdx].X, Shots[SlotIdx].Y);
+                  DrawFront(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y);
+                  DrawBack(Shots[SlotIdx].X, Shots[SlotIdx].Y + $10);
+                  DrawBack(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y + $10);
+                  DrawFront(Shots[SlotIdx].X, Shots[SlotIdx].Y + $10);
+                  DrawFront(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y + $10);
+                  Shots[SlotIdx].Free := 1;
                 end
                 else
                 begin
-                  if Shots[W684C].W14 = $272 then
+                  if Shots[SlotIdx].Sprite = $272 then
                   begin
-                    DrawTileB(Gfx[6]^.Tile[Shots[W684C].W0E shr 1 + $19], Shots[W684C].X,
-                        Shots[W684C].Y + W6866);
-                    Dec(Shots[W684C].W0E);
-                    if Shots[W684C].W0E <= 0 then
+                    DrawTileB(Gfx[6]^.Tile[Shots[SlotIdx].W0E shr 1 + $19], Shots[SlotIdx].X,
+                        Shots[SlotIdx].Y + PageY);
+                    Dec(Shots[SlotIdx].W0E);
+                    if Shots[SlotIdx].W0E <= 0 then
                     begin
-                      Shots[W684C].B1F := 1;
-                      DrawBack(Shots[W684C].X, Shots[W684C].Y);
-                      DrawBack(Shots[W684C].X - $10, Shots[W684C].Y);
-                      DrawBack(Shots[W684C].X + $10, Shots[W684C].Y);
-                      DrawBack(Shots[W684C].X, Shots[W684C].Y + $10);
-                      DrawBack(Shots[W684C].X - $10, Shots[W684C].Y + $10);
-                      DrawBack(Shots[W684C].X + $10, Shots[W684C].Y + $10);
+                      Shots[SlotIdx].Remove := 1;
+                      DrawBack(Shots[SlotIdx].X, Shots[SlotIdx].Y);
+                      DrawBack(Shots[SlotIdx].X - $10, Shots[SlotIdx].Y);
+                      DrawBack(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y);
+                      DrawBack(Shots[SlotIdx].X, Shots[SlotIdx].Y + $10);
+                      DrawBack(Shots[SlotIdx].X - $10, Shots[SlotIdx].Y + $10);
+                      DrawBack(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y + $10);
                     end;
                   end
                   else
-                    if not ShotOnScreen($28, W684C) then
+                    if not ShotOnScreen($28, SlotIdx) then
                     begin
-                      DrawBack(Shots[W684C].X, Shots[W684C].Y);
-                      DrawBack(Shots[W684C].X + $10, Shots[W684C].Y);
-                      DrawBack(Shots[W684C].X, Shots[W684C].Y + $10);
-                      DrawBack(Shots[W684C].X + $10, Shots[W684C].Y + $10);
-                      Shots[W684C].B1F := 1;
+                      DrawBack(Shots[SlotIdx].X, Shots[SlotIdx].Y);
+                      DrawBack(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y);
+                      DrawBack(Shots[SlotIdx].X, Shots[SlotIdx].Y + $10);
+                      DrawBack(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y + $10);
+                      Shots[SlotIdx].Remove := 1;
                     end
                     else
                     begin
-                      DrawBack(Shots[W684C].X, Shots[W684C].Y);
-                      DrawBack(Shots[W684C].X + $10, Shots[W684C].Y);
-                      DrawBack(Shots[W684C].X, Shots[W684C].Y + $10);
-                      DrawBack(Shots[W684C].X + $10, Shots[W684C].Y + $10);
-                      DrawTile(Gfx[1]^.Tile[Shots[W684C].W14 - 1 + Shots[W684C].W0A], Shots[W684C].X shr 3,
-                          Shots[W684C].Y + W6866);
+                      DrawBack(Shots[SlotIdx].X, Shots[SlotIdx].Y);
+                      DrawBack(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y);
+                      DrawBack(Shots[SlotIdx].X, Shots[SlotIdx].Y + $10);
+                      DrawBack(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y + $10);
+                      DrawTile(Gfx[1]^.Tile[Shots[SlotIdx].Sprite - 1 + Shots[SlotIdx].Anim], Shots[SlotIdx].X shr 3,
+                          Shots[SlotIdx].Y + PageY);
                     end;
-                  DrawFront(Shots[W684C].X, Shots[W684C].Y);
-                  DrawFront(Shots[W684C].X + $10, Shots[W684C].Y);
-                  DrawFront(Shots[W684C].X, Shots[W684C].Y + $10);
-                  DrawFront(Shots[W684C].X + $10, Shots[W684C].Y + $10);
+                  DrawFront(Shots[SlotIdx].X, Shots[SlotIdx].Y);
+                  DrawFront(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y);
+                  DrawFront(Shots[SlotIdx].X, Shots[SlotIdx].Y + $10);
+                  DrawFront(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y + $10);
                 end;
             if B6A06 <> 0 then
             begin
@@ -1044,15 +1044,15 @@ begin
               else
                 SetViewStartAlt(CamX, CamY + $10);
             end;
-            W684C := 1;
-            if (Slots[1].W14 = 1) or (Slots[1].W14 = 5) then
+            SlotIdx := 1;
+            if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 5) then
             begin
-              Inc(Slots[1].W0A, Slots[1].W1A);
-              if Slots[1].W0A > $13 then
-                Slots[1].W0A := 1;
+              Inc(Slots[1].Anim, Slots[1].Speed);
+              if Slots[1].Anim > $13 then
+                Slots[1].Anim := 1;
             end
             else
-              Slots[1].W0A := 1;
+              Slots[1].Anim := 1;
             if B6A67 <> 0 then
             begin
               Dec(B6A68);
@@ -1069,457 +1069,457 @@ begin
             end;
             if Slots[1].W00 > 0 then
             begin
-              DrawSprite(Gfx[3]^.Tile[Slots[1].W0A div 5 + Slots[1].W14], Slots[1].X, Slots[1].Y + W6866);
+              DrawSprite(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
               Dec(Slots[1].W00);
             end
             else
               if Slots[1].X and 7 = 0 then
-                DrawTile(Gfx[3]^.Tile[Slots[1].W0A div 5 + Slots[1].W14], Slots[1].X shr 3,
-                    Slots[1].Y + W6866)
+                DrawTile(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X shr 3,
+                    Slots[1].Y + PageY)
               else
-                DrawTileB(Gfx[3]^.Tile[Slots[1].W0A div 5 + Slots[1].W14], Slots[1].X, Slots[1].Y + W6866);
+                DrawTileB(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
             if B6A06 <> 0 then
               if W6A08 < 0 then
-                DrawTileB(Gfx[10]^.Tile[W6A08 div 5 + $28], Slots[1].X, Slots[1].Y + W6866)
+                DrawTileB(Gfx[10]^.Tile[W6A08 div 5 + $28], Slots[1].X, Slots[1].Y + PageY)
               else
-                DrawTileB(Gfx[10]^.Tile[$28 - W6A08 div 5], Slots[1].X, Slots[1].Y + W6866);
-            if (B6EF0 <> 0) and (Slots[1].W14 = $C) then
-              Slots[1].W14 := 5
+                DrawTileB(Gfx[10]^.Tile[$28 - W6A08 div 5], Slots[1].X, Slots[1].Y + PageY);
+            if (B6EF0 <> 0) and (Slots[1].Sprite = $C) then
+              Slots[1].Sprite := 5
             else
-              if (B6EF1 <> 0) and (Slots[1].W14 = $B) then
-                Slots[1].W14 := 1;
-            for W684C := 2 to $19 do
-              if (Slots[W684C].Free = 0) and (Slots[W684C].B1F = 0) and (OnScreen($20, W684C)
-                  or (Slots[W684C].W1C = $1C) or (Slots[W684C].W1C = $15) or (Slots[W684E].W1C = $E)) then
-                if Slots[W684C].W00 > 0 then
+              if (B6EF1 <> 0) and (Slots[1].Sprite = $B) then
+                Slots[1].Sprite := 1;
+            for SlotIdx := 2 to $19 do
+              if (Slots[SlotIdx].Free = 0) and (Slots[SlotIdx].Remove = 0) and (OnScreen($20, SlotIdx)
+                  or (Slots[SlotIdx].Kind = $1C) or (Slots[SlotIdx].Kind = $15) or (Slots[RowIdx].Kind = $E)) then
+                if Slots[SlotIdx].W00 > 0 then
                 begin
-                  case Slots[W684C].W14 of
+                  case Slots[SlotIdx].Sprite of
                     1..$32:
-                      DrawSprite(Gfx[1]^.Tile[Slots[W684C].W14 + Slots[W684C].W0A div 5], Slots[W684C].X,
-                          Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[1]^.Tile[Slots[SlotIdx].Sprite + Slots[SlotIdx].Anim div 5], Slots[SlotIdx].X,
+                          Slots[SlotIdx].Y + PageY);
                     $65:
-                      if Slots[W684C].W12 = 0 then
+                      if Slots[SlotIdx].W12 = 0 then
                       begin
-                        DrawSprite(Gfx[2]^.Tile[Slots[W684C].W14 - $64 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866 - $10);
-                        if Slots[W684C].W16 < 0 then
-                          DrawSprite(Gfx[2]^.Tile[5], Slots[W684C].X, Slots[W684C].Y + W6866)
+                        DrawSprite(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $64 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
+                        if Slots[SlotIdx].DirX < 0 then
+                          DrawSprite(Gfx[2]^.Tile[5], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY)
                         else
-                          DrawSprite(Gfx[2]^.Tile[45], Slots[W684C].X, Slots[W684C].Y + W6866);
+                          DrawSprite(Gfx[2]^.Tile[45], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       end
                       else
                       begin
-                        if Slots[W684C].W16 < 0 then
-                          DrawSprite(Gfx[2]^.Tile, Slots[W684C].X, Slots[W684C].Y + W6866 - $10)
+                        if Slots[SlotIdx].DirX < 0 then
+                          DrawSprite(Gfx[2]^.Tile, Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10)
                         else
-                          DrawSprite(Gfx[2]^.Tile[41], Slots[W684C].X, Slots[W684C].Y + W6866 - $10);
-                        DrawSprite(Gfx[2]^.Tile[Slots[W684C].W14 - $60 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                          DrawSprite(Gfx[2]^.Tile[41], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
+                        DrawSprite(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $60 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       end;
                     $66..$96:
-                      DrawSprite(Gfx[2]^.Tile[Slots[W684C].W14 - $64 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $64 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $97..$C8:
-                      DrawSprite(Gfx[10]^.Tile[Slots[W684C].W14 - $96 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[10]^.Tile[Slots[SlotIdx].Sprite - $96 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $FB..$12C:
-                      DrawSprite(Gfx[15]^.Tile[Slots[W684C].W14 - $FA + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[15]^.Tile[Slots[SlotIdx].Sprite - $FA + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $12D..$15E:
-                      DrawSprite(Gfx[13]^.Tile[Slots[W684C].W14 - $12C + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[13]^.Tile[Slots[SlotIdx].Sprite - $12C + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $15F..$190:
-                      DrawSprite(Gfx[16]^.Tile[Slots[W684C].W14 - $15E + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[16]^.Tile[Slots[SlotIdx].Sprite - $15E + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $191..$1C2:
-                      DrawSprite(Gfx[4]^.Tile[Slots[W684C].W14 - $190 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[4]^.Tile[Slots[SlotIdx].Sprite - $190 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $1C3..$1E7:
-                      DrawSprite(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $1E8..$1EA:
-                      DrawSprite(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A shr 3],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim shr 3],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $1EB:
-                      DrawSprite(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $1EC..$1EE:
-                      DrawSprite(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + (Slots[W684C].W0A - $15) shr 3],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + (Slots[SlotIdx].Anim - $15) shr 3],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $1EF..$1F4:
-                      DrawSprite(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $1F5..$226:
-                      DrawSprite(Gfx[1]^.Tile[Slots[W684C].W14 - $1F4 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[1]^.Tile[Slots[SlotIdx].Sprite - $1F4 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $259..$28A:
-                      DrawSprite(Gfx[6]^.Tile[Slots[W684C].W14 - $258 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[6]^.Tile[Slots[SlotIdx].Sprite - $258 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $28B..$2BC:
-                      DrawSprite(Gfx[7]^.Tile[Slots[W684C].W14 - $28A + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[7]^.Tile[Slots[SlotIdx].Sprite - $28A + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $2BD..$2EE:
-                      DrawSprite(Gfx[8]^.Tile[Slots[W684C].W14 - $2BC + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[8]^.Tile[Slots[SlotIdx].Sprite - $2BC + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $2EF..$320:
-                      DrawSprite(Gfx[9]^.Tile[Slots[W684C].W14 - $2EE + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[9]^.Tile[Slots[SlotIdx].Sprite - $2EE + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $321:
                     begin
-                      DrawSprite(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866 - $10);
-                      DrawSprite(Gfx[12]^.Tile[Slots[W684C].W14 - $31C + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
+                      DrawSprite(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $31C + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     end;
                     $331:
-                      if Slots[W684C].W12 = 0 then
+                      if Slots[SlotIdx].W12 = 0 then
                       begin
-                        DrawSprite(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866 - $10);
-                        if Slots[W684C].W16 < 0 then
-                          DrawSprite(Gfx[12]^.Tile[21], Slots[W684C].X, Slots[W684C].Y + W6866)
+                        DrawSprite(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
+                        if Slots[SlotIdx].DirX < 0 then
+                          DrawSprite(Gfx[12]^.Tile[21], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY)
                         else
-                          DrawSprite(Gfx[12]^.Tile[33], Slots[W684C].X, Slots[W684C].Y + W6866);
+                          DrawSprite(Gfx[12]^.Tile[33], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       end
                       else
                       begin
-                        if Slots[W684C].W16 < 0 then
-                          DrawSprite(Gfx[12]^.Tile[17], Slots[W684C].X, Slots[W684C].Y + W6866 - $10)
+                        if Slots[SlotIdx].DirX < 0 then
+                          DrawSprite(Gfx[12]^.Tile[17], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10)
                         else
-                          DrawSprite(Gfx[12]^.Tile[29], Slots[W684C].X, Slots[W684C].Y + W6866 - $10);
-                        DrawSprite(Gfx[12]^.Tile[Slots[W684C].W14 - $31C + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                          DrawSprite(Gfx[12]^.Tile[29], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
+                        DrawSprite(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $31C + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       end;
                     $339..$33C:
-                      DrawSprite(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $345..$352:
-                      DrawSprite(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     $353:
                     begin
-                      DrawSprite(Gfx[14]^.Tile[Slots[W684C].W14 - $352 + Slots[W684C].W0A div 5],
-                          Slots[W684C].X, Slots[W684C].Y + W6866);
-                      DrawSprite(Gfx[14]^.Tile[Slots[W684C].W14 - $34E + Slots[W684C].W0A div 5],
-                          Slots[W684C].X + $10, Slots[W684C].Y + W6866);
+                      DrawSprite(Gfx[14]^.Tile[Slots[SlotIdx].Sprite - $352 + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
+                      DrawSprite(Gfx[14]^.Tile[Slots[SlotIdx].Sprite - $34E + Slots[SlotIdx].Anim div 5],
+                          Slots[SlotIdx].X + $10, Slots[SlotIdx].Y + PageY);
                     end;
                   end;
-                  Dec(Slots[W684C].W00);
+                  Dec(Slots[SlotIdx].W00);
                 end
                 else
-                  if Slots[W684C].X and 7 = 0 then
-                    case Slots[W684C].W14 of
+                  if Slots[SlotIdx].X and 7 = 0 then
+                    case Slots[SlotIdx].Sprite of
                       1..$32:
-                        DrawTile(Gfx[1]^.Tile[Slots[W684C].W14 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[1]^.Tile[Slots[SlotIdx].Sprite + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $65:
-                        if Slots[W684C].W12 = 0 then
+                        if Slots[SlotIdx].W12 = 0 then
                         begin
-                          DrawTile(Gfx[2]^.Tile[Slots[W684C].W14 - $64 + Slots[W684C].W0A div 5],
-                              Slots[W684C].X shr 3, Slots[W684C].Y + W6866 - $10);
-                          if Slots[W684C].W16 < 0 then
-                            DrawTile(Gfx[2]^.Tile[5], Slots[W684C].X shr 3, Slots[W684C].Y + W6866)
+                          DrawTile(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $64 + Slots[SlotIdx].Anim div 5],
+                              Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY - $10);
+                          if Slots[SlotIdx].DirX < 0 then
+                            DrawTile(Gfx[2]^.Tile[5], Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY)
                           else
-                            DrawTile(Gfx[2]^.Tile[45], Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                            DrawTile(Gfx[2]^.Tile[45], Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                         end
                         else
                         begin
-                          if Slots[W684C].W16 < 0 then
-                            DrawTile(Gfx[2]^.Tile, Slots[W684C].X shr 3, Slots[W684C].Y + W6866 - $10)
+                          if Slots[SlotIdx].DirX < 0 then
+                            DrawTile(Gfx[2]^.Tile, Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY - $10)
                           else
-                            DrawTile(Gfx[2]^.Tile[41], Slots[W684C].X shr 3, Slots[W684C].Y + W6866 - $10);
-                          DrawTile(Gfx[2]^.Tile[Slots[W684C].W14 - $60 + Slots[W684C].W0A div 5],
-                              Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                            DrawTile(Gfx[2]^.Tile[41], Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY - $10);
+                          DrawTile(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $60 + Slots[SlotIdx].Anim div 5],
+                              Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                         end;
                       $66..$96:
-                        DrawTile(Gfx[2]^.Tile[Slots[W684C].W14 - $64 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $64 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $97..$C8:
-                        DrawTile(Gfx[10]^.Tile[Slots[W684C].W14 - $96 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[10]^.Tile[Slots[SlotIdx].Sprite - $96 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $FB..$12C:
-                        DrawTile(Gfx[15]^.Tile[Slots[W684C].W14 - $FA + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[15]^.Tile[Slots[SlotIdx].Sprite - $FA + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $12D..$15E:
-                        DrawTile(Gfx[13]^.Tile[Slots[W684C].W14 - $12C + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[13]^.Tile[Slots[SlotIdx].Sprite - $12C + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $15F..$190:
-                        DrawTile(Gfx[16]^.Tile[Slots[W684C].W14 - $15E + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[16]^.Tile[Slots[SlotIdx].Sprite - $15E + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $191..$1C2:
-                        DrawTile(Gfx[4]^.Tile[Slots[W684C].W14 - $190 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[4]^.Tile[Slots[SlotIdx].Sprite - $190 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $1C3..$1E7:
-                        DrawTile(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $1E8..$1EA:
-                        DrawTile(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A shr 3],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim shr 3],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $1EB:
-                        DrawTile(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $1EC..$1EE:
-                        DrawTile(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + (Slots[W684C].W0A - $15) shr 3],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + (Slots[SlotIdx].Anim - $15) shr 3],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $1EF..$1F4:
-                        DrawTile(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $1F5..$226:
-                        DrawTile(Gfx[1]^.Tile[Slots[W684C].W14 - $1F4 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[1]^.Tile[Slots[SlotIdx].Sprite - $1F4 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $259..$270:
-                        DrawTile(Gfx[6]^.Tile[Slots[W684C].W14 - $258 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[6]^.Tile[Slots[SlotIdx].Sprite - $258 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $271:
-                        DrawTile(Gfx[6]^.Tile[Slots[W684C].W14 - $258 + Slots[W684C].W0A div 3],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[6]^.Tile[Slots[SlotIdx].Sprite - $258 + Slots[SlotIdx].Anim div 3],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $272..$28A:
-                        DrawTile(Gfx[6]^.Tile[Slots[W684C].W14 - $258 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[6]^.Tile[Slots[SlotIdx].Sprite - $258 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $28B..$2BC:
-                        DrawTile(Gfx[7]^.Tile[Slots[W684C].W14 - $28A + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[7]^.Tile[Slots[SlotIdx].Sprite - $28A + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $2BD..$2EE:
-                        DrawTile(Gfx[8]^.Tile[Slots[W684C].W14 - $2BC + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[8]^.Tile[Slots[SlotIdx].Sprite - $2BC + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $2EF..$320:
-                        DrawTile(Gfx[9]^.Tile[Slots[W684C].W14 - $2EE + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[9]^.Tile[Slots[SlotIdx].Sprite - $2EE + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $321:
                       begin
-                        DrawTile(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866 - $10);
-                        DrawTile(Gfx[12]^.Tile[Slots[W684C].W14 - $31C + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY - $10);
+                        DrawTile(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $31C + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       end;
                       $331:
-                        if Slots[W684C].W12 = 0 then
+                        if Slots[SlotIdx].W12 = 0 then
                         begin
-                          DrawTile(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                              Slots[W684C].X shr 3, Slots[W684C].Y + W6866 - $10);
-                          if Slots[W684C].W16 < 0 then
-                            DrawTile(Gfx[12]^.Tile[21], Slots[W684C].X shr 3, Slots[W684C].Y + W6866)
+                          DrawTile(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                              Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY - $10);
+                          if Slots[SlotIdx].DirX < 0 then
+                            DrawTile(Gfx[12]^.Tile[21], Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY)
                           else
-                            DrawTile(Gfx[12]^.Tile[33], Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                            DrawTile(Gfx[12]^.Tile[33], Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                         end
                         else
                         begin
-                          if Slots[W684C].W16 < 0 then
-                            DrawTile(Gfx[12]^.Tile[17], Slots[W684C].X shr 3, Slots[W684C].Y + W6866 - $10)
+                          if Slots[SlotIdx].DirX < 0 then
+                            DrawTile(Gfx[12]^.Tile[17], Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY - $10)
                           else
-                            DrawTile(Gfx[12]^.Tile[29], Slots[W684C].X shr 3, Slots[W684C].Y + W6866 - $10);
-                          DrawTile(Gfx[12]^.Tile[Slots[W684C].W14 - $31C + Slots[W684C].W0A div 5],
-                              Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                            DrawTile(Gfx[12]^.Tile[29], Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY - $10);
+                          DrawTile(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $31C + Slots[SlotIdx].Anim div 5],
+                              Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                         end;
                       $339..$33C:
-                        DrawTile(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $345..$352:
-                        DrawTile(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $353:
                       begin
-                        DrawTile(Gfx[14]^.Tile[Slots[W684C].W14 - $352 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3, Slots[W684C].Y + W6866);
-                        DrawTile(Gfx[14]^.Tile[Slots[W684C].W14 - $34E + Slots[W684C].W0A div 5],
-                            Slots[W684C].X shr 3 + 2, Slots[W684C].Y + W6866);
+                        DrawTile(Gfx[14]^.Tile[Slots[SlotIdx].Sprite - $352 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
+                        DrawTile(Gfx[14]^.Tile[Slots[SlotIdx].Sprite - $34E + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X shr 3 + 2, Slots[SlotIdx].Y + PageY);
                       end;
                     end
                   else
-                    case Slots[W684C].W14 of
+                    case Slots[SlotIdx].Sprite of
                       1..$32:
-                        DrawTileB(Gfx[1]^.Tile[Slots[W684C].W14 + Slots[W684C].W0A div 5], Slots[W684C].X,
-                            Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[1]^.Tile[Slots[SlotIdx].Sprite + Slots[SlotIdx].Anim div 5], Slots[SlotIdx].X,
+                            Slots[SlotIdx].Y + PageY);
                       $65:
-                        if Slots[W684C].W12 = 0 then
+                        if Slots[SlotIdx].W12 = 0 then
                         begin
-                          DrawTileB(Gfx[2]^.Tile[Slots[W684C].W14 - $64 + Slots[W684C].W0A div 5],
-                              Slots[W684C].X, Slots[W684C].Y + W6866 - $10);
-                          if Slots[W684C].W16 < 0 then
-                            DrawTileB(Gfx[2]^.Tile[5], Slots[W684C].X, Slots[W684C].Y + W6866)
+                          DrawTileB(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $64 + Slots[SlotIdx].Anim div 5],
+                              Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
+                          if Slots[SlotIdx].DirX < 0 then
+                            DrawTileB(Gfx[2]^.Tile[5], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY)
                           else
-                            DrawTileB(Gfx[2]^.Tile[45], Slots[W684C].X, Slots[W684C].Y + W6866);
+                            DrawTileB(Gfx[2]^.Tile[45], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                         end
                         else
                         begin
-                          if Slots[W684C].W16 < 0 then
-                            DrawTileB(Gfx[2]^.Tile, Slots[W684C].X, Slots[W684C].Y + W6866 - $10)
+                          if Slots[SlotIdx].DirX < 0 then
+                            DrawTileB(Gfx[2]^.Tile, Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10)
                           else
-                            DrawTileB(Gfx[2]^.Tile[41], Slots[W684C].X, Slots[W684C].Y + W6866 - $10);
-                          DrawTileB(Gfx[2]^.Tile[Slots[W684C].W14 - $60 + Slots[W684C].W0A div 5],
-                              Slots[W684C].X, Slots[W684C].Y + W6866);
+                            DrawTileB(Gfx[2]^.Tile[41], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
+                          DrawTileB(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $60 + Slots[SlotIdx].Anim div 5],
+                              Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                         end;
                       $66..$96:
-                        DrawTileB(Gfx[2]^.Tile[Slots[W684C].W14 - $64 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $64 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $97..$C8:
-                        DrawTileB(Gfx[10]^.Tile[Slots[W684C].W14 - $96 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[10]^.Tile[Slots[SlotIdx].Sprite - $96 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $FB..$12C:
-                        DrawTileB(Gfx[15]^.Tile[Slots[W684C].W14 - $FA + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[15]^.Tile[Slots[SlotIdx].Sprite - $FA + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $12D..$15E:
-                        DrawTileB(Gfx[13]^.Tile[Slots[W684C].W14 - $12C + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[13]^.Tile[Slots[SlotIdx].Sprite - $12C + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $15F..$190:
-                        DrawTileB(Gfx[16]^.Tile[Slots[W684C].W14 - $15E + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[16]^.Tile[Slots[SlotIdx].Sprite - $15E + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $191..$1C2:
-                        DrawTileB(Gfx[4]^.Tile[Slots[W684C].W14 - $190 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[4]^.Tile[Slots[SlotIdx].Sprite - $190 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $1C3..$1E7:
-                        DrawTileB(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $1E8..$1EA:
-                        DrawTileB(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A shr 3],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim shr 3],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $1EB:
-                        DrawTileB(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $1EC..$1EE:
-                        DrawTileB(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + (Slots[W684C].W0A - $15) shr 3],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + (Slots[SlotIdx].Anim - $15) shr 3],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $1EF..$1F4:
-                        DrawTileB(Gfx[5]^.Tile[Slots[W684C].W14 - $1C2 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[5]^.Tile[Slots[SlotIdx].Sprite - $1C2 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $1F5..$226:
-                        DrawTileB(Gfx[1]^.Tile[Slots[W684C].W14 - $1F4 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[1]^.Tile[Slots[SlotIdx].Sprite - $1F4 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $259..$28A:
-                        DrawTileB(Gfx[6]^.Tile[Slots[W684C].W14 - $258 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[6]^.Tile[Slots[SlotIdx].Sprite - $258 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $28B..$2BC:
-                        DrawTileB(Gfx[7]^.Tile[Slots[W684C].W14 - $28A + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[7]^.Tile[Slots[SlotIdx].Sprite - $28A + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $2BD..$2EE:
-                        DrawTileB(Gfx[8]^.Tile[Slots[W684C].W14 - $2BC + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[8]^.Tile[Slots[SlotIdx].Sprite - $2BC + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $2EF..$320:
-                        DrawTileB(Gfx[9]^.Tile[Slots[W684C].W14 - $2EE + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[9]^.Tile[Slots[SlotIdx].Sprite - $2EE + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $321:
                       begin
-                        DrawTileB(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866 - $10);
-                        DrawTileB(Gfx[12]^.Tile[Slots[W684C].W14 - $31C + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
+                        DrawTileB(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $31C + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       end;
                       $331:
-                        if Slots[W684C].W12 = 0 then
+                        if Slots[SlotIdx].W12 = 0 then
                         begin
-                          DrawTileB(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                              Slots[W684C].X, Slots[W684C].Y + W6866 - $10);
-                          if Slots[W684C].W16 < 0 then
-                            DrawTileB(Gfx[12]^.Tile[21], Slots[W684C].X, Slots[W684C].Y + W6866)
+                          DrawTileB(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                              Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
+                          if Slots[SlotIdx].DirX < 0 then
+                            DrawTileB(Gfx[12]^.Tile[21], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY)
                           else
-                            DrawTileB(Gfx[12]^.Tile[33], Slots[W684C].X, Slots[W684C].Y + W6866);
+                            DrawTileB(Gfx[12]^.Tile[33], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                         end
                         else
                         begin
-                          if Slots[W684C].W16 < 0 then
-                            DrawTileB(Gfx[12]^.Tile[17], Slots[W684C].X, Slots[W684C].Y + W6866 - $10)
+                          if Slots[SlotIdx].DirX < 0 then
+                            DrawTileB(Gfx[12]^.Tile[17], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10)
                           else
-                            DrawTileB(Gfx[12]^.Tile[29], Slots[W684C].X, Slots[W684C].Y + W6866 - $10);
-                          DrawTileB(Gfx[12]^.Tile[Slots[W684C].W14 - $31C + Slots[W684C].W0A div 5],
-                              Slots[W684C].X, Slots[W684C].Y + W6866);
+                            DrawTileB(Gfx[12]^.Tile[29], Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
+                          DrawTileB(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $31C + Slots[SlotIdx].Anim div 5],
+                              Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                         end;
                       $339..$33C:
-                        DrawTileB(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $345..$352:
-                        DrawTileB(Gfx[12]^.Tile[Slots[W684C].W14 - $320 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       $353:
                       begin
-                        DrawTileB(Gfx[14]^.Tile[Slots[W684C].W14 - $352 + Slots[W684C].W0A div 5],
-                            Slots[W684C].X, Slots[W684C].Y + W6866);
-                        DrawTileB(Gfx[14]^.Tile[Slots[W684C].W14 - $34E + Slots[W684C].W0A div 5],
-                            Slots[W684C].X + $10, Slots[W684C].Y + W6866);
+                        DrawTileB(Gfx[14]^.Tile[Slots[SlotIdx].Sprite - $352 + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
+                        DrawTileB(Gfx[14]^.Tile[Slots[SlotIdx].Sprite - $34E + Slots[SlotIdx].Anim div 5],
+                            Slots[SlotIdx].X + $10, Slots[SlotIdx].Y + PageY);
                       end;
                     end;
-            DrawFront(Slots[1].W06 - $10, Slots[1].W08 - $10);
-            DrawFront(Slots[1].W06 - $10, Slots[1].W08);
-            DrawFront(Slots[1].W06 - $10, Slots[1].W08 + $10);
-            DrawFront(Slots[1].W06, Slots[1].W08 - $10);
-            DrawFront(Slots[1].W06, Slots[1].W08);
-            DrawFront(Slots[1].W06, Slots[1].W08 + $10);
-            DrawFront(Slots[1].W06 + $10, Slots[1].W08 - $10);
-            DrawFront(Slots[1].W06 + $10, Slots[1].W08);
-            DrawFront(Slots[1].W06 + $10, Slots[1].W08 + $10);
-            for W684C := 2 to $19 do
-              if Slots[W684C].Free = 0 then
-                if Slots[W684C].B1F <> 0 then
+            DrawFront(Slots[1].PrevX - $10, Slots[1].PrevY - $10);
+            DrawFront(Slots[1].PrevX - $10, Slots[1].PrevY);
+            DrawFront(Slots[1].PrevX - $10, Slots[1].PrevY + $10);
+            DrawFront(Slots[1].PrevX, Slots[1].PrevY - $10);
+            DrawFront(Slots[1].PrevX, Slots[1].PrevY);
+            DrawFront(Slots[1].PrevX, Slots[1].PrevY + $10);
+            DrawFront(Slots[1].PrevX + $10, Slots[1].PrevY - $10);
+            DrawFront(Slots[1].PrevX + $10, Slots[1].PrevY);
+            DrawFront(Slots[1].PrevX + $10, Slots[1].PrevY + $10);
+            for SlotIdx := 2 to $19 do
+              if Slots[SlotIdx].Free = 0 then
+                if Slots[SlotIdx].Remove <> 0 then
                 begin
-                  DrawFront(Slots[W684C].W06, Slots[W684C].W08);
-                  DrawFront(Slots[W684C].W06 - $10, Slots[W684C].W08);
-                  DrawFront(Slots[W684C].W06 + $10, Slots[W684C].W08);
-                  DrawFront(Slots[W684C].W06 - $10, Slots[W684C].W08 - $10);
-                  DrawFront(Slots[W684C].W06 - $10, Slots[W684C].W08 + $10);
-                  DrawFront(Slots[W684C].W06 + $10, Slots[W684C].W08 - $10);
-                  DrawFront(Slots[W684C].W06 + $10, Slots[W684C].W08 + $10);
-                  DrawFront(Slots[W684C].W06, Slots[W684C].W08 - $10);
-                  DrawFront(Slots[W684C].W06, Slots[W684C].W08 + $10);
+                  DrawFront(Slots[SlotIdx].PrevX, Slots[SlotIdx].PrevY);
+                  DrawFront(Slots[SlotIdx].PrevX - $10, Slots[SlotIdx].PrevY);
+                  DrawFront(Slots[SlotIdx].PrevX + $10, Slots[SlotIdx].PrevY);
+                  DrawFront(Slots[SlotIdx].PrevX - $10, Slots[SlotIdx].PrevY - $10);
+                  DrawFront(Slots[SlotIdx].PrevX - $10, Slots[SlotIdx].PrevY + $10);
+                  DrawFront(Slots[SlotIdx].PrevX + $10, Slots[SlotIdx].PrevY - $10);
+                  DrawFront(Slots[SlotIdx].PrevX + $10, Slots[SlotIdx].PrevY + $10);
+                  DrawFront(Slots[SlotIdx].PrevX, Slots[SlotIdx].PrevY - $10);
+                  DrawFront(Slots[SlotIdx].PrevX, Slots[SlotIdx].PrevY + $10);
                 end
                 else
-                  if OnScreen($20, W684C) or (Slots[W684C].W1C = $1C) or (Slots[W684C].W1C = $1B)
-                      or (Slots[W684C].W1C = $15) or (Slots[W684E].W1C = $E) then
+                  if OnScreen($20, SlotIdx) or (Slots[SlotIdx].Kind = $1C) or (Slots[SlotIdx].Kind = $1B)
+                      or (Slots[SlotIdx].Kind = $15) or (Slots[RowIdx].Kind = $E) then
                   begin
-                    DrawFront(Slots[W684C].X, Slots[W684C].Y);
-                    if Slots[W684C].X and $F > 0 then
-                      DrawFront(Slots[W684C].X + $F, Slots[W684C].Y);
-                    if Slots[W684C].W1C = $1B then
+                    DrawFront(Slots[SlotIdx].X, Slots[SlotIdx].Y);
+                    if Slots[SlotIdx].X and $F > 0 then
+                      DrawFront(Slots[SlotIdx].X + $F, Slots[SlotIdx].Y);
+                    if Slots[SlotIdx].Kind = $1B then
                     begin
-                      DrawFront(Slots[W684C].X, Slots[W684C].Y - $10);
-                      DrawFront(Slots[W684C].X + $10, Slots[W684C].Y - $10);
+                      DrawFront(Slots[SlotIdx].X, Slots[SlotIdx].Y - $10);
+                      DrawFront(Slots[SlotIdx].X + $10, Slots[SlotIdx].Y - $10);
                     end
                     else
-                      case Slots[W684C].W14 of
+                      case Slots[SlotIdx].Sprite of
                         $353:
                         begin
-                          DrawFront(Slots[W684C].X + $30, Slots[W684C].Y);
-                          DrawFront(Slots[W684C].X + $20, Slots[W684C].Y);
-                          DrawFront(Slots[W684C].X + $10, Slots[W684C].Y);
+                          DrawFront(Slots[SlotIdx].X + $30, Slots[SlotIdx].Y);
+                          DrawFront(Slots[SlotIdx].X + $20, Slots[SlotIdx].Y);
+                          DrawFront(Slots[SlotIdx].X + $10, Slots[SlotIdx].Y);
                         end;
                         $321..$383, $1389:
                         begin
-                          DrawFront(Slots[W684C].X, Slots[W684C].Y - $10);
-                          if Slots[W684C].X and $F > 0 then
-                            DrawFront(Slots[W684C].X + $F, Slots[W684C].Y - $10);
+                          DrawFront(Slots[SlotIdx].X, Slots[SlotIdx].Y - $10);
+                          if Slots[SlotIdx].X and $F > 0 then
+                            DrawFront(Slots[SlotIdx].X + $F, Slots[SlotIdx].Y - $10);
                         end;
                         $72:
                         begin
-                          if Slots[W684C].Y > $F then
-                            DrawFront(Slots[W684C].X, Slots[W684C].Y - $10);
-                          DrawFront(Slots[W684C].X, Slots[W684C].Y + $10);
-                          if Slots[W684C].X and $F > 0 then
+                          if Slots[SlotIdx].Y > $F then
+                            DrawFront(Slots[SlotIdx].X, Slots[SlotIdx].Y - $10);
+                          DrawFront(Slots[SlotIdx].X, Slots[SlotIdx].Y + $10);
+                          if Slots[SlotIdx].X and $F > 0 then
                           begin
-                            DrawFront(Slots[W684C].X + $F, Slots[W684C].Y + $10);
-                            if Slots[W684C].Y > $F then
-                              DrawFront(Slots[W684C].X + $F, Slots[W684C].Y - $10);
+                            DrawFront(Slots[SlotIdx].X + $F, Slots[SlotIdx].Y + $10);
+                            if Slots[SlotIdx].Y > $F then
+                              DrawFront(Slots[SlotIdx].X + $F, Slots[SlotIdx].Y - $10);
                           end;
                         end;
                         $65:
                         begin
-                          DrawFront(Slots[W684C].X, Slots[W684C].Y - $10);
-                          if Slots[W684C].X and $F > 0 then
-                            DrawFront(Slots[W684C].X + $F, Slots[W684C].Y - $10);
+                          DrawFront(Slots[SlotIdx].X, Slots[SlotIdx].Y - $10);
+                          if Slots[SlotIdx].X and $F > 0 then
+                            DrawFront(Slots[SlotIdx].X + $F, Slots[SlotIdx].Y - $10);
                         end;
                       end;
                   end
                   else
-                    if (Slots[W684C].W1C = 7) or (Slots[W684C].W1C = $E) or (Slots[W684C].W1C = $13)
-                        or (Slots[W684C].W1C = $1388) then
+                    if (Slots[SlotIdx].Kind = 7) or (Slots[SlotIdx].Kind = $E) or (Slots[SlotIdx].Kind = $13)
+                        or (Slots[SlotIdx].Kind = $1388) then
                     begin
-                      Slots[W684C].B1F := 1;
-                      DrawFront(Slots[W684C].X, Slots[W684C].Y);
-                      if Slots[W684C].X and $F > 0 then
+                      Slots[SlotIdx].Remove := 1;
+                      DrawFront(Slots[SlotIdx].X, Slots[SlotIdx].Y);
+                      if Slots[SlotIdx].X and $F > 0 then
                       begin
-                        DrawFront(Slots[W684C].X + $F, Slots[W684C].Y);
-                        DrawFront(Slots[W684C].X - $F, Slots[W684C].Y);
+                        DrawFront(Slots[SlotIdx].X + $F, Slots[SlotIdx].Y);
+                        DrawFront(Slots[SlotIdx].X - $F, Slots[SlotIdx].Y);
                       end;
                     end;
             if B6A1B <> 0 then
-              DrawTileB(Gfx[3]^.Tile[Slots[1].W0A div 5 + Slots[1].W14], Slots[1].X, Slots[1].Y + W6866);
+              DrawTileB(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
             ShowPage;
             if B69D2 <> 0 then
             begin
@@ -1542,21 +1542,21 @@ begin
               LevelReset;
               RestoreState;
               LoadLevel(Level);
-              W6858 := -1;
+              StatusCamX := -1;
             end;
             if B69F9 <> 0 then
             begin
               B69F9 := 0;
-              W684C := AskWarp;
-              if (W684C >= 1) and (W684C <= $10) then
+              SlotIdx := AskWarp;
+              if (SlotIdx >= 1) and (SlotIdx <= $10) then
               begin
-                Level := W684C + 1;
+                Level := SlotIdx + 1;
                 FadeOut($14);
                 SiteDone[MapSite] := 0;
                 RestoreState;
                 LoadLevel(Level);
                 LevelReset;
-                W6858 := -1;
+                StatusCamX := -1;
               end;
             end;
             if B69FD <> 0 then

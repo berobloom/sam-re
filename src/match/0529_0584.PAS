@@ -16,65 +16,65 @@ begin
     if Slots[I].Free = 1 then
     begin
       PlaySound(3);
-      Slots[I].W16 := Dir;
-      if Slots[I].W16 = -1 then
-        Slots[I].W0A := $15
+      Slots[I].DirX := Dir;
+      if Slots[I].DirX = -1 then
+        Slots[I].Anim := $15
       else
-        Slots[I].W0A := 1;
-      Slots[I].W18 := 0;
+        Slots[I].Anim := 1;
+      Slots[I].DirY := 0;
       Slots[I].W00 := 0;
       if T <> $89 then
         Slots[I].X := X and $FFF8
       else
         Slots[I].X := X;
       Slots[I].Y := Y;
-      Slots[I].W06 := X;
-      Slots[I].W08 := Y;
-      Slots[I].W1A := A;
+      Slots[I].PrevX := X;
+      Slots[I].PrevY := Y;
+      Slots[I].Speed := A;
       Slots[I].W0C := 0;
       Slots[I].W0E := 0;
       Slots[I].Free := 0;
-      Slots[I].B1F := 0;
+      Slots[I].Remove := 0;
       if T = 0 then
       begin
-        Slots[I].W14 := $27;
-        Slots[I].W1C := 7;
-        Slots[I].W0A := 1;
+        Slots[I].Sprite := $27;
+        Slots[I].Kind := 7;
+        Slots[I].Anim := 1;
       end
       else
       begin
-        Slots[I].W14 := T;
-        if (Slots[I].W14 = $1D6) or (Slots[I].W14 = $7D) or (Slots[I].W14 = $7E) then
+        Slots[I].Sprite := T;
+        if (Slots[I].Sprite = $1D6) or (Slots[I].Sprite = $7D) or (Slots[I].Sprite = $7E) then
         begin
-          Slots[I].W1C := 7;
-          Slots[I].W0A := 1;
+          Slots[I].Kind := 7;
+          Slots[I].Anim := 1;
         end
-        else if (Slots[I].W14 = $339) or (Slots[I].W14 = $33B) then
+        else if (Slots[I].Sprite = $339) or (Slots[I].Sprite = $33B) then
         begin
-          Slots[I].W1C := $13;
-          Slots[I].W0A := 1;
+          Slots[I].Kind := $13;
+          Slots[I].Anim := 1;
         end
-        else if Slots[I].W14 = $72 then
+        else if Slots[I].Sprite = $72 then
         begin
-          Slots[I].W1C := $25;
-          Slots[I].W0A := 1;
-          Slots[I].W18 := Dir;
+          Slots[I].Kind := $25;
+          Slots[I].Anim := 1;
+          Slots[I].DirY := Dir;
         end
-        else if Slots[I].W14 = $C7 then
+        else if Slots[I].Sprite = $C7 then
         begin
-          Slots[I].W14 := $72;
-          Slots[I].W1C := $89;
-          Slots[I].W0A := 1;
-          Slots[I].W18 := Dir;
+          Slots[I].Sprite := $72;
+          Slots[I].Kind := $89;
+          Slots[I].Anim := 1;
+          Slots[I].DirY := Dir;
         end
-        else if Slots[I].W14 = $89 then
+        else if Slots[I].Sprite = $89 then
         begin
-          Slots[I].W1C := $28;
-          Slots[I].W0A := 1;
+          Slots[I].Kind := $28;
+          Slots[I].Anim := 1;
           Slots[I].W0E := $1E;
         end
         else
-          Slots[I].W1C := $E;
+          Slots[I].Kind := $E;
       end;
       Done := True;
     end;

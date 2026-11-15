@@ -14,7 +14,7 @@ begin
         B6A67 := 1;
         B6A68 := 30;
         Dec(Lives);
-        W6858 := -1;
+        StatusCamX := -1;
         Slots[1].W00 := 5;
         PlaySound(7);
       end;

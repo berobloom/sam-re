@@ -4,8 +4,8 @@
 procedure ShowPage;
 begin
   if W70EC = 0 then
-    SetViewStart(CamX, W6866 + CamY)
+    SetViewStart(CamX, PageY + CamY)
   else
-    SetViewStartAlt(CamX, W6866 + CamY);
-  W6862 := W6866;
+    SetViewStartAlt(CamX, PageY + CamY);
+  W6862 := PageY;
 end;

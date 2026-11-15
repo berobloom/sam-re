@@ -40,24 +40,24 @@ begin
       CamY := $B8;
   if B6EE6 <> 0 then
   begin
-    if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) or (Slots[1].W14 = $D) then
-      Slots[1].W14 := $D
+    if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) or (Slots[1].Sprite = $D) then
+      Slots[1].Sprite := $D
     else
-      Slots[1].W14 := $E;
+      Slots[1].Sprite := $E;
   end
-  else if Slots[1].W14 = $D then
+  else if Slots[1].Sprite = $D then
   begin
     if B6EF1 <> 0 then
-      Slots[1].W14 := 1
+      Slots[1].Sprite := 1
     else
-      Slots[1].W14 := 9;
+      Slots[1].Sprite := 9;
   end
-  else if Slots[1].W14 = $E then
+  else if Slots[1].Sprite = $E then
   begin
     if B6EF0 <> 0 then
-      Slots[1].W14 := 5
+      Slots[1].Sprite := 5
     else
-      Slots[1].W14 := $A;
+      Slots[1].Sprite := $A;
   end;
 end;
 {$F-}

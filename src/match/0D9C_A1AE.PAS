@@ -14,44 +14,44 @@ var
   Row: TRow;
   S: String[40];
 begin
-  W6854 := 1;
+  SlotCount := 1;
   CopyPage;
-  W6858 := -1;
+  StatusCamX := -1;
   for I := 2 to 25 do
   begin
     Slots[I].W00 := 0;
-    Slots[I].W14 := 9;
+    Slots[I].Sprite := 9;
     Slots[I].X := -41;
     Slots[I].Y := 0;
-    Slots[I].W06 := -41;
-    Slots[I].W08 := 0;
-    Slots[I].W16 := 1;
-    Slots[I].W18 := 0;
-    Slots[I].W0A := 1;
-    Slots[I].W1A := 1;
+    Slots[I].PrevX := -41;
+    Slots[I].PrevY := 0;
+    Slots[I].DirX := 1;
+    Slots[I].DirY := 0;
+    Slots[I].Anim := 1;
+    Slots[I].Speed := 1;
     Slots[I].W0C := 0;
     Slots[I].W0E := 0;
     Slots[I].W10 := 0;
     Slots[I].W12 := 0;
-    Slots[I].W1C := 1;
+    Slots[I].Kind := 1;
     Slots[I].Free := 1;
-    Slots[I].B1F := 1;
+    Slots[I].Remove := 1;
   end;
   for I := 1 to 10 do
   begin
-    Shots[I].W14 := 7;
+    Shots[I].Sprite := 7;
     Shots[I].X := -41;
     Shots[I].Y := 0;
-    Shots[I].W06 := -41;
-    Shots[I].W08 := 0;
-    Shots[I].W16 := 1;
-    Shots[I].W18 := 0;
-    Shots[I].W0A := 1;
-    Shots[I].W1A := 8;
+    Shots[I].PrevX := -41;
+    Shots[I].PrevY := 0;
+    Shots[I].DirX := 1;
+    Shots[I].DirY := 0;
+    Shots[I].Anim := 1;
+    Shots[I].Speed := 8;
     Shots[I].W0C := 0;
-    Shots[I].W1C := 1;
+    Shots[I].Kind := 1;
     Shots[I].Free := 1;
-    Shots[I].B1F := 0;
+    Shots[I].Remove := 0;
   end;
   Bullets[N] := 0;
   if IOResult <> 0 then
@@ -65,7 +65,7 @@ begin
         Read(F, Row);
         Decrypt(Row, 40);
         S := Row[1] + Row[2] + Row[3];
-        Val(S, W6840, I);
+        Val(S, BackTile, I);
         Read(F, Row);
         Decrypt(Row, 40);
         ParseRow($18, Row);
@@ -88,7 +88,7 @@ begin
         Read(F, Row);
         Decrypt(Row, 40);
         S := Row[1] + Row[2] + Row[3];
-        Val(S, W6840, I);
+        Val(S, BackTile, I);
         Read(F, Row);
         Decrypt(Row, 40);
         ParseRow($18, Row);

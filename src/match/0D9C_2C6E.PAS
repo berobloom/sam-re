@@ -8,11 +8,11 @@ begin
   if FrontOnly then
   begin
     Map[X + 1, Y + 1].Front := Front;
-    W6866 := $10;
+    PageY := $10;
     DrawFront(X shl 4, Y shl 4);
-    W6866 := $1A0;
+    PageY := $1A0;
     DrawFront(X shl 4, Y shl 4);
-    W6866 := $10;
+    PageY := $10;
   end
   else
   begin
@@ -21,19 +21,19 @@ begin
     Map[X + 1, Y + 1].Front := Front;
     Map[X + 1, Y + 1].Solid := Solid;
     Map[X + 1, Y + 1].FlagB := FlagB;
-    W6866 := $10;
+    PageY := $10;
     if Y = $18 then
       DrawSheet(X shl 4, Y shl 4)
     else
       DrawBack(X shl 4, Y shl 4);
     DrawFront(X shl 4, Y shl 4);
-    W6866 := $1A0;
+    PageY := $1A0;
     if Y = $18 then
       DrawSheet(X shl 4, Y shl 4)
     else
       DrawBack(X shl 4, Y shl 4);
     DrawFront(X shl 4, Y shl 4);
-    W6866 := $10;
+    PageY := $10;
   end;
 end;
 {$F-}

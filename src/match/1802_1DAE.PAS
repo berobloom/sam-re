@@ -17,19 +17,19 @@ begin
   NLines := 0;
   Done := False;
   Spark := False;
-  for W684E := 1 to 20 do
+  for RowIdx := 1 to 20 do
   begin
-    if W684E = 1 then
-      MaxW := Length(TextLines[W684E]) - 1;
-    if Length(TextLines[W684E]) > MaxW then
-      MaxW := Length(TextLines[W684E]) - 1;
-    if TextLines[W684E] = 'END OF WINDOW' then
-      NLines := W684E - 2;
-    for W684C := 1 to Length(TextLines[W684E]) do
-      if Copy(TextLines[W684E], W684C, 1) = '^' then
+    if RowIdx = 1 then
+      MaxW := Length(TextLines[RowIdx]) - 1;
+    if Length(TextLines[RowIdx]) > MaxW then
+      MaxW := Length(TextLines[RowIdx]) - 1;
+    if TextLines[RowIdx] = 'END OF WINDOW' then
+      NLines := RowIdx - 2;
+    for SlotIdx := 1 to Length(TextLines[RowIdx]) do
+      if Copy(TextLines[RowIdx], SlotIdx, 1) = '^' then
       begin
-        CX := Pos('^', TextLines[W684E]) + 1;
-        CY := W684E + 1;
+        CX := Pos('^', TextLines[RowIdx]) + 1;
+        CY := RowIdx + 1;
       end;
   end;
   Inc(NLines, 3);
@@ -42,28 +42,28 @@ begin
   X2 := X1 + MaxW + 4;
   Y2 := Y1 + NLines + 1;
   for W6850 := 1 to Y2 - Y1 do
-    for W684E := X1 + 1 to X2 - 1 do
-      DrawCell(GfxSmall[2]^.Cell[9], W684E, ((Y1 + W6850) shl 3) + W6862);
+    for RowIdx := X1 + 1 to X2 - 1 do
+      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + W6862);
   DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + W6862);
-  for W684E := X1 + 1 to X2 - 1 do
-    DrawCellM(GfxSmall[2]^.Cell[2], W684E, (Y1 shl 3) + W6862);
+  for RowIdx := X1 + 1 to X2 - 1 do
+    DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + W6862);
   DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + W6862);
-  for W684E := 1 to Y2 - Y1 do
+  for RowIdx := 1 to Y2 - Y1 do
   begin
-    DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + W684E) shl 3) + W6862);
-    DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + W684E) shl 3) + W6862);
-    DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + W684E) shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + W6862);
   end;
   DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + W6862);
   DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + W6862);
-  for W684E := X1 + 1 to X2 - 1 do
-    DrawCellM(GfxSmall[2]^.Cell[7], W684E, (Y2 shl 3) + W6862);
+  for RowIdx := X1 + 1 to X2 - 1 do
+    DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + W6862);
   DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + W6862);
-  for W684E := X1 + 1 to X2 + 1 do
-    DrawCellM(GfxSmall[2]^.Cell[10], W684E, ((Y2 + 1) shl 3) + W6862);
-  for W684E := 1 to NLines do
-    if TextLines[W684E] <> 'END OF WINDOW' then
-      DrawText(X1 + 2, Y1 + W684E + 1, TextLines[W684E]);
+  for RowIdx := X1 + 1 to X2 + 1 do
+    DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + W6862);
+  for RowIdx := 1 to NLines do
+    if TextLines[RowIdx] <> 'END OF WINDOW' then
+      DrawText(X1 + 2, Y1 + RowIdx + 1, TextLines[RowIdx]);
   B6EE9 := 0;
   B6EF0 := 0;
   B6EF1 := 0;
@@ -103,9 +103,9 @@ begin
             Dec(Len);
           end;
     end;
-    W684E := Random(100);
+    RowIdx := Random(100);
     if not Spark then
-      if W684E >= 99 then
+      if RowIdx >= 99 then
       begin
         Spark := True;
         ST := 0;

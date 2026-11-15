@@ -26,9 +26,9 @@ begin
       B6EF0 := 1;
       B6EF1 := 0;
       B6EE8 := 0;
-      Slots[1].W14 := 5;
+      Slots[1].Sprite := 5;
       if B6EE7 <> 0 then
-        Slots[1].W14 := $E;
+        Slots[1].Sprite := $E;
     end
     else if KeyLeft + $80 = W684A then
     begin
@@ -36,23 +36,23 @@ begin
       if B6EE7 = 0 then
       begin
         if B6EF1 = 0 then
-          Slots[1].W14 := $A
+          Slots[1].Sprite := $A
         else
-          Slots[1].W14 := 1;
+          Slots[1].Sprite := 1;
       end
       else if B6EF1 = 1 then
-        Slots[1].W14 := $D
+        Slots[1].Sprite := $D
       else
-        Slots[1].W14 := $E;
+        Slots[1].Sprite := $E;
     end
     else if W684A = KeyRight then
     begin
       B6EF1 := 1;
       B6EF0 := 0;
       B6EE8 := 0;
-      Slots[1].W14 := 1;
+      Slots[1].Sprite := 1;
       if B6EE7 <> 0 then
-        Slots[1].W14 := $D;
+        Slots[1].Sprite := $D;
     end
     else if KeyRight + $80 = W684A then
     begin
@@ -60,14 +60,14 @@ begin
       if B6EE7 = 0 then
       begin
         if B6EF0 = 0 then
-          Slots[1].W14 := 9
+          Slots[1].Sprite := 9
         else
-          Slots[1].W14 := 5;
+          Slots[1].Sprite := 5;
       end
       else if B6EF0 = 1 then
-        Slots[1].W14 := $E
+        Slots[1].Sprite := $E
       else
-        Slots[1].W14 := $D;
+        Slots[1].Sprite := $D;
     end
     else if W684A = KeyFire then
     begin
@@ -83,45 +83,45 @@ begin
           begin
             Shots[I].X := Slots[1].X;
             Shots[I].Y := Slots[1].Y;
-            Shots[I].W06 := Slots[1].W06;
-            Shots[I].W08 := Slots[1].W08;
-            Shots[I].W14 := $27;
-            if (Slots[1].W14 = 1) or (Slots[1].W14 = $D) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
+            Shots[I].PrevX := Slots[1].PrevX;
+            Shots[I].PrevY := Slots[1].PrevY;
+            Shots[I].Sprite := $27;
+            if (Slots[1].Sprite = 1) or (Slots[1].Sprite = $D) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
             begin
-              Shots[I].W16 := 1;
-              Slots[1].W14 := $B;
+              Shots[I].DirX := 1;
+              Slots[1].Sprite := $B;
             end
             else
             begin
-              Shots[I].W16 := -1;
-              Slots[1].W14 := $C;
+              Shots[I].DirX := -1;
+              Slots[1].Sprite := $C;
             end;
-            Shots[I].W18 := 0;
-            Shots[I].W0A := 1;
-            Shots[I].W1A := 8;
+            Shots[I].DirY := 0;
+            Shots[I].Anim := 1;
+            Shots[I].Speed := 8;
             Shots[I].W0C := 0;
             Shots[I].W0E := 0;
-            Shots[I].W1C := 7;
+            Shots[I].Kind := 7;
             Shots[I].Free := 0;
-            Shots[I].B1F := 0;
+            Shots[I].Remove := 0;
             Fired := True;
             Dec(Ammo);
-            W6858 := -1;
+            StatusCamX := -1;
             PlaySound(2);
-            if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $D) or (Slots[1].W14 = $B) then
-              Slots[1].W14 := $B
+            if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $D) or (Slots[1].Sprite = $B) then
+              Slots[1].Sprite := $B
             else
-              Slots[1].W14 := $C;
+              Slots[1].Sprite := $C;
           end;
         until (I = Gun) or Fired;
       end;
     end
     else if KeyFire + $80 = W684A then
     begin
-      if Slots[1].W14 = $B then
-        Slots[1].W14 := 9
-      else if Slots[1].W14 = $C then
-        Slots[1].W14 := $A;
+      if Slots[1].Sprite = $B then
+        Slots[1].Sprite := 9
+      else if Slots[1].Sprite = $C then
+        Slots[1].Sprite := $A;
     end
     else if W684A = KeyJump then
       B6EF3 := 1
@@ -133,10 +133,10 @@ begin
       begin
         B6EE9 := 1;
         B6EEA := 0;
-        if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
-          Slots[1].W14 := 1
+        if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
+          Slots[1].Sprite := 1
         else
-          Slots[1].W14 := 5;
+          Slots[1].Sprite := 5;
       end;
     end
     else if KeyUp + $80 = W684A then
@@ -144,10 +144,10 @@ begin
       if Level = 1 then
       begin
         B6EE9 := 0;
-        if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
-          Slots[1].W14 := 9
+        if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
+          Slots[1].Sprite := 9
         else
-          Slots[1].W14 := $A;
+          Slots[1].Sprite := $A;
       end;
     end
     else if W684A = KeyDown then
@@ -156,10 +156,10 @@ begin
       begin
         B6EEA := 1;
         B6EE9 := 0;
-        if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
-          Slots[1].W14 := 1
+        if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
+          Slots[1].Sprite := 1
         else
-          Slots[1].W14 := 5;
+          Slots[1].Sprite := 5;
       end;
     end
     else if KeyDown + $80 = W684A then
@@ -167,10 +167,10 @@ begin
       if Level = 1 then
       begin
         B6EEA := 0;
-        if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) then
-          Slots[1].W14 := 9
+        if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
+          Slots[1].Sprite := 9
         else
-          Slots[1].W14 := $A;
+          Slots[1].Sprite := $A;
       end;
     end
     else if W684A = 1 then
@@ -207,7 +207,7 @@ begin
       begin
         Ammo := Ammo + $19;
         B6A02 := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $96 then
@@ -219,7 +219,7 @@ begin
       begin
         Ammo := Ammo + $19;
         B6A02 := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $AF then
@@ -231,7 +231,7 @@ begin
       begin
         Ammo := Ammo + $19;
         B6A02 := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $A5 then
@@ -243,7 +243,7 @@ begin
       begin
         B6A12 := 1;
         B6A1A := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $AC then
@@ -255,7 +255,7 @@ begin
       begin
         B6A12 := 1;
         B6A1A := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $A2 then
@@ -267,7 +267,7 @@ begin
       begin
         B6A12 := 1;
         B6A1A := 1;
-        W6858 := -1;
+        StatusCamX := -1;
       end;
     end
     else if W684A = $97 then

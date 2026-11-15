@@ -13,10 +13,10 @@ begin
     and (Map[(Slots[1].X + 3) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0)
     and (Map[(Slots[1].X + 12) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0) then
   begin
-    if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) or (Slots[1].W14 = $D) then
-      Slots[1].W14 := $D
+    if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) or (Slots[1].Sprite = $D) then
+      Slots[1].Sprite := $D
     else
-      Slots[1].W14 := $E;
+      Slots[1].Sprite := $E;
     PlaySound(1);
     B6EE7 := 1;
     B6EE8 := 0;

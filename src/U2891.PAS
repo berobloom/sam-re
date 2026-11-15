@@ -26,10 +26,12 @@ type
     KUp, KDown, KLeft, KRight, KJump, KFire, K70EC, K70EE: Integer;
   end;
   TSlot = record                   { 32 bytes; slot n at DS:3512 + (n-1)*32 }
-    W00, X, Y, W06, W08, W0A: Integer;  { +02/+04: position (SAM1RE) }
-    W0C, W0E, W10, W12, W14, W16, W18, W1A, W1C: Integer;  { +14: T+150 at spawn (0529:03F0) }
+    W00, X, Y, PrevX, PrevY, Anim: Integer;  { src: SAM1RE objects.md: +02/+04 position, +06/+08 last
+      frame's (the repaint), +0A animation counter (image = Sprite + Anim div 5) }
+    W0C, W0E, W10, W12, Sprite, DirX, DirY, Speed, Kind: Integer;  { src: SAM1RE objects.md: +14 sprite base
+      (T+150 at spawn, 0529:03F0), +16/+18 x/y direction -1/0/1, +1A speed, +1C behaviour kind }
     Free: Byte;                    { +1E }
-    B1F: Byte;
+    Remove: Byte;                  { src: SAM1RE objects.md: := 1 asks the frame pass to free the slot }
   end;
   TState = record                  { DS:6D3E..6D85, the game-state store; packed: words at odd offsets }
     X, Y: Integer;                 { slot 1's position }
@@ -58,23 +60,23 @@ var
   W683A: Integer; { @683A }
   B683C: Byte; { @683C }
   W683E: Integer; { @683E; counts the player's landings (0529:66B3), GUESS }
-  W6840: Integer; { @6840; the number in a level's header record (0D9C:A1AE) }
+  BackTile: Integer; { @6840; the number in a level's header record (0D9C:A1AE) }
   Level: Integer; { @6842 }
   W6844, W6846, W6848: Integer; { @6844 }
   W684A: Integer; { @684A }
-  W684C, W684E, W6850: Integer; { @684C; loop variables of the text windows }
+  SlotIdx, RowIdx, W6850: Integer; { @684C; loop variables of the text windows }
   W6852: Integer; { @6852 }
-  W6854: Integer; { @6854 }
+  SlotCount: Integer; { @6854 }
   W6856: Integer; { @6856 }
-  W6858: Integer; { @6858 }
+  StatusCamX: Integer; { @6858 }
   W685A: Integer; { @685A }
   B685C: Byte; { @685C }
   CamX: Integer; { @685E }
   CamY: Integer; { @6860 }
   W6862: Integer; { @6862 }
   W6864: Integer; { @6864 }
-  W6866: Integer; { @6866 }
-  B6868: Byte; { @6868; 1 when exactly 15 of the 16 sites are done (0D9C:2E88; SAM1RE level-load.md) }
+  PageY: Integer; { @6866 }
+  AllDone: Byte; { @6868; 1 when exactly 15 of the 16 sites are done (0D9C:2E88; SAM1RE level-load.md) }
   Bullets: array[1..20] of Byte; { @686A }
   Ammo: Integer; { @687E }
   Shots: array[1..10] of TSlot; { @6880; a second slot table (0529:008D tests it like Slots), GUESS name }
@@ -95,10 +97,10 @@ var
   W69DC: Integer; { @69DC }
   MapSite: Integer; { @69DE }
   SiteDone: array[1..20] of Byte; { @69E0 }
-  B69F4, B69F5, B69F6, B69F7, B69F8, B69F9, B69FA, B69FB, B69FC, B69FD, B69FE, B69FF: Byte; { @69F4 }
+  ExitArmed, B69F5, B69F6, B69F7, B69F8, B69F9, B69FA, B69FB, B69FC, B69FD, B69FE, B69FF: Byte; { @69F4 }
   B6A00, B6A01, B6A02, B6A03, B6A04, B6A05, B6A06: Byte; { @6A00 }
   W6A08, W6A0A, W6A0C: Integer; { @6A08 }
-  B6A0E, B6A0F, B6A10, B6A11, B6A12, B6A13, B6A14, B6A15, B6A16, B6A17, B6A18, B6A19, B6A1A, B6A1B: Byte; { @6A0E }
+  B6A0E, B6A0F, B6A10, B6A11, B6A12, B6A13, B6A14, VGunOff, B6A16, B6A17, B6A18, B6A19, B6A1A, B6A1B: Byte; { @6A0E }
   ArcLen: Byte; { @6A1C }
   Arc: array[1..35] of Integer; { @6A1E; indexed by ArcLen (main 0000:1B35) }
   B6A64: Byte; { @6A64 }
@@ -154,7 +156,7 @@ begin
     Slots[I].Free := 1;
   CamX := 0;
   CopyPage;
-  W6858 := -1;
+  StatusCamX := -1;
   CamY := 0;
   W6852 := 0;
   W70EC := 0;
@@ -198,7 +200,7 @@ begin
   B6EE6 := 0;
   Level := 1;
   W6856 := 0;
-  W6866 := $10;
+  PageY := $10;
   W6864 := 0;
   W6862 := 0;
   W6846 := 0;
@@ -219,7 +221,7 @@ begin
   B69D6 := 0;
   W69D4 := 0;
   W69D8 := 0;
-  B6A15 := 0;
+  VGunOff := 0;
   B6A12 := 0;
   B6A13 := 0;
   B6A0E := 0;
@@ -244,7 +246,7 @@ begin
   Lives := 3;
   B6A67 := 0;
   B6A68 := 0;
-  B69F4 := 0;
+  ExitArmed := 0;
   B683C := 0;
   B69FA := 0;
   B69FB := 0;
@@ -395,7 +397,7 @@ begin
     Slots[I].Free := 1;
   CamX := 0;
   CopyPage;
-  W6858 := -1;
+  StatusCamX := -1;
   CamY := 0;
   W6852 := 0;
   B6EE5 := 0;
@@ -414,7 +416,7 @@ begin
   B6EE6 := 0;
   Level := 1;
   W6856 := 0;
-  W6866 := $10;
+  PageY := $10;
   W6864 := 0;
   W6862 := 0;
   W6846 := 0;
@@ -435,7 +437,7 @@ begin
   B69D6 := 0;
   W69D4 := 0;
   W69D8 := 0;
-  B6A15 := 0;
+  VGunOff := 0;
   B6A12 := 0;
   B6A13 := 0;
   B6A0E := 0;
@@ -455,7 +457,7 @@ begin
     SiteDone[I] := 0;
   B6A1B := 0;
   ArcLen := $23;
-  B69F4 := 0;
+  ExitArmed := 0;
   B6A64 := 0;
   RespawnDelay := 8;
   Lives := 3;
@@ -515,7 +517,7 @@ begin
   SetColor(0);
   ClearRows(0, $50, 0, 8);
   CopyPage;
-  W6858 := -1;
+  StatusCamX := -1;
   B6EE5 := 0;
   B6EF0 := 0;
   B6EF1 := 0;
@@ -532,7 +534,7 @@ begin
   B6EE6 := 0;
   W6856 := 0;
   W6846 := 0;
-  B6A15 := 0;
+  VGunOff := 0;
   B6A12 := 0;
   B6A13 := 0;
   B6A0E := 0;
@@ -561,7 +563,7 @@ begin
   B6A68 := 0;
   B6A1B := 0;
   ArcLen := $23;
-  B69F4 := 0;
+  ExitArmed := 0;
   B69FA := 0;
   B69FB := 0;
   B69FC := 0;
