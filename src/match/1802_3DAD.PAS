@@ -3,7 +3,6 @@
 { from: 3DA2 }
 { to: 3EF5 }
 { interface }
-{ keep: SaveGame(1); }
 {$I-}
 procedure SaveGame(N: Integer);
 var

@@ -1,6 +1,5 @@
 { src: GUESS 286F:0000 (confidence: high): both X and Y axis of stick A time out -> no joystick }
 { interface }
-{ keep: if JoyPresent then }
 function JoyPresent: Boolean;
 var A, B: Integer;
 begin

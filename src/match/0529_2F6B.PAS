@@ -3,7 +3,6 @@
   direction and speed fields, then their behaviour: ActorAI for kinds below $1E, the inline chain for the
   rest and the 5000/5001 score puffs; then the player's shots move and stop at solid cells) }
 { interface }
-{ keep: ActorFrame; }
 {$F+}
 procedure ActorFrame;
 var

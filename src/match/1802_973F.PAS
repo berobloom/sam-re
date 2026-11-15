@@ -2,7 +2,6 @@
   is returned, 'Q' after a confirmed quit, ' ' after a cancelled one; Escape leaves the result unset) }
 { from: 963C }
 { interface }
-{ keep: if EscapeMenu = ' ' then; }
 function EscapeMenu: Char;
 var
   K: Integer;

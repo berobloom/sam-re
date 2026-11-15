@@ -1,6 +1,5 @@
 { src: GUESS 0529:65D9 (may the player move by DX, DY? the cells under the corners of slot 1's 16x16 box,
   inset 3 pixels left and right, must all be clear (Solid = 0); when blocked and Level > 1, W6844 := 0) }
-{ keep: - }
 {$F+}
 function CanMove(DX, DY: Integer): Boolean;
 var

@@ -24,7 +24,6 @@ implementation
   Back (1..8 a pattern of the row-24 sheet, else a tile drawn without mask), then its Mid and Front tiles
   with mask, on the page W6866; the banks as DrawFront's. Columns 0..$27 only, no upper row bound) }
 { interface }
-{ keep: DrawBack(0, 0); }
 procedure DrawBack(X, Y: Integer);
 var
   CX, CY, MX, MY, PX, PY: Integer;
@@ -205,7 +204,6 @@ end;
   the sheet's Back values 2, 5, 6, 7 stand for the level's own tiles W6840..W6840+3 and 8 for $29B while
   it draws (mapped back after), Back without mask, Mid and Front with mask, the banks as DrawFront's. No
   bounds test) }
-{ keep: - }
 {$F+}
 procedure DrawSheet(X, Y: Integer);
 var
@@ -379,7 +377,6 @@ end;
   $191.. 4, $1C3.. 5, $259.. 6, $28B.. 7, $2BD.. 8, $2EF.. 9) on the page W6866; $B3, $1F3, $265, $25B and
   $270 differ by page (two-frame animation). Columns 0..$27 only, no upper row bound) }
 { interface }
-{ keep: DrawFront(0, 0); }
 procedure DrawFront(X, Y: Integer);
 var
   CX, CY: Integer;
@@ -448,7 +445,6 @@ end;
 { src: SAM1RE 0D9C:2C6E (../SAM level-load.md: SetCell, the cell X, Y (0-based) of Map gets its five fields
   and is repainted on both pages ($10 and $1A0, W6866); FrontOnly sets the front tile only. No bounds test) }
 { to: 2E20 }
-{ keep: - }
 {$F+}
 procedure SetCell(X, Y, Back, Mid, Front: Integer; Solid, FlagB: Byte; FrontOnly: Boolean);
 begin
@@ -489,7 +485,6 @@ end;
   M N O P show done or undone by SiteDone[W685A + 2], and 'l' by B6868) }
 { from: 2E20 }
 { to: 3A59 }
-{ keep: - }
 {$F+}
 procedure WorldCell(X, Y: Integer; S: String);
 var
@@ -646,7 +641,6 @@ end;
   > 1): each actor char clears its cell to tile 2 and takes the next slot W6854, drawn on both pages, with
   its kind (W14), facing (W16, often Random) and timers) }
 { from: 3A59 }
-{ keep: - }
 {$F+}
 procedure SpawnActor(X, Y: Integer; S: String; FO: Boolean);
 begin
@@ -1363,7 +1357,6 @@ end;
   W6854) or through SpawnActor; then WorldCell, and 'Y' is the player's start: slot 1 there (on the world
   map at the stored State position), the camera centred on it and clamped) }
 { from: 66F9 }
-{ keep: - }
 {$F+}
 procedure ParseRow(Y: Integer; Row: TRow);
 var
@@ -2091,7 +2084,6 @@ end;
   row), then rows 0..23 ('*' rows repeat the row). Then the page sweep, FadeIn(20) and sound $D) }
 { from: A1A3 }
 { interface }
-{ keep: LoadLevel(0); }
 {$I-}
 {$F+}
 procedure LoadLevel(N: Integer);

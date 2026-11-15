@@ -2,7 +2,6 @@
 { from: 9AA7 }
 { to: 9B41 }
 { interface }
-{ keep: ShowMessage(''); }
 procedure ShowMessage(S: String);
 begin
   ClearText;

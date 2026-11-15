@@ -2,7 +2,6 @@
 { from: 8DDD }
 { to: 8EE1 }
 { interface }
-{ keep: if AskWarp = 0 then; }
 function AskWarp: Integer;
 var
   N, Code: Integer;

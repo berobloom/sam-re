@@ -2,7 +2,6 @@
   space up to N characters, Backspace deletes, Enter ends; the caret blinks and a spark runs along the frame) }
 { from: 1D7E }
 { to: 2603 }
-{ keep: - }
 {$F+}
 function InputLine(N: Integer): String;
 var

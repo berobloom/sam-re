@@ -189,7 +189,6 @@ procedure Decrypt; external;
 { src: SAM1RE 2891:0136 (../SAM code-map.md: start-up init: key defaults, high-score table, jump and arc tables) }
 { from: 0000 }
 { interface }
-{ keep: StartupInit; }
 procedure StartupInit;
 var
   I: Integer;
@@ -430,7 +429,6 @@ begin
 end;
 { src: SAM1RE 2891:07D5 (../SAM code-map.md: new game) }
 { interface }
-{ keep: NewGame; }
 procedure NewGame;
 var
   I: Integer;
@@ -551,7 +549,6 @@ begin
 end;
 { src: SAM1RE 2891:0A89 (../SAM code-map.md: level entry / respawn). I is never used (sub sp,2) }
 { interface }
-{ keep: LevelReset; }
 procedure LevelReset;
 var
   I: Integer;

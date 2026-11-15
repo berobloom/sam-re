@@ -3,7 +3,6 @@
   JumpUpTop then climbs to 10 through JumpUp, the camera following up to 0, a blocked step ends it) }
 { to: 6B8E }
 { interface }
-{ keep: Jump; }
 {$F+}
 procedure Jump;
 begin

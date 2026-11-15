@@ -1,7 +1,6 @@
 { src: SAM1RE 2891:0136 (../SAM code-map.md: start-up init: key defaults, high-score table, jump and arc tables) }
 { from: 0000 }
 { interface }
-{ keep: StartupInit; }
 procedure StartupInit;
 var
   I: Integer;

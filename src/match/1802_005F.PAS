@@ -1,6 +1,5 @@
 { src: SAM1RE 1802:005F (palette registers 0..7 -> 0..7, 8..15 -> $10..$17, Delay(D) after each) }
 { interface }
-{ keep: FadeIn(0); }
 procedure FadeIn(D: Integer);
 begin
   SetPalReg(0, 0);

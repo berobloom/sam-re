@@ -22,7 +22,6 @@ implementation
 {$F+} procedure Touch(X, Y: Integer); forward; {$F-}
 { src: GUESS 0529:0000 (slot N within the view (320 x 184 from CamX, CamY) widened by Margin on each side) }
 { interface }
-{ keep: if OnScreen(0, 1) then; }
 function OnScreen(Margin, N: Integer): Boolean;
 begin
   if Slots[N].X < CamX - Margin then
@@ -38,7 +37,6 @@ begin
 end;
 { src: GUESS 0529:008D (OnScreen for the second slot table, Shots) }
 { interface }
-{ keep: if ShotOnScreen(0, 1) then; }
 function ShotOnScreen(Margin, N: Integer): Boolean;
 begin
   if Shots[N].X < CamX - Margin then
@@ -54,7 +52,6 @@ begin
 end;
 { src: SAM1RE 0529:011A (../SAM input.md: B6A19 is the GOD mode toggle; without it the player dies: B6EEE) }
 { interface }
-{ keep: KillPlayer; }
 procedure KillPlayer;
 begin
   if Invulnerable = 0 then
@@ -82,7 +79,6 @@ end;
 {$F-}
 { src: GUESS 0529:01C4 (a hit on the player when X, Y overlaps slot 1 (10 x 16): unless B6A1B or GOD mode, a
   life goes (B6A67 a short guard, sound 7), or with the last life sound $16 and the death arc starts) }
-{ keep: - }
 {$F+}
 procedure HitPlayer(X, Y: Integer);
 begin
@@ -111,7 +107,6 @@ end;
 {$F-}
 { src: GUESS 0529:027C (does a live shot overlap X, Y? the first one that does is marked spent (B1F) and the
   cells under it repainted, with the neighbours when X is not on a 16-pixel column) }
-{ keep: - }
 {$F+}
 function ShotHit(X, Y: Integer): Boolean;
 var
@@ -138,7 +133,6 @@ end;
 {$F-}
 { src: GUESS 0529:03F0 (spawns an actor of type T at X, Y into the first free slot of Slots (Free = 1):
   W14 := T + 150, and draws tile T of Gfx[10] at the row under it and 26 rows lower) }
-{ keep: - }
 {$F+}
 procedure Spawn(X, Y, T: Integer);
 var
@@ -178,7 +172,6 @@ end;
 { src: GUESS 0529:0584 (plays sound 3 and puts an object of kind T at X, Y into the first free slot of
   Slots, facing Dir (-1 or 1; W0A 21 or 1); X snaps to 8 pixels except for kind $89. W1C is set by kind:
   0 (becomes $27) and $1D6/$7D/$7E 7, $339/$33B $13, $72 $25, $C7 (becomes $72) $89, $89 $28, else $E) }
-{ keep: - }
 {$F+}
 procedure SpawnObject(X, Y, Dir, A, T: Integer);
 var
@@ -261,7 +254,6 @@ end;
 { src: SAM1RE 0529:0837 (../SAM objects.md, physics.md: the actor behaviour switch on Slots[I].Kind, the
   first of the two chains (kinds below $1E); NewX, NewY: the frame pass's proposed position; CX, CY: never
   written by the caller, the kind-$16 body's cell loop counters) }
-{ keep: - }
 {$F+}
 procedure ActorAI(NewX, NewY, I, CX, CY: Integer);
 var
@@ -1067,7 +1059,6 @@ end;
   direction and speed fields, then their behaviour: ActorAI for kinds below $1E, the inline chain for the
   rest and the 5000/5001 score puffs; then the player's shots move and stop at solid cells) }
 { interface }
-{ keep: ActorFrame; }
 {$F+}
 procedure ActorFrame;
 var
@@ -2026,7 +2017,6 @@ end;
 {$F-}
 { src: GUESS 0529:65D9 (may the player move by DX, DY? the cells under the corners of slot 1's 16x16 box,
   inset 3 pixels left and right, must all be clear (Solid = 0); when blocked and Level > 1, W6844 := 0) }
-{ keep: - }
 {$F+}
 function CanMove(DX, DY: Integer): Boolean;
 var
@@ -2050,7 +2040,6 @@ end;
 { src: GUESS 0529:66B3 (the player falls one step: JumpUpTop counts up to 19 and picks the step from JumpUp;
   a solid cell under the feet, or past step 10 a FlagB ledge, lands him on the 16-pixel row; the camera
   follows down to $B8; then the falling or standing pose by facing) }
-{ keep: - }
 {$F+}
 procedure Fall;
 begin
@@ -2114,7 +2103,6 @@ end;
   Ramp, down/up (B6EEA/B6EE9) 4 pixels, each only when CanMove allows it; the camera follows, clamped to
   0..$140 and 0..$B8; W06/W08 keep the old position) }
 { interface }
-{ keep: MovePlayer; }
 {$F+}
 procedure MovePlayer;
 begin
@@ -2173,7 +2161,6 @@ end;
   JumpUpTop then climbs to 10 through JumpUp, the camera following up to 0, a blocked step ends it) }
 { to: 6B8E }
 { interface }
-{ keep: Jump; }
 {$F+}
 procedure Jump;
 begin
@@ -2222,7 +2209,6 @@ end;
 { src: SAM1RE 0529:6D0E (../SAM level-load.md: the tile touch effects of the cell at pixel X, Y: pickups
   (score, ammo, keys, gun), doors, the radar dish, laser fields, teleports, map exits) }
 { from: 6B8E }
-{ keep: - }
 {$F+}
 procedure Touch(X, Y: Integer);
 var

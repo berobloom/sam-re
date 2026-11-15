@@ -1,6 +1,5 @@
 { src: GUESS 25E6:0399 (S downwards from column X, row Y, cut at row 26; T is assigned and never read) }
 { interface }
-{ keep: WriteVert(1, 1, 0, 0, ''); }
 procedure WriteVert(X, Y, Fg, Bg: Integer; S: String);
 var
   I: Integer;

@@ -15,7 +15,6 @@ procedure OBJ286F; external;
 function ReadAxis; external;
 { src: GUESS 286F:0000 (confidence: high): both X and Y axis of stick A time out -> no joystick }
 { interface }
-{ keep: if JoyPresent then }
 function JoyPresent: Boolean;
 var A, B: Integer;
 begin
@@ -25,14 +24,12 @@ begin
 end;
 { src: SAM1RE 286F:0038 (../SAM code-map.md: jump button via game port 0x201) }
 { interface }
-{ keep: if JumpButton then }
 function JumpButton: Boolean;
 begin
   JumpButton := (Port[$201] and $10) = 0;
 end;
 { src: SAM1RE 286F:0058 (../SAM code-map.md: fire button, game port 0x201 bit 5, active low) }
 { interface }
-{ keep: if FireButton then }
 function FireButton: Boolean;
 begin
   FireButton := (Port[$201] and $20) = 0;

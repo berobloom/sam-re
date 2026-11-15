@@ -2,7 +2,6 @@
   Back (1..8 a pattern of the row-24 sheet, else a tile drawn without mask), then its Mid and Front tiles
   with mask, on the page W6866; the banks as DrawFront's. Columns 0..$27 only, no upper row bound) }
 { interface }
-{ keep: DrawBack(0, 0); }
 procedure DrawBack(X, Y: Integer);
 var
   CX, CY, MX, MY, PX, PY: Integer;

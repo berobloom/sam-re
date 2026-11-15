@@ -3,7 +3,6 @@
 { from: D4FA }
 { to: D739 }
 { interface }
-{ keep: SecurityDone; }
 procedure SecurityDone;
 var
   I, K: Integer;

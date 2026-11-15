@@ -2,7 +2,6 @@
   the key's scan code, $1C (Enter) when the load failed) }
 { from: 90A0 }
 { to: 91F2 }
-{ keep: if RestoreMenu = 0 then; }
 {$F+}
 function RestoreMenu: Integer;
 begin

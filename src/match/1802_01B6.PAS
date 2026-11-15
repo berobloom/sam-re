@@ -1,6 +1,5 @@
 { src: SAM1RE 1802:01B6 (palette registers 0..15 to black, Delay(D) before each) }
 { interface }
-{ keep: FadeOut(0); }
 procedure FadeOut(D: Integer);
 var
   I: Integer;

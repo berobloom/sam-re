@@ -1,5 +1,4 @@
 { src: GUESS 25E6:045E (video segment from the BIOS mode: B000h for mode 7, else B800h) }
-{ keep: - }
 {$F+}
 procedure InitVideo;
 begin

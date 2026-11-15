@@ -2,7 +2,6 @@
   two, the items and one icon per life; cell-aligned when CamX is a multiple of 8, else shifted by CamX and 7.
   the cells are those of SAM102.GFX record 1: 1..10 the digits) }
 { interface }
-{ keep: DrawStatus; }
 procedure DrawStatus;
 var
   I, Sh: Integer;

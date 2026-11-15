@@ -2,7 +2,6 @@
   into the heap, each decrypted; the record order is the file order) }
 { from: 381C }
 { interface }
-{ keep: LoadGraphics; }
 {$I-}
 procedure LoadGraphics;
 begin

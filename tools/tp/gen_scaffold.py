@@ -1,21 +1,20 @@
 #!/usr/bin/env python3
-"""Generate the size-exact Pascal scaffold of SAM1 from recipe/units.json, build it, and fit the stubs.
+"""Assemble SAM1's Turbo Pascal 5.0 source from src/match/, build it, check the layout and fit the data pads.
 
 usage: gen_scaffold.py [--rounds N]
 
-MATCHING.md section 4. Writes src/SAM1.PAS, src/U<seg>.PAS, src/GENUS.PAS and src/OBJ<seg>.ASM (filler for the
-`{$L}` part of a unit), builds them in .work/scaffold with TP 5.0 (`TPC /GD /B`), reads every stub's address from the
-map's line-number table (each stub's `begin` stands alone on its line) and corrects each stub's filler by the
-difference, until every stub, init and `.OBJ` block starts at its recipe offset and every segment at its original
-base, or N rounds (default 6) pass. Fillers live in src/FILL.JSON so a re-run starts from the last fit.
+MATCHING.md section 4. Writes src/SAM1.PAS, src/U<seg>.PAS, src/GENUS.PAS and src/OBJ<seg>.ASM, builds them in
+.work/scaffold with TP 5.0 (`TPC /GD /B`), and reads the map: every unit must sit at its original base, every routine,
+init and `.OBJ` block at its recipe offset with its recipe size (each routine's `begin` stands alone on its line,
+so the map's line-number table gives its address), and every pinned variable at its DS address. Only the data pads
+are fitted (`{ @XXXX }` pins, src/FILL.JSON under `data`); they are saved after a round that is all right, so a
+failed build never leaves pads fitted to a broken layout. Up to N rounds (default 6).
 
-Unit regions, from the recipe: Pascal chunks [0, init) cut at every routine and frame_only start, the init
-[init, init+reached), the `.OBJ` block after it when routines start there. The largest chunk is the unit's keeper:
-it calls every other stub and the `.OBJ` block and names every data block with `Inline(>Name)`; it is exported and
-the main program body calls it (some inits are empty 7-byte blocks with no room for a call), so TP's smart linker
-keeps everything. A unit with no Pascal stubs (Genus) uses its init as the keeper. The main program's keeper is its body, which also holds the runtime
-keeper (src/RTLKEEP.INC, pasted: TP 5.0 allows no include in a statement part).
-Never reads image bytes: everything comes from the recipe.
+Per unit, from src/match/: `<SEG>_<OFF>.PAS` the routines (directives: `{ interface }` declares it in the
+interface, `{ init }` marks the unit init / program body, `{ from: XXXX }` its string literals start there,
+`{ to: XXXX }` the next routine's literals start there, `{ nested: XXXX .. }` routines declared inside it),
+`<SEG>_<OFF>.EXT` the asm entry points, `OBJ<SEG>.ASM` the `{$L}` block (tools/tp/obj2asm.py), `<SEG>.VAR` the
+data, `<SEG>.USES` the uses clause. The routine regions come from recipe/units.json; nothing reads image bytes.
 """
 import json
 import os
@@ -26,17 +25,12 @@ import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 SRC = os.path.join(ROOT, 'src')
+MATCH = os.path.join(SRC, 'match')
 BUILD = os.path.join(ROOT, '.work', 'scaffold')
 TP = os.path.join(ROOT, '.work', 'toolchains', 'tp50')
 LIBS = {'2961', '2CC7', '2CD1'}
 USES = ['Dos', 'U29C3', 'Crt', 'U2891', 'U287F', 'U286F', 'GENUS', 'U25E6', 'U1802', 'U0D9C', 'U0529']
-KEEPVARS = '''type KRec = array[0..41] of Byte;
-var KF: file of KRec absolute TextLines; KT: Text absolute TextLines; KR: KRec absolute TextLines;
-    KS: string absolute TextLines; KS2: string absolute TextLines; KRegs: Registers absolute TextLines;
-    KL: LongInt absolute TextLines; KP: Pointer absolute TextLines; KI: Integer absolute TextLines;
-    KC: Char absolute TextLines; KB: Boolean absolute TextLines;'''
-# the keeper never runs: its variables overlay U2891's TextLines and take no DS space of main's
-KEEPVARS_SIZE = 0
+DATAFILL = {}      # seg -> {pinned address or 'END': pad bytes}, kept in FILL.JSON under 'data'
 
 
 def h(x):
@@ -47,44 +41,51 @@ def unit_name(seg):
     return 'SAM1' if seg == '0000' else 'GENUS' if seg == '2643' else 'U' + seg
 
 
+def match_files(seg, ext):
+    return [f for f in sorted(os.listdir(MATCH)) if f.startswith(seg + '_') and f.endswith(ext)]
+
+
+def read(path):
+    return open(path, encoding='latin1').read().replace('\r', '')
+
+
+def directive_map(seg, name):
+    """{routine offset: directive argument} for the fragments with `{ name: ... }`"""
+    out = {}
+    for f in match_files(seg, '.PAS'):
+        m = re.search(r'\{ %s: ([0-9A-F ]+) \}' % name, read(os.path.join(MATCH, f)))
+        if m:
+            out[h(f[5:9])] = m.group(1)
+    return out
+
+
+def literal_starts(seg):
+    """{routine offset: region start} for fragments with `{ from: XXXX }`: the routine's literals start there"""
+    return {o: h(a) for o, a in directive_map(seg, 'from').items()}
+
+
 def regions(u, rec):
-    """[(kind, name, offset, want_size)] in segment order; kinds: stub, init, obj"""
+    """[(kind, name, offset, size)] in segment order; kinds: proc, init, obj"""
     seg = u['seg']
-    fns = {h(f['addr'][5:]): f for f in u['functions']}
-    starts = sorted(fns)
     init = h(u['init']) if u.get('init') else h(rec['entry'][5:])
-    cuts = sorted({0} | {o for o in starts if o < init}
+    cuts = sorted({0} | {h(f['addr'][5:]) for f in u['functions'] if h(f['addr'][5:]) < init}
                   | {h(a[5:]) for a in rec['frame_only'] if a[:4] == seg and h(a[5:]) < init})
     lits = literal_starts(seg)
-    if init in lits:                                    # the init's literals: no stub before it from there
+    if init in lits:                                    # the init's literals: no routine before it from there
         init = lits.pop(init)
         cuts = [c for c in cuts if c < init]
     for off, frm in lits.items():                       # a routine's string literals precede its code
         cuts = sorted((set(cuts) - {off}) | {frm})
-    cuts = sorted(set(cuts) - nested_starts(seg))       # nested routines are part of their parent's region
-    d = os.path.join(SRC, 'match')                      # `{ to: XXXX }`: a fragment ends there, the next
-    for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:   # (unmatched) routine's literals follow
-        if f.startswith(seg + '_') and f.endswith('.PAS'):
-            m = re.search(r'\{ to: ([0-9A-F]{4}) \}', open(os.path.join(d, f), encoding='latin1').read())
-            if m and h(m.group(1)) < init:              # the next routine's region starts at its literals
-                to = h(m.group(1))
-                nxt = [c for c in cuts if c > to][:1] if to not in cuts else []   # `from:` made it already
-                cuts = sorted((set(cuts) - set(nxt)) | {to})
+    nested = {h(x) for v in directive_map(seg, 'nested').values() for x in v.split()}
+    cuts = sorted(set(cuts) - nested)                   # nested routines are part of their parent's region
+    for to in sorted(h(v) for v in directive_map(seg, 'to').values()):   # a fragment ends there, the next
+        if to < init:                                   # routine's region starts at its literals
+            nxt = [c for c in cuts if c > to][:1] if to not in cuts else []
+            cuts = sorted((set(cuts) - set(nxt)) | {to})
     if init == 0:
         cuts = []
-    merged = []
-    for i, c in enumerate(cuts):
-        end = cuts[i + 1] if i + 1 < len(cuts) else init
-        if merged and end - c < 8 and not fragment(seg, c):
-            continue                                    # a stub needs 7 bytes; the previous one absorbs it
-                                                        # (a matched routine, e.g. an empty one, stays)
-        if not merged and end - c < 8 and i + 1 < len(cuts):
-            continue
-        merged.append(c)
-    out = []
-    for i, c in enumerate(merged):
-        end = merged[i + 1] if i + 1 < len(merged) else init
-        out.append(('stub', 'S%s_%04X' % (seg, c), c, end - c))
+    out = [('proc', 'S%s_%04X' % (seg, c), c, (cuts[i + 1] if i + 1 < len(cuts) else init) - c)
+           for i, c in enumerate(cuts)]
     obj_start = h(u['obj_start']) if u.get('obj_start') else None   # recipe: after the init's epilogue
     out.append(('init', 'INIT', init, (obj_start if obj_start is not None else u['code_len']) - init))
     if obj_start is not None:
@@ -92,336 +93,132 @@ def regions(u, rec):
     return out
 
 
-def inline_items(n, names=()):
-    """Inline items emitting exactly n bytes, the named data blocks first (2 bytes each)"""
-    items = ['>%s' % x for x in names]
-    n -= 2 * len(names)
-    if n < 0:
-        raise ValueError('filler too small for its references')
-    items += ['>$0000'] * (n // 2) + (['$00'] if n % 2 else [])
-    lines, cur = [], ''
-    for it in items:
-        if len(cur) + len(it) + 1 > 100:
-            lines.append(cur)
-            cur = ''
-        cur += it + '/'
-    lines.append(cur)
-    text = '\n'.join(lines).rstrip('/')
-    return 'Inline(' + text + ')' if items else ''
+def fragment(seg, off):
+    """the routine whose region starts at OFF: src/match/<SEG>_<OFF>.PAS (or the one whose `{ from: }` is OFF);
+    its header is the first procedure/function line, its `begin` stands alone on a line"""
+    path, lit = os.path.join(MATCH, '%s_%04X.PAS' % (seg, off)), 0
+    for r, frm in literal_starts(seg).items():
+        if frm == off:
+            path, lit = os.path.join(MATCH, '%s_%04X.PAS' % (seg, r)), r - frm
+    if not os.path.exists(path):
+        raise SystemExit('%s: no routine for %s:%04X (src/match/%s_%04X.PAS)' % (unit_name(seg), seg, off, seg, off))
+    text = read(path).rstrip('\n')
+    if '{ init }' in text:                          # the unit init / program body: statements only
+        return {'text': text, 'init': True, 'interface': False, 'name': 'INIT', 'head': None, 'lit': lit}
+    head = next(l for l in text.split('\n') if re.match(r'(procedure|function) ', l))
+    return {'text': text, 'head': head, 'name': re.match(r'(?:procedure|function) (\w+)', head).group(1),
+            'lit': lit, 'interface': '{ interface }' in text, 'init': False}
 
 
-DATAFILL = {}      # seg -> {pinned address or 'END': pad bytes}, kept in FILL.JSON under 'data'
+def externals(seg):
+    """asm routines of a unit's {$L} block: src/match/<SEG>_<OFF>.EXT holds the Pascal external declaration
+    (e.g. `{$F+} function ReadAxis(Axis: Word): Word; external; {$F-}`)"""
+    out = []
+    for f in match_files(seg, '.EXT'):
+        text = read(os.path.join(MATCH, f)).strip()
+        kind, name = re.search(r'(procedure|function) (\w+)', text).groups()
+        iface = '{ interface }' in text
+        text = re.sub(r'\{ (src|interface)[^}]*\}\s*', '', text).strip()
+        out.append({'off': h(f[5:9]), 'name': name, 'kind': kind, 'text': text, 'interface': iface})
+    return out
 
 
 def var_pins(u):
-    """[(name, DS address)] of the `{ @XXXX }` lines of the unit's .VAR, in order"""
-    vf = os.path.join(SRC, 'match', u['seg'] + '.VAR')
+    """[(name, DS address)] of the `{ @XXXX }` (or `{ @XXXX; note }`) lines of the unit's .VAR, in order"""
+    vf = os.path.join(MATCH, u['seg'] + '.VAR')
     if not os.path.exists(vf):
         return []
     out = []
-    for l in open(vf, encoding='latin1').read().replace('\r', '').split('\n'):
+    for l in read(vf).split('\n'):
         m = re.match(r'\s*(?:var\s+|const\s+)?(\w+)[\w, ]*:.*\{ @([0-9A-F]{4})[ ;]', l)
         if m:
             out.append((m.group(1), m.group(2)))
     return out
 
 
-def data_decls(u, public):
-    """the unit's data declarations and the names to keep: src/match/<SEG>.VAR (hand-written type/var/const
-    text) replaces the generated block of the same range; else one byte array per range"""
-    out, names = [], []
-    d = u.get('data', {})
-    vf = os.path.join(SRC, 'match', u['seg'] + '.VAR')
-    if os.path.exists(vf):
-        text = open(vf, encoding='latin1').read().replace('\r', '').strip()
-        pads = DATAFILL.setdefault(u['seg'], {})
-        lines = []
-        for l in text.split('\n'):            # `{ @XXXX }` pins a variable's address: a fitted pad goes before it
-            m = re.search(r'\{ @([0-9A-F]{4})[ ;]', l)
-            if m and pads.get(m.group(1), 0) > 0:
-                lines.append('  P_%s: array[1..%d] of Byte;' % (m.group(1), pads[m.group(1)]))
-            lines.append(l)
-        if pads.get('END', 0) > 0:          # in the last var section: TP 5.0 drops a var section nothing uses
-            last = re.findall(r'^\s*(type|var|const)\b', re.sub(r'\{[^}]*\}', '', text), re.M)
-            lines.append('%sP_%s_END: array[1..%d] of Byte;' % ('  ' if last and last[-1] == 'var' else 'var ',
-                                                                 u['seg'], pads['END']))
-        text = '\n'.join(lines)
-        body = re.sub(r'\{[^}]*\}', '', text)
-        sect = None
-        for l in body.split('\n'):
-            w = l.strip().split()
-            if w and w[0] in ('type', 'var', 'const'):
-                sect = w[0]
-                l = l.strip()[len(w[0]):]
-            m = re.match(r'\s*([\w, ]+?)\s*:', l)
-            if m and sect in ('var', 'const'):
-                names += [x.strip() for x in m.group(1).split(',')]
-        return text, names
-    if 'tconsts' in d:
-        a, b = map(h, d['tconsts'])
-        n = 'T_%s' % u['seg']
-        zeros = ','.join(['0'] * (b - a))
-        zeros = re.sub(r'((?:0,){40})', r'\1\n  ', zeros)
-        out.append('const %s: array[0..%d] of Byte = (\n  %s);' % (n, b - a - 1, zeros))
-        names.append(n)
-    if 'vars' in d:
-        a, b = map(h, d['vars'])
-        size = b - a - (KEEPVARS_SIZE if u['seg'] == '0000' else 0)
-        n = 'V_%s' % u['seg']
-        out.append('var %s: array[0..%d] of Byte;' % (n, size - 1))
-        names.append(n)
-    return '\n'.join(out), names
+def data_decls(u):
+    """the unit's data declarations (src/match/<SEG>.VAR with the fitted pads) and the variable names"""
+    vf = os.path.join(MATCH, u['seg'] + '.VAR')
+    if not os.path.exists(vf):
+        if u.get('data'):
+            raise SystemExit('%s has data but no src/match/%s.VAR' % (unit_name(u['seg']), u['seg']))
+        return '', []
+    text = read(vf).strip()
+    pads = DATAFILL.setdefault(u['seg'], {})
+    lines = []
+    for l in text.split('\n'):            # `{ @XXXX }` pins a variable's address: a fitted pad goes before it
+        m = re.search(r'\{ @([0-9A-F]{4})[ ;]', l)
+        if m and pads.get(m.group(1), 0) > 0:
+            lines.append('  P_%s: array[1..%d] of Byte;' % (m.group(1), pads[m.group(1)]))
+        lines.append(l)
+    if pads.get('END', 0) > 0:          # in the last var section: TP 5.0 drops a var section nothing uses
+        last = re.findall(r'^\s*(type|var|const)\b', re.sub(r'\{[^}]*\}', '', text), re.M)
+        lines.append('%sP_%s_END: array[1..%d] of Byte;' % ('  ' if last and last[-1] == 'var' else 'var ',
+                                                             u['seg'], pads['END']))
+    text = '\n'.join(lines)
+    names, sect = [], None
+    for l in re.sub(r'\{[^}]*\}', '', text).split('\n'):
+        w = l.strip().split()
+        if w and w[0] in ('type', 'var', 'const'):
+            sect = w[0]
+            l = l.strip()[len(w[0]):]
+        m = re.match(r'\s*([\w, ]+?)\s*:', l)
+        if m and sect in ('var', 'const'):
+            names += [x.strip() for x in m.group(1).split(',')]
+    return text, names
 
 
-def literal_starts(seg):
-    """{routine offset: region start} for fragments with `{ from: XXXX }`: the routine's literals start there"""
-    out = {}
-    d = os.path.join(SRC, 'match')
-    for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
-        if f.startswith(seg + '_') and f.endswith('.PAS'):
-            m = re.search(r'\{ from: ([0-9A-F]{4}) \}', open(os.path.join(d, f), encoding='latin1').read())
-            if m:
-                out[h(f[5:9])] = h(m.group(1))
-    return out
-
-
-def nested_starts(seg):
-    """routine offsets named by `{ nested: XXXX XXXX }` in a fragment: procedures declared inside it (TP emits
-    them, with their literals, before the parent's body), so they are not cuts of their own"""
-    out = set()
-    d = os.path.join(SRC, 'match')
-    for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
-        if f.startswith(seg + '_') and f.endswith('.PAS'):
-            m = re.search(r'\{ nested: ([0-9A-F ]+) \}', open(os.path.join(d, f), encoding='latin1').read())
-            if m:
-                out |= {h(x) for x in m.group(1).split()}
-    return out
-
-
-def fragment(seg, off):
-    """a hand-written routine, src/match/<SEG>_<OFF>.PAS, or None. Lines `{ keep: STATEMENT }` (how the keeper uses
-    it, so it is linked) and `{ interface }` (declare it in the interface: a far routine) are directives; the
-    header is the first procedure/function line; its `begin` stands alone on a line."""
-    path, lit = os.path.join(SRC, 'match', '%s_%04X.PAS' % (seg, off)), 0
-    for r, frm in literal_starts(seg).items():
-        if frm == off:
-            path, lit = os.path.join(SRC, 'match', '%s_%04X.PAS' % (seg, r)), r - frm
-    if not os.path.exists(path):
-        return None
-    text = open(path, encoding='latin1').read().replace('\r', '').rstrip('\n')
-    if '{ init }' in text:                          # the unit init / program body: statements only
-        return {'text': text, 'init': True, 'interface': False, 'keep': None, 'name': 'INIT', 'head': None, 'lit': lit}
-    keep = re.search(r'\{ keep: (.*) \}', text)
-    head = next(l for l in text.split('\n') if re.match(r'(procedure|function) ', l))
-    name = re.match(r'(?:procedure|function) (\w+)', head).group(1)
-    return {'text': text, 'keep': keep.group(1) if keep else name, 'head': head, 'name': name, 'lit': lit,
-            'interface': '{ interface }' in text, 'init': False}
-
-
-def externals(seg):
-    """asm routines of a unit's {$L} block that Pascal code calls: src/match/<SEG>_<OFF>.EXT holds the Pascal
-    external declaration (e.g. `{$F+} function ReadAxis(Axis: Word): Word; external; {$F-}`); the generator puts
-    a label of that name at OFF in the unit's .OBJ"""
-    out = []
-    d = os.path.join(SRC, 'match')
-    for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
-        if f.startswith(seg + '_') and f.endswith('.EXT'):
-            text = open(os.path.join(d, f), encoding='latin1').read().replace('\r', '').strip()
-            kind, name = re.search(r'(procedure|function) (\w+)', text).groups()
-            iface = '{ interface }' in text
-            text = re.sub(r'\{ (src|interface)[^}]*\}\s*', '', text).strip()
-            out.append({'off': h(f[5:9]), 'name': name, 'kind': kind, 'text': text, 'interface': iface})
-    return out
-
-
-def outside_keeps(units, regs):
-    """statements the main program body runs to keep what units export: each unit's keeper, its interface
-    routines (their `keep:` statement) and its .OBJ entry"""
-    out = []
-    for u in units:
-        if u['seg'] == '0000':
-            continue
-        k = keeper_of(regs[u['seg']])
-        if k:
-            out.append(k)
-        for kind, rname, off, size in regs[u['seg']]:
-            f = fragment(u['seg'], off) if kind == 'stub' else None
-            if f and f['interface']:
-                out.append(f['keep'])
-            g = signature(u['seg'], off) if kind == 'stub' and not f else None
-            if g and g['interface'] and g['keep'] != '-':
-                out.append(g['keep'])
-            if kind == 'obj':
-                out.append(rname)
-    return out
-
-
-def signature(seg, off):
-    """src/match/<SEG>_<OFF>.SIG: an unmatched routine's real header (`{$F+} function ReadMenuKey: Char;`), so
-    matched code can call its stub; `{ keep: STATEMENT }` keeps it from the keeper (default: none, a matched
-    caller keeps it)"""
-    path = os.path.join(SRC, 'match', '%s_%04X.SIG' % (seg, off))
-    d = os.path.join(SRC, 'match')
-    tos = {h(m) for f in os.listdir(d) if f.startswith(seg + '_') and f.endswith('.PAS')
-           for m in re.findall(r'\{ to: ([0-9A-F]{4}) \}', open(os.path.join(d, f), encoding='latin1').read())}
-    if not os.path.exists(path) and off in tos:         # the region starts at the routine's literals
-        sigs = sorted(h(f[5:9]) for f in os.listdir(d) if f.startswith(seg + '_') and f.endswith('.SIG'))
-        nxt = [o for o in sigs if off < o < off + 0x800]     # literals can run to 2 KB
-        if nxt:
-            path = os.path.join(d, '%s_%04X.SIG' % (seg, nxt[0]))
-    if not os.path.exists(path):
-        return None
-    text = open(path, encoding='latin1').read().replace('\r', '')
-    head = next(l for l in text.split('\n') if re.search(r'\b(procedure|function) ', l))
-    far = '{$F+}' in head
-    head = re.sub(r'\{\$F[+-]\}', '', head).strip()
-    keep = re.search(r'\{ keep: (.*) \}', text)
-    return {'head': head, 'far': far, 'name': re.search(r'(?:procedure|function) (\w+)', head).group(1),
-            'keep': keep.group(1) if keep else '-', 'lit': h(os.path.basename(path)[5:9]) - off,
-            'interface': '{ interface }' in text}   # exported: other units' matched code calls the stub
-
-
-def keeper_of(regs):
-    stubs = [r for r in regs if r[0] == 'stub' and not fragment(r[1][1:5], r[2]) and not signature(r[1][1:5], r[2])]
-    return max(stubs, key=lambda r: r[3])[1] if stubs else None
-
-
-def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
+def gen_unit(u, regs):
     seg = u['seg']
     name = unit_name(seg)
     main = seg == '0000'
-    decl, dnames = data_decls(u, True)
-    if not main:
-        dnames = []                         # unit data is in the interface; the main body keeps it
-    stubs = [r for r in regs if r[0] == 'stub']
-    frags = {r[1]: fragment(seg, r[2]) for r in stubs}
-    sigs = {r[1]: signature(seg, r[2]) for r in stubs if not frags[r[1]]}
-    plain = [r for r in stubs if not frags[r[1]] and not sigs.get(r[1])]
+    decl = data_decls(u)[0]
+    procs = [r for r in regs if r[0] == 'proc']
+    frags = {r[1]: fragment(seg, r[2]) for r in procs}
     obj = [r for r in regs if r[0] == 'obj']
-    keeper = keeper_of(regs) if not main else None
-    # the unit keeps its private routines; what other units can see (keeper, interface routines, the .OBJ entry)
-    # is kept from the main program body (outside_keeps)
-    calls = [frags[r[1]]['keep'] if frags[r[1]] else sigs[r[1]]['keep'] if sigs.get(r[1]) else r[1] for r in stubs
-             if r[1] != keeper and not (frags[r[1]] and (frags[r[1]]['interface'] or frags[r[1]]['keep'] == '-'))
-             and not (sigs.get(r[1]) and sigs[r[1]]['keep'] == '-')]
-    if main:
-        calls += [r[1] for r in obj]
-    # links System 025D (structured value parameter); its prologue grows, so the largest stub carries it
-    valpar = max(plain, key=lambda r: r[3])[1] if main and plain else None
     L = []
     if main:
-        L += ['program SAM1;', '{$S-,D+,L+}', 'uses ' + ', '.join(USES) + ';', KEEPVARS, decl]
+        L += ['program SAM1;', '{$S-,D+,L+}', 'uses ' + ', '.join(USES) + ';', decl]
     else:
         L += ['unit %s;' % name, '{$S-,D+,L+}', 'interface']
-        uf = os.path.join(SRC, 'match', seg + '.USES')      # the units this one uses, e.g. `uses U29C3;`
+        uf = os.path.join(MATCH, seg + '.USES')      # the units this one uses, e.g. `uses U29C3;`
         if os.path.exists(uf):
-            L.append(open(uf, encoding='latin1').read().replace('\r', '').strip())
+            L.append(read(uf).strip())
         L.append(decl)
-        if keeper:
-            L.append('procedure %s;' % keeper)          # exported: the main program calls it (far)
-        L += [f['head'] for f in frags.values() if f and f['interface']]
-        L += [g['head'] for g in sigs.values() if g and g['interface']]
+        L += [f['head'] for f in frags.values() if f['interface']]
         L += ['procedure %s;' % r[1] for r in obj]
         L += [re.sub(r'\{\$F[+-]\}|external;', '', e['text']).strip() for e in externals(seg) if e['interface']]
         L.append('implementation')
     if obj:
         L.append('{$L %s.OBJ}' % obj[0][1])
-    for r in stubs:
-        f = frags[r[1]]
-        if f and not f['interface']:                # a far private routine's forward is far too
+    for f in frags.values():
+        if not f['interface']:                      # a far private routine's forward is far too
             L.append(('{$F+} %s forward; {$F-}' if '{$F+}' in f['text'] else '%s forward;') % f['head'])
-        elif sigs.get(r[1]):
-            g = sigs[r[1]]
-            if not g['interface']:                  # an exported one is declared in the interface
-                L.append(('{$F+} %s forward; {$F-}' if g['far'] else '%s forward;') % g['head'])
-        elif not f and r[1] != keeper:
-            L.append('procedure %s%s; forward;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
     for r in obj:
         L.append('procedure %s; external;' % r[1])
         L += [e['text'] if not e['interface'] else '%s %s; external;' % (e['kind'], e['name'])
               for e in externals(seg)]
-
-    def body(rname, extra_calls, refs, rtl=False):
-        stmts = []
-        if rtl:
-            stmts += [l for l in open(os.path.join(SRC, 'RTLKEEP.INC'), encoding='latin1').read().split('\n')
-                      if l.strip() and not l.startswith(('{', '  '))]
-        stmts += ['%s%s;' % (c, '(KR)' if c == valpar else '') for c in extra_calls]
-        inl = inline_items(fill.get(rname, 0), refs)
-        if inl:
-            stmts.append(inl)
-        return stmts
-
-    for r in stubs:
-        if frags[r[1]]:
-            f = frags[r[1]]
-            text = f['text']
-            if f['head'] and ' interrupt;' in f['head'] and not f['interface']:   # forwarded: no directive again
-                text = text.replace(f['head'], f['head'].replace(' interrupt;', ''), 1)
-            L += text.split('\n')
-            continue
-        g = sigs.get(r[1])
-        if g and g['far']:
-            L.append('{$F+}')
-        L.append(re.sub(r' interrupt;', '', g['head']) if g else   # forwarded: TP takes no directive again
-                 'procedure %s%s;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
-        if g and g['lit'] > 1:                      # string literals of the same total size before the code, as
-            L += ['var', '  Q_: String;', 'begin']  # the original (a 1-char constant is a Char unless compared
-            n, ch = g['lit'], 0                     # with a string); distinct ones of <= 100 bytes, so no line
-            while n > 0:                            # passes 127 characters and TP merges none
-                k = min(n, 100) - (1 if n - min(n, 100) == 1 else 0)
-                L.append("  if Q_ = '%s' then;" % (chr(ord('a') + ch) * (k - 1)))
-                n, ch = n - k, ch + 1
-        else:
-            L.append('begin')
-        L += body(r[1], calls if r[1] == keeper else [], dnames if r[1] == keeper else [])
-        L.append('end;')
-        if g and g['far']:
-            L.append('{$F-}')
+    for f in frags.values():
+        text = f['text']
+        if ' interrupt;' in f['head'] and not f['interface']:   # forwarded: TP takes no directive again
+            text = text.replace(f['head'], f['head'].replace(' interrupt;', ''), 1)
+        L += text.split('\n')
     L.append('begin')
-    fm = fragment(seg, next(r[2] for r in regs if r[0] == 'init')) if main else None
-    if fm:
-        # the hand-written program body: the real calls keep every unit routine, runtime routine and variable
-        L += [l for l in fm['text'].split('\n') if l.strip()]
-    elif main:
-        L += body('INIT', calls + list(keepers_of_units), dnames + list(unit_data), rtl=True)
-    else:
-        init_off = next(r[2] for r in regs if r[0] == 'init')
-        fi = fragment(seg, init_off)
-        if fi:
-            # no keeper and a hand-written init: every stub is matched or has a signature, so the matched callers
-            # keep the private routines; one nothing calls is dropped by the linker and the layout check fails
-            L += [l for l in fi['text'].split('\n') if l.strip()]
-        else:
-            L += body('INIT', [] if keeper else calls, [] if keeper else dnames)
+    L += [l for l in fragment(seg, next(r[2] for r in regs if r[0] == 'init'))['text'].split('\n') if l.strip()]
     L.append('end.')
-    text = '\n'.join(x for x in L if x is not None) + '\n'
-    open(os.path.join(SRC, name + '.PAS'), 'w', encoding='latin1').write(text.replace('\n', '\r\n'))
+    open(os.path.join(SRC, name + '.PAS'), 'w', encoding='latin1').write('\r\n'.join(L) + '\r\n')
     if obj:
-        o = obj[0]
-        n = o[3]                            # never fitted: its size is the region's
-        fill[o[1]] = n
-        hand = os.path.join(SRC, 'match', o[1] + '.ASM')     # tools/tp/obj2asm.py: the block as NASM source
-        if os.path.exists(hand):
-            open(os.path.join(SRC, o[1] + '.ASM'), 'w').write(open(hand, encoding='latin1').read())
-            return
-        asm = ['segment CODE public align=1', 'global %s' % o[1], '%s:' % o[1]]
-        at = 0
-        for e in externals(seg):            # a label at each named asm routine, filler between
-            rel = e['off'] - o[2]
-            if not 0 <= rel <= n or rel < at:
-                raise ValueError('%s_%04X.EXT lies outside the .OBJ block' % (seg, e['off']))
-            asm += ['    times %d db 0' % (rel - at), 'global %s' % e['name'].upper(), '%s:' % e['name'].upper()]
-            at = rel
-        asm.append('    times %d db 0' % (n - at))
-        open(os.path.join(SRC, o[1] + '.ASM'), 'w').write('\n'.join(asm) + '\n')
+        hand = os.path.join(MATCH, obj[0][1] + '.ASM')     # tools/tp/obj2asm.py: the block as NASM source
+        if not os.path.exists(hand):
+            raise SystemExit('%s: no src/match/%s.ASM (tools/tp/obj2asm.py %s)' % (name, obj[0][1], seg))
+        shutil.copy(hand, os.path.join(SRC, obj[0][1] + '.ASM'))
 
 
 def begin_lines(path):
     """{routine: line of its `begin`} for a generated unit: a standalone `begin` belongs to the last procedure
     header that is not a forward/external declaration, else to the unit's init / the program body"""
     out, cur = {}, None
-    for i, l in enumerate(open(path, encoding='latin1').read().replace('\r', '').split('\n'), 1):
+    for i, l in enumerate(read(path).split('\n'), 1):
         m = re.match(r'(?:procedure|function) (\w+)\b(?!.*\b(?:forward|external);)', l)
         if l == 'implementation':
             cur = None                                  # interface headers have no body here
@@ -434,14 +231,15 @@ def begin_lines(path):
 
 
 def read_map(path):
-    m = open(path, encoding='latin1').read().replace('\r', '')
+    m = read(path)
     segs = {n: int(s, 16) for s, n in re.findall(r'\s([0-9A-F]{5})H [0-9A-F]{5}H [0-9A-F]{5}H (\S+)\s+CODE', m)}
     lens = {n: int(l, 16) for l, n in re.findall(r'\s[0-9A-F]{5}H [0-9A-F]{5}H ([0-9A-F]{5})H (\S+)\s+CODE', m)}
     lines = {}
     for unit, sec in re.findall(r'Line numbers for (\w+)\([^)]*\) segment \w+\n\n(.*?)\n\n', m, re.S):
         lines[unit] = {int(n): int(s, 16) * 16 + int(o, 16) for n, s, o in re.findall(r'(\d+) ([0-9A-F]{4}):([0-9A-F]{4})', sec)}
     pubs = {n: int(s, 16) * 16 + int(o, 16) for s, o, n in re.findall(r'\s([0-9A-F]{4}):([0-9A-F]{4})\s+(\w+)\n', m)}
-    return segs, lens, lines, pubs
+    ds = int(re.search(r'\s([0-9A-F]{5})H [0-9A-F]{5}H [0-9A-F]{5}H DATA\s', m).group(1), 16)
+    return segs, lens, lines, pubs, ds
 
 
 def build():
@@ -459,6 +257,85 @@ def build():
     return r.returncode == 0, r.stdout.strip()
 
 
+def check_code(units, regs, bases, segs, lens, lines):
+    """report lines for every unit base, routine, init and .OBJ block off its recipe offset or size"""
+    report = []
+    for u in units:
+        name = unit_name(u['seg'])
+        base = segs.get(name)
+        if base is None:
+            report.append('%s missing from the map' % name)
+            continue
+        if base != bases[u['seg']]:
+            report.append('%s base %05X want %05X' % (name, base, bases[u['seg']]))
+        bl = begin_lines(os.path.join(SRC, name + '.PAS'))
+        ln = lines.get(name, {})
+        order = regs[u['seg']]
+        actual = []
+        for kind, rname, off, size in order:
+            if kind == 'obj':                       # TP puts the .OBJ code last; NASM emits exactly its size
+                actual.append(lens[name] - size)
+                continue
+            f = fragment(u['seg'], off)
+            a = ln.get(bl.get(f['name']))
+            actual.append(None if a is None else a - f['lit'] - base)   # its string literals precede the code
+        for i, (kind, rname, off, size) in enumerate(order):
+            start = actual[i]
+            nxt = actual[i + 1] if i + 1 < len(order) else lens[name]
+            if start is None or nxt is None:
+                report.append('%s %s:%04X not found in the map' % (name, u['seg'], off))
+                continue
+            got = nxt - start
+            if i + 1 == len(order) and got <= size < got + 16 and \
+                    (base + start + got + 15) // 16 * 16 == base + u['size']:
+                got = size                          # the segment's paragraph padding follows the last region
+            if start != off or got != size:
+                report.append('%s %s %s:%04X at %04X, %d bytes; wants %04X, %d' % (name, kind, u['seg'], off,
+                                                                                   start, got, off, size))
+    return report
+
+
+def fit_data(units, pubs, ds):
+    """report lines for misplaced data, and the pad corrections (into DATAFILL) that move it"""
+    report = []
+    for u in units:
+        d = u.get('data', {}) if u['seg'] != '0000' else {}
+        for kind in ('tconsts', 'vars'):
+            if kind not in d:
+                continue
+            first = [n for n in data_decls(u)[1] if n.startswith('T_') == (kind == 'tconsts')]
+            a = pubs.get(first[0].upper()) if first else None
+            if a is None or a - ds != h(d[kind][0]):
+                report.append('%s %s %s at %s, wants DS:%s' % (unit_name(u['seg']), kind, first[:1],
+                              'missing' if a is None else 'DS:%04X' % (a - ds), d[kind][0]))
+    dunits = sorted((u for u in units if 'vars' in u.get('data', {}) and u['seg'] != '0000'),
+                    key=lambda u: h(u['data']['vars'][0]))
+    for i, u in enumerate(dunits):
+        pins = var_pins(u)
+        if not pins:
+            continue
+        pads, prev = DATAFILL.setdefault(u['seg'], {}), 0
+        nxt = dunits[i + 1] if i + 1 < len(dunits) else None
+        nvars = [n for n in data_decls(nxt)[1] if not n.startswith('T_')] if nxt else []
+        nref = (var_pins(nxt)[:1] or [(nvars[0], nxt['data']['vars'][0])]) if nxt else []
+        nfirst = nref[0][0] if nref else None
+        for name, want in pins + nref:
+            a = pubs.get(name.upper())
+            if a is None:
+                report.append('%s not in map' % name)
+                break
+            err = h(want) - (a - ds)
+            key = want if name != nfirst else 'END'
+            if err != prev:
+                report.append('%s at DS:%04X, wants DS:%s' % (name, a - ds, want))
+                pads[key] = pads.get(key, 0) + err - prev
+                if pads[key] < 0:
+                    report.append('%s: the declarations before it are %d bytes too long' % (name, -pads[key]))
+                    pads[key] = 0
+            prev = err
+    return report
+
+
 def main(argv):
     rounds = int(argv[argv.index('--rounds') + 1]) if '--rounds' in argv else 6
     rec = json.load(open(os.path.join(ROOT, 'recipe', 'units.json')))
@@ -467,120 +344,24 @@ def main(argv):
     for u in rec['units']:
         u['code_len'] = u['size']
     fill_path = os.path.join(SRC, 'FILL.JSON')
-    fill = json.load(open(fill_path)) if os.path.exists(fill_path) else {}
-    DATAFILL.update(fill.setdefault('data', {}))
-    fill['data'] = DATAFILL
+    DATAFILL.update((json.load(open(fill_path)) if os.path.exists(fill_path) else {}).get('data', {}))
     regs = {u['seg']: regions(u, rec) for u in units}
-    for u in units:
-        f = fill.setdefault(u['seg'], {})
-        for kind, name, off, size in regs[u['seg']]:
-            if name not in f:
-                over = 7 if kind == 'stub' else 7 if kind == 'init' else 0
-                f[name] = max(0, size - over)
     for rnd in range(rounds):
-        keepers = outside_keeps(units, regs)
-        udata = [n for u in units if u['seg'] != '0000' for n in data_decls(u, True)[1]]
         for u in units:
-            gen_unit(u, rec, fill[u['seg']], regs[u['seg']], [k for k in keepers if k], udata)
-        json.dump(fill, open(fill_path, 'w'), indent=1, sort_keys=True)
+            gen_unit(u, regs[u['seg']])
         ok, msg = build()
         if not ok:
             print('round %d: build failed:\n%s' % (rnd, msg[-600:]))
             return 1
-        segs, lens, lines, pubs = read_map(os.path.join(BUILD, 'SAM1.MAP'))
-        bad = 0
-        report = []
-        for u in units:
-            name = unit_name(u['seg'])
-            base = segs.get(name)
-            if base is None:
-                print('round %d: %s missing from the map' % (rnd, name))
-                return 1
-            if base != bases[u['seg']]:
-                report.append('%s base %05X want %05X' % (name, base, bases[u['seg']]))
-            bl = begin_lines(os.path.join(SRC, name + '.PAS'))
-            ln = lines.get(name, {})
-            actual = {}
-            for kind, rname, off, size in regs[u['seg']]:
-                fr = fragment(u['seg'], off) if kind == 'stub' else None
-                if fr:
-                    a = ln.get(bl.get(fr['name']))
-                    a = a - fr['lit'] if a is not None else None    # its string literals precede the code
-                elif kind == 'obj':                # TP puts the .OBJ code last; NASM emits exactly its size
-                    a = base + lens[name] - fill[u['seg']][rname]
-                else:
-                    g = signature(u['seg'], off) if kind == 'stub' else None
-                    a = ln.get(bl.get(g['name'] if g else rname))
-                    if g and a is not None:
-                        a -= g['lit']
-                    fi = fragment(u['seg'], off) if kind == 'init' else None
-                    if fi and a is not None:
-                        a -= fi['lit']
-                actual[rname] = None if a is None else a - base
-            order = regs[u['seg']]
-            for i, (kind, rname, off, size) in enumerate(order):
-                start = actual[rname]
-                nxt = actual[order[i + 1][1]] if i + 1 < len(order) else lens[name]
-                if start is None or nxt is None:
-                    report.append('%s %s not found in map' % (name, rname))
-                    bad += 1
-                    continue
-                if start != off:
-                    bad += 1
-                got = nxt - start
-                last = i + 1 == len(order)
-                if last and got <= size < got + 16 and (base + start + got + 15) // 16 * 16 == base + u['size']:
-                    got = size                          # the segment's paragraph padding follows the last region
-                if got != size:
-                    bad += 1
-                    if kind in ('stub', 'init') and fragment(u['seg'], off):
-                        report.append('%s %s is %d bytes, wants %d' % (name, rname, got, size))
-                    elif kind != 'obj':
-                        fill[u['seg']][rname] = max(0, fill[u['seg']][rname] + size - got)
-        ds = int(re.search(r'\s([0-9A-F]{5})H [0-9A-F]{5}H [0-9A-F]{5}H DATA\s', open(os.path.join(BUILD, 'SAM1.MAP'), encoding='latin1').read()).group(1), 16)
-        for u in units:
-            d = u.get('data', {}) if u['seg'] != '0000' else {}   # main's vars follow the RTL keeper vars
-            for kind in ('tconsts', 'vars'):
-                if kind not in d:
-                    continue
-                first = data_decls(u, True)[1]
-                first = [n for n in first if (n.startswith('T_') if kind == 'tconsts' else not n.startswith('T_'))]
-                a = pubs.get(first[0].upper()) if first else None
-                if a is None or a - ds != h(d[kind][0]):
-                    bad += 1
-                    report.append('%s %s %s at %s, wants DS:%s' % (unit_name(u['seg']), kind, first[:1],
-                                  'missing' if a is None else 'DS:%04X' % (a - ds), d[kind][0]))
-        dunits = [u for u in units if 'vars' in u.get('data', {}) and u['seg'] != '0000']
-        dunits.sort(key=lambda u: h(u['data']['vars'][0]))
-        for i, u in enumerate(dunits):
-            pins = var_pins(u)
-            if not pins:
-                continue
-            pads, prev = DATAFILL.setdefault(u['seg'], {}), 0
-            nxt = dunits[i + 1] if i + 1 < len(dunits) else None
-            nvars = [n for n in data_decls(nxt, True)[1] if not n.startswith('T_')] if nxt else []
-            nref = (var_pins(nxt)[:1] or [(nvars[0], nxt['data']['vars'][0])]) if nxt else []
-            nfirst = nref[0][0] if nref else None
-            for name, want in pins + nref:
-                a = pubs.get(name.upper())
-                if a is None:
-                    bad += 1
-                    report.append('%s not in map' % name)
-                    break
-                err = h(want) - (a - ds)
-                key = want if name != nfirst else 'END'
-                if err != prev:
-                    bad += 1
-                    report.append('%s at DS:%04X, wants DS:%s' % (name, a - ds, want))
-                    pads[key] = pads.get(key, 0) + err - prev
-                    if pads[key] < 0:
-                        report.append('%s: the declarations before it are %d bytes too long' % (name, -pads[key]))
-                        pads[key] = 0
-                prev = err
-        print('round %d: %d stubs off; %s' % (rnd, bad, '; '.join(report[:6]) or 'all bases right'))
-        if not bad and not report:
-            json.dump(fill, open(fill_path, 'w'), indent=1, sort_keys=True)
+        segs, lens, lines, pubs, ds = read_map(os.path.join(BUILD, 'SAM1.MAP'))
+        code = check_code(units, regs, bases, segs, lens, lines)
+        data = fit_data(units, pubs, ds)
+        print('round %d: %s' % (rnd, '; '.join((code + data)[:6]) or 'all bases right'))
+        if not code and not data:
+            json.dump({'data': DATAFILL}, open(fill_path, 'w'), indent=1, sort_keys=True)
             return 0
+        if code and not data:
+            return 1                                # only a source change moves code
     return 1
 
 

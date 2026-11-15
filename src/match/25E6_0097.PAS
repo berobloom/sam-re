@@ -1,5 +1,4 @@
 { src: GUESS 25E6:0097 (fills rows Y1..Y2, columns X1..X2 (at most 80) with blanks in Fg/Bg) }
-{ keep: - }
 {$F+}
 procedure ClearArea(X1, Y1, X2, Y2, Fg, Bg: Integer);
 var

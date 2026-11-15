@@ -118,6 +118,12 @@ Pascal routines; the routine-by-routine `.OBJ` scaffold is impossible.
 SAM's own units show the same shape (Crt, Genus, `29C3`, `25E6`: Pascal
 first, asm after the init).
 
+Status: the source is complete, so `tools/tp/gen_scaffold.py` no longer
+generates stubs, keepers or fillers (removed after commit `36f8b8f`, which
+has them): it assembles `src/match/`, builds, checks every routine, init and
+`.OBJ` block against its recipe offset and size, and fits only the data
+pads. The rest of this section is the method that got there.
+
 Instead the scaffold is **size-exact Pascal stubs**. Code and DS offsets in
 TP code are plain immediates (`mov di,0x1545`, `mov ax,[0x6a0f]`), not
 relocations, so a matched routine can only be byte-identical when everything
@@ -213,9 +219,11 @@ routine's source output and see it named.
 
 `src/match/<SEG>_<OFF>.PAS` holds the routine as written, plus directive
 comments: `{ interface }` (declare it in the interface, i.e. far; a routine
-that ends in `retf` and is called from other units), `{ keep: STATEMENT }`
-(how the unit's keeper uses it so the smart linker keeps it, e.g. `if
-JumpButton then`). Its `begin` stands alone on a line (the fit and the check
+that ends in `retf` and is called from other units), `{ init }` (the unit
+init or program body: statements only), `{ nested: XXXX .. }` (routines
+declared inside it), `{ to: XXXX }` (the next routine's literals start
+there). The `{ keep: }` directive of the stub era is gone: the real callers
+keep every routine linked. Its `begin` stands alone on a line (the fit and the check
 find it through the map's line numbers). `tools/tp/gen_scaffold.py` pastes it
 into the unit in place of the stub; `tools/tp/match.py --update` sets the
 recipe status. `{ from: XXXX }`: the routine's string literals start at XXXX
@@ -232,7 +240,8 @@ goes after a semicolon, `{ @XXXX; note }`; any other text inside the braces
 leaves the variable unpinned. A comment line over 126 characters stops TP
 (Error 11), so long notes wrap. A build that fails part-way can leave
 `src/FILL.JSON` with pads fitted to the broken layout; restore it from the
-last green commit before rebuilding. A game name equal to a System/Dos/Crt public
+last green commit before rebuilding (gen_scaffold now saves the pads only
+after a green round). A game name equal to a System/Dos/Crt public
 (Crt's `CheckSnow`) compiles, but the fit then reads the library variable's
 address from the map and drives the pads off by kilobytes; `rename.py`
 refuses such names.
@@ -285,8 +294,6 @@ refuses such names.
   1-char string literal (used for signature stubs whose literals precede them).
 - An OBJ may declare `segment DATA public` (empty) and use `dw DATA` / `dw
   CODE` for segment fixups; TP links them (Genus, 106 fixups).
-- `{ keep: - }` on a private routine reached through exported ones: no keeper
-  call (it may need arguments).
 - File I/O without `call 2CD1:020E` after each Reset/Read/Close was compiled
   with `{$I-}`: wrap the routine in `{$I-}`...`{$I+}` (1802:3832 LoadGraphics).
   A typed-file `Read(F, X)` is `call 2CD1:108C; add sp,4`.
@@ -334,10 +341,10 @@ refuses such names.
   is a single else-less if needs `begin..end` (pasgen does it).
 - A typed `file of T` passes SizeOf(T) to Reset/Rewrite; an untyped `File`
   gets "Invalid file type" from `Read` (287F SndFile).
-- The program body (`src/match/0000_11C3.PAS`, `{ init }`) replaces the
+- The program body (`src/match/0000_11C3.PAS`, `{ init }`) replaced the
   generated keeper; every routine another unit or main calls must be
-  `{ interface }`, and with no stub left in a unit its private routines take
-  `{ keep: - }`.
+  `{ interface }`. A routine nothing calls is dropped by the smart linker,
+  and the layout check reports the hole.
 
 ## 7. Names, after the match, with their source
 

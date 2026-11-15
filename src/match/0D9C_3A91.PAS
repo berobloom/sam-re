@@ -2,7 +2,6 @@
   > 1): each actor char clears its cell to tile 2 and takes the next slot W6854, drawn on both pages, with
   its kind (W14), facing (W16, often Random) and timers) }
 { from: 3A59 }
-{ keep: - }
 {$F+}
 procedure SpawnActor(X, Y: Integer; S: String; FO: Boolean);
 begin

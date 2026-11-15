@@ -3,7 +3,6 @@
   $191.. 4, $1C3.. 5, $259.. 6, $28B.. 7, $2BD.. 8, $2EF.. 9) on the page W6866; $B3, $1F3, $265, $25B and
   $270 differ by page (two-frame animation). Columns 0..$27 only, no upper row bound) }
 { interface }
-{ keep: DrawFront(0, 0); }
 procedure DrawFront(X, Y: Integer);
 var
   CX, CY: Integer;

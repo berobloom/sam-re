@@ -1,6 +1,5 @@
 { src: GUESS 0529:008D (OnScreen for the second slot table, Shots) }
 { interface }
-{ keep: if ShotOnScreen(0, 1) then; }
 function ShotOnScreen(Margin, N: Integer): Boolean;
 begin
   if Shots[N].X < CamX - Margin then

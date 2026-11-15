@@ -3,7 +3,6 @@
 { from: D8B1 }
 { to: DD4D }
 { interface }
-{ keep: OrderScreen; }
 procedure OrderScreen;
 var
   I, J, K, L: Integer;

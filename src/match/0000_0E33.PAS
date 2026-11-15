@@ -1,5 +1,4 @@
 { src: GUESS 0000:0E33 (the exit procedure: puts back ExitProc and the int $1C and int 9 vectors) }
-{ keep: - }
 {$F+}
 procedure ExitHandler;
 begin

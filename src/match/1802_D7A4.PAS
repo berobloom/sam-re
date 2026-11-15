@@ -2,7 +2,6 @@
 { from: D739 }
 { to: D8B1 }
 { interface }
-{ keep: HealthBonus; }
 procedure HealthBonus;
 var
   I, K: Integer;

@@ -1,6 +1,5 @@
 { src: SAM1RE 2891:07D5 (../SAM code-map.md: new game) }
 { interface }
-{ keep: NewGame; }
 procedure NewGame;
 var
   I: Integer;

@@ -3,7 +3,6 @@
 { from: 3EF5 }
 { to: 409B }
 { interface }
-{ keep: if LoadGame(0) then; }
 {$I-}
 {$F+}
 function LoadGame(N: Integer): Boolean;

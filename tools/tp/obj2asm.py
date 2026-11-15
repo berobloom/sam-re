@@ -11,7 +11,7 @@ decoded instruction is written in NASM syntax with branch targets as labels; NAS
 listing) and every instruction whose bytes differ, or that NASM rejects, becomes `db` with the instruction as a
 comment, until the whole block is identical. A relocated word (MZ relocation) becomes `dw CODE` (the unit's own code
 segment) or `dw DATA` (the data segment): an instruction holding one is written as db/dw.
-Writes src/match/OBJ<SEG>.ASM (CRLF); gen_scaffold.py uses it instead of filler.
+Writes src/match/OBJ<SEG>.ASM (CRLF); gen_scaffold.py copies it into src/ (it is required for every unit with a {$L} block).
 """
 import json
 import os

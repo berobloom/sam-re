@@ -55,7 +55,6 @@ implementation
 {$F+} procedure AboutApogee; forward; {$F-}
 { src: SAM1RE 1802:0000 (../SAM: the page flip: W6864 page 0/1, W6866 its y offset 16 or 416) }
 { interface }
-{ keep: FlipPage; }
 procedure FlipPage;
 begin
   if W6864 = 0 then
@@ -71,7 +70,6 @@ begin
 end;
 { src: SAM1RE 1802:0027 (shows the page: view start at CamX, W6866 + CamY) }
 { interface }
-{ keep: ShowPage; }
 procedure ShowPage;
 begin
   if AltVideo = 0 then
@@ -82,7 +80,6 @@ begin
 end;
 { src: SAM1RE 1802:005F (palette registers 0..7 -> 0..7, 8..15 -> $10..$17, Delay(D) after each) }
 { interface }
-{ keep: FadeIn(0); }
 procedure FadeIn(D: Integer);
 begin
   SetPalReg(0, 0);
@@ -120,7 +117,6 @@ begin
 end;
 { src: SAM1RE 1802:01B6 (palette registers 0..15 to black, Delay(D) before each) }
 { interface }
-{ keep: FadeOut(0); }
 procedure FadeOut(D: Integer);
 var
   I: Integer;
@@ -135,7 +131,6 @@ end;
   two, the items and one icon per life; cell-aligned when CamX is a multiple of 8, else shifted by CamX and 7.
   the cells are those of SAM102.GFX record 1: 1..10 the digits) }
 { interface }
-{ keep: DrawStatus; }
 procedure DrawStatus;
 var
   I, Sh: Integer;
@@ -206,7 +201,6 @@ end;
 { src: GUESS 1802:0722 (empties the 299 text lines at DS:3838 and the 20 bytes at DS:6820) }
 { to: 0764 }
 { interface }
-{ keep: ClearText; }
 procedure ClearText;
 var
   I: Integer;
@@ -220,7 +214,6 @@ end;
   1..$48 are cells of SAM102.GFX record 2, $49..$75 of record 3, $76.. game tiles of SAM101.GFX; '^' is
   skipped (the caret). The table's own characters are CP437 bytes) }
 { from: 0764 }
-{ keep: - }
 {$F+}
 procedure DrawText(X, Y: Integer; S: String);
 var
@@ -324,7 +317,6 @@ end;
 { from: 1535 }
 { to: 1D7E }
 { interface }
-{ keep: if TextWindow(False) = #0 then; }
 {$F+}
 function TextWindow(Wait: Boolean): Char;
 var
@@ -493,7 +485,6 @@ end;
   space up to N characters, Backspace deletes, Enter ends; the caret blinks and a spark runs along the frame) }
 { from: 1D7E }
 { to: 2603 }
-{ keep: - }
 {$F+}
 function InputLine(N: Integer): String;
 var
@@ -658,7 +649,6 @@ end;
 { src: SAM1RE 1802:2653 (../SAM menus.md: the paged text window: TextWindow for up to 299 lines, 16 shown;
   Down/PgDn and Up/PgUp move by 17 lines and redraw the box; no caret animation and no start sound) }
 { from: 2603 }
-{ keep: - }
 {$F+}
 function PageWindow(Wait: Boolean): Char;
 var
@@ -883,7 +873,6 @@ end;
 { from: 33C7 }
 { to: 3477 }
 { interface }
-{ keep: ShowLogo; }
 procedure ShowLogo;
 var
   V1, V2, R, V4: Integer;
@@ -911,7 +900,6 @@ end;
 { from: 3477 }
 { to: 3694 }
 { interface }
-{ keep: TitleLoop; }
 procedure TitleLoop;
 var
   Dir, Y, R: Integer;
@@ -1031,7 +1019,6 @@ end;
   into the heap, each decrypted; the record order is the file order) }
 { from: 381C }
 { interface }
-{ keep: LoadGraphics; }
 {$I-}
 procedure LoadGraphics;
 begin
@@ -1102,7 +1089,6 @@ end;
 {$I+}
 { src: GUESS 1802:3C17 (palette registers 0..15 to black at once) }
 { interface }
-{ keep: Blackout; }
 procedure Blackout;
 var
   I: Integer;
@@ -1112,7 +1098,6 @@ begin
 end;
 { src: SAM1RE 1802:3C3C (../SAM physics.md: saves the game state into the store DS:6D3E) }
 { interface }
-{ keep: SaveState; }
 procedure SaveState;
 var
   I: Integer;
@@ -1142,7 +1127,6 @@ end;
 { src: SAM1RE 1802:3CEF (../SAM physics.md: restores the game state from the store DS:6D3E) }
 { to: 3DA2 }
 { interface }
-{ keep: RestoreState; }
 procedure RestoreState;
 var
   I: Integer;
@@ -1174,7 +1158,6 @@ end;
 { from: 3DA2 }
 { to: 3EF5 }
 { interface }
-{ keep: SaveGame(1); }
 {$I-}
 procedure SaveGame(N: Integer);
 var
@@ -1215,7 +1198,6 @@ end;
 { from: 3EF5 }
 { to: 409B }
 { interface }
-{ keep: if LoadGame(0) then; }
 {$I-}
 {$F+}
 function LoadGame(N: Integer): Boolean;
@@ -2277,7 +2259,6 @@ end;
 { from: 8DDD }
 { to: 8EE1 }
 { interface }
-{ keep: if AskWarp = 0 then; }
 function AskWarp: Integer;
 var
   N, Code: Integer;
@@ -2347,7 +2328,6 @@ end;
   the key's scan code, $1C (Enter) when the load failed) }
 { from: 90A0 }
 { to: 91F2 }
-{ keep: if RestoreMenu = 0 then; }
 {$F+}
 function RestoreMenu: Integer;
 begin
@@ -2389,7 +2369,6 @@ end;
   restore returns ' '; Escape returns ' ' too) }
 { from: 91F2 }
 { to: 963C }
-{ keep: if MainMenu = ' ' then; }
 {$F+}
 function MainMenu: Char;
 var
@@ -2528,7 +2507,6 @@ end;
   is returned, 'Q' after a confirmed quit, ' ' after a cancelled one; Escape leaves the result unset) }
 { from: 963C }
 { interface }
-{ keep: if EscapeMenu = ' ' then; }
 function EscapeMenu: Char;
 var
   K: Integer;
@@ -2656,7 +2634,6 @@ end;
 { from: 9AA7 }
 { to: 9B41 }
 { interface }
-{ keep: ShowMessage(''); }
 procedure ShowMessage(S: String);
 begin
   ClearText;
@@ -2910,7 +2887,6 @@ end;
 {$F-}
 { src: SAM1RE 1802:A67A (../SAM menus.md: the name of a set-1 scan code; NULL for keys that cannot be used) }
 { from: A5B6 }
-{ keep: - }
 {$F+}
 function KeyName(K: Integer): String;
 begin
@@ -3532,7 +3508,6 @@ end;
 { from: D4FA }
 { to: D739 }
 { interface }
-{ keep: SecurityDone; }
 procedure SecurityDone;
 var
   I, K: Integer;
@@ -3571,7 +3546,6 @@ end;
 { from: D739 }
 { to: D8B1 }
 { interface }
-{ keep: HealthBonus; }
 procedure HealthBonus;
 var
   I, K: Integer;
@@ -3605,7 +3579,6 @@ end;
 { from: D8B1 }
 { to: DD4D }
 { interface }
-{ keep: OrderScreen; }
 procedure OrderScreen;
 var
   I, J, K, L: Integer;
@@ -3641,7 +3614,6 @@ end;
   ordering pages, a key, the high-score check, then back to the title) }
 { from: DD4D }
 { interface }
-{ keep: ShowEnding; }
 procedure ShowEnding;
 var
   I, R: Integer;

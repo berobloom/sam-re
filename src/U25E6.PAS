@@ -23,7 +23,6 @@ procedure OBJ25E6; external;
 {$F+} function DetectAdapter: Byte; external; {$F-}
 {$F+} function GetVideoMode: Byte; external; {$F-}
 { src: GUESS 25E6:0000 (text attribute from foreground and background) }
-{ keep: - }
 {$F+}
 function MakeAttr(Fg, Bg: Byte): Byte;
 begin
@@ -32,7 +31,6 @@ end;
 {$F-}
 { src: GUESS 25E6:0045 (N copies of Ch; N outside 1..80 counts as 1; the set constant is its literal) }
 { from: 0025 }
-{ keep: - }
 {$F+}
 function Replicate(N: Byte; Ch: Char): String;
 var
@@ -46,7 +44,6 @@ begin
 end;
 {$F-}
 { src: GUESS 25E6:0097 (fills rows Y1..Y2, columns X1..X2 (at most 80) with blanks in Fg/Bg) }
-{ keep: - }
 {$F+}
 procedure ClearArea(X1, Y1, X2, Y2, Fg, Bg: Integer);
 var
@@ -62,7 +59,6 @@ end;
 {$F-}
 { src: GUESS 25E6:0101 (a frame. Frame 0 blank, 1 single, 2 double, 3 double sides,
   4 double top; else every part is Chr(Frame)) }
-{ keep: - }
 {$F+}
 procedure Box(X1, Y1, X2, Y2, Fg, Bg, Frame: Integer);
 var
@@ -137,7 +133,6 @@ end;
 {$F-}
 { src: GUESS 25E6:0309 (a framed window: Box, then its inside cleared) }
 { interface }
-{ keep: Window(1, 1, 2, 2, 0, 0, 0); }
 procedure Window(X1, Y1, X2, Y2, Fg, Bg, Frame: Integer);
 begin
   Box(X1, Y1, X2, Y2, Fg, Bg, Frame);
@@ -145,14 +140,12 @@ begin
 end;
 { src: GUESS 25E6:0349 (S centred on an 80-column row) }
 { interface }
-{ keep: WriteCenter(1, 0, 0, ''); }
 procedure WriteCenter(Row, Fg, Bg: Integer; S: String);
 begin
   FastWrite(40 - Length(S) div 2, Row, MakeAttr(Fg, Bg), S);
 end;
 { src: GUESS 25E6:0399 (S downwards from column X, row Y, cut at row 26; T is assigned and never read) }
 { interface }
-{ keep: WriteVert(1, 1, 0, 0, ''); }
 procedure WriteVert(X, Y, Fg, Bg: Integer; S: String);
 var
   I: Integer;
@@ -167,7 +160,6 @@ begin
   end;
 end;
 { src: GUESS 25E6:045E (video segment from the BIOS mode: B000h for mode 7, else B800h) }
-{ keep: - }
 {$F+}
 procedure InitVideo;
 begin

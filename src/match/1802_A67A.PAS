@@ -1,6 +1,5 @@
 { src: SAM1RE 1802:A67A (../SAM menus.md: the name of a set-1 scan code; NULL for keys that cannot be used) }
 { from: A5B6 }
-{ keep: - }
 {$F+}
 function KeyName(K: Integer): String;
 begin

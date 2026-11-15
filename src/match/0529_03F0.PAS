@@ -1,6 +1,5 @@
 { src: GUESS 0529:03F0 (spawns an actor of type T at X, Y into the first free slot of Slots (Free = 1):
   W14 := T + 150, and draws tile T of Gfx[10] at the row under it and 26 rows lower) }
-{ keep: - }
 {$F+}
 procedure Spawn(X, Y, T: Integer);
 var

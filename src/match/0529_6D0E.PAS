@@ -1,7 +1,6 @@
 { src: SAM1RE 0529:6D0E (../SAM level-load.md: the tile touch effects of the cell at pixel X, Y: pickups
   (score, ammo, keys, gun), doors, the radar dish, laser fields, teleports, map exits) }
 { from: 6B8E }
-{ keep: - }
 {$F+}
 procedure Touch(X, Y: Integer);
 var

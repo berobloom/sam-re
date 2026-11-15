@@ -1,7 +1,6 @@
 { src: SAM1RE 1802:2653 (../SAM menus.md: the paged text window: TextWindow for up to 299 lines, 16 shown;
   Down/PgDn and Up/PgUp move by 17 lines and redraw the box; no caret animation and no start sound) }
 { from: 2603 }
-{ keep: - }
 {$F+}
 function PageWindow(Wait: Boolean): Char;
 var

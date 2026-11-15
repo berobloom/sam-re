@@ -1,6 +1,5 @@
 { src: SAM1RE 1802:3C3C (../SAM physics.md: saves the game state into the store DS:6D3E) }
 { interface }
-{ keep: SaveState; }
 procedure SaveState;
 var
   I: Integer;

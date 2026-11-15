@@ -3,7 +3,6 @@
 { from: 33C7 }
 { to: 3477 }
 { interface }
-{ keep: ShowLogo; }
 procedure ShowLogo;
 var
   V1, V2, R, V4: Integer;

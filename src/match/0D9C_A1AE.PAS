@@ -4,7 +4,6 @@
   row), then rows 0..23 ('*' rows repeat the row). Then the page sweep, FadeIn(20) and sound $D) }
 { from: A1A3 }
 { interface }
-{ keep: LoadLevel(0); }
 {$I-}
 {$F+}
 procedure LoadLevel(N: Integer);

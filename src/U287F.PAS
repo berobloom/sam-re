@@ -25,7 +25,6 @@ implementation
 { src: SAM1RE 287F:0000 (../SAM formats.md SND: priority-gated sound request). Both priority lookups
   store into NewPri; CurPri is never set (the bytes: both write [bp-2], the compare reads [bp-4]) }
 { interface }
-{ keep: PlaySound(1); }
 procedure PlaySound(Id: Integer);
 var
   NewPri, CurPri: Integer;

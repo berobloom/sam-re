@@ -1,6 +1,5 @@
 { src: SAM1RE 2891:0A89 (../SAM code-map.md: level entry / respawn). I is never used (sub sp,2) }
 { interface }
-{ keep: LevelReset; }
 procedure LevelReset;
 var
   I: Integer;

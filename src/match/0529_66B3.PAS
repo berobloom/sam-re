@@ -1,7 +1,6 @@
 { src: GUESS 0529:66B3 (the player falls one step: JumpUpTop counts up to 19 and picks the step from JumpUp;
   a solid cell under the feet, or past step 10 a FlagB ledge, lands him on the 16-pixel row; the camera
   follows down to $B8; then the falling or standing pose by facing) }
-{ keep: - }
 {$F+}
 procedure Fall;
 begin

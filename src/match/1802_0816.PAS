@@ -2,7 +2,6 @@
   1..$48 are cells of SAM102.GFX record 2, $49..$75 of record 3, $76.. game tiles of SAM101.GFX; '^' is
   skipped (the caret). The table's own characters are CP437 bytes) }
 { from: 0764 }
-{ keep: - }
 {$F+}
 procedure DrawText(X, Y: Integer; S: String);
 var

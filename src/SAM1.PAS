@@ -1,11 +1,6 @@
 program SAM1;
 {$S-,D+,L+}
 uses Dos, U29C3, Crt, U2891, U287F, U286F, GENUS, U25E6, U1802, U0D9C, U0529;
-type KRec = array[0..41] of Byte;
-var KF: file of KRec absolute TextLines; KT: Text absolute TextLines; KR: KRec absolute TextLines;
-    KS: string absolute TextLines; KS2: string absolute TextLines; KRegs: Registers absolute TextLines;
-    KL: LongInt absolute TextLines; KP: Pointer absolute TextLines; KI: Integer absolute TextLines;
-    KC: Char absolute TextLines; KB: Boolean absolute TextLines;
 { main's data: typed constants DS:0000..000D, variables DS:02A2..02BB }
 const
   VideoTab: array[0..12] of Byte = (5, 0, 1, 5, 3, 3, 5, 4, 4, 5, 1, 1, 1); { @0000; adapter by display code (int $10 $1A) }
@@ -34,7 +29,6 @@ procedure OBJ0000; external;
   cheats: U+V+K Ammo + 25 once (B6A02); Z+G+I B6A12/B6A1A; P+J+X toggles B6A19 (B69FD); O+N+D with B (or P)
   B69F9. Then it chains to the old int 9; the inline tail after the chain is dead (an EOI whose
   `mov al,$20` reads $80/$20) }
-{ keep: - }
 procedure KeyISR;
 var
   I: Integer;
@@ -513,7 +507,6 @@ end;
 { src: GUESS 0000:0BE5 (the int $1C handler: W6852 counts ticks; every 20th tick the timers W69CC, W69D4 and
   W69D0 run down (each end forces a status repaint, W6858 := -1); then the sound playing (287F) steps one
   note: Sound(note), NoSound every Period notes, and at the -1 end Playing stops) }
-{ keep: - }
 procedure TimerISR;
 begin
   Inline($FA);
@@ -596,7 +589,6 @@ begin
   Inline($FB);
 end;
 { src: GUESS 0000:0E33 (the exit procedure: puts back ExitProc and the int $1C and int 9 vectors) }
-{ keep: - }
 {$F+}
 procedure ExitHandler;
 begin

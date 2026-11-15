@@ -1,7 +1,6 @@
 { src: SAM1RE 1802:3CEF (../SAM physics.md: restores the game state from the store DS:6D3E) }
 { to: 3DA2 }
 { interface }
-{ keep: RestoreState; }
 procedure RestoreState;
 var
   I: Integer;

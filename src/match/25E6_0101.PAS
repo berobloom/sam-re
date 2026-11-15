@@ -1,6 +1,5 @@
 { src: GUESS 25E6:0101 (a frame. Frame 0 blank, 1 single, 2 double, 3 double sides,
   4 double top; else every part is Chr(Frame)) }
-{ keep: - }
 {$F+}
 procedure Box(X1, Y1, X2, Y2, Fg, Bg, Frame: Integer);
 var

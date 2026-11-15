@@ -4,7 +4,6 @@
   W6854) or through SpawnActor; then WorldCell, and 'Y' is the player's start: slot 1 there (on the world
   map at the stored State position), the camera centred on it and clamped) }
 { from: 66F9 }
-{ keep: - }
 {$F+}
 procedure ParseRow(Y: Integer; Row: TRow);
 var

@@ -4,7 +4,6 @@
   cheats: U+V+K Ammo + 25 once (B6A02); Z+G+I B6A12/B6A1A; P+J+X toggles B6A19 (B69FD); O+N+D with B (or P)
   B69F9. Then it chains to the old int 9; the inline tail after the chain is dead (an EOI whose
   `mov al,$20` reads $80/$20) }
-{ keep: - }
 procedure KeyISR; interrupt;
 var
   I: Integer;

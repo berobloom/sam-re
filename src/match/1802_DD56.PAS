@@ -2,7 +2,6 @@
   ordering pages, a key, the high-score check, then back to the title) }
 { from: DD4D }
 { interface }
-{ keep: ShowEnding; }
 procedure ShowEnding;
 var
   I, R: Integer;

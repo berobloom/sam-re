@@ -2,7 +2,6 @@
   restore returns ' '; Escape returns ' ' too) }
 { from: 91F2 }
 { to: 963C }
-{ keep: if MainMenu = ' ' then; }
 {$F+}
 function MainMenu: Char;
 var

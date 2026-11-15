@@ -5,7 +5,6 @@
 { from: 1535 }
 { to: 1D7E }
 { interface }
-{ keep: if TextWindow(False) = #0 then; }
 {$F+}
 function TextWindow(Wait: Boolean): Char;
 var

@@ -3,7 +3,6 @@
 { from: 3477 }
 { to: 3694 }
 { interface }
-{ keep: TitleLoop; }
 procedure TitleLoop;
 var
   Dir, Y, R: Integer;

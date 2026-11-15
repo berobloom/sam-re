@@ -19,6 +19,10 @@ keep a session diary here.
   (joystick), 287F (sound), 2891 (start-up, data), 29C3 (graphics, asm).
   System, Dos and Crt come from TURBO.TPL byte for byte (`match.py`
   `library` lines). The data segment is identical.
+- Build: `tools/tp/gen_scaffold.py` assembles `src/match/` into `src/`,
+  builds, checks every routine's offset and size and fits the data pads
+  (the stub/keeper scaffold that led here is in git before `36f8b8f`'s
+  successor).
 - Source: 165 Pascal routines in `src/match/<SEG>_<OFF>.PAS`, the `.OBJ`
   blocks as NASM in `src/match/OBJ<SEG>.ASM` (`tools/tp/obj2asm.py`), the
   asm entry points in `.EXT`, the data in `<SEG>.VAR`. The largest routines
@@ -37,5 +41,3 @@ keep a session diary here.
 
 - Names: the 29C3 and Genus asm routines; the last 27 globals need an
   experiment or a closer read; `match.py` must stay green after each rename.
-- `gen_scaffold.py` still carries the stub, fill and keeper machinery that the
-  finished source no longer uses.
