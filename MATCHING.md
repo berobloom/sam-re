@@ -310,6 +310,26 @@ so unknown variables between known ones need no declaration yet.
   `* N` in the source is `mov cx, N; imul cx`. A constant part of the index
   and the element's offset fold into one `add di, disp` (1802:01E5 DrawStatus:
   disp -37 = Cell's offset 3 - 40).
+- TP 5.0 drops a whole `var` section none of whose variables is referenced,
+  but keeps unreferenced variables inside a section that is used (2891's
+  70FC..70FF and the pads). Data only an `.OBJ` reads (Genus T_2643/V_2643)
+  needs a fixup TP sees: `{ obj refs: NAME=BASE@OFF }` in the unit's `.VAR`
+  makes `obj2asm.py` write that word as `dw NAME+delta` (same bytes). A
+  segment-only fixup (`dw seg NAME`) does not keep it.
+- A for loop with a non-constant limit keeps the limit in an unnamed frame
+  word and tests `lo > hi` first (`cmp ax,[tmp]; jg END`); the main body's
+  `sub sp, 2` is that temporary, not a variable.
+- Function calls inside a condition push their arguments in the test's code;
+  a complex right operand is evaluated first into dx (`mov dx,ax`), a LongInt
+  one is pushed (`push dx; push ax` .. `pop cx; pop bx`).
+- `if A then if B then X else Y` binds the else to B: an if whose then part
+  is a single else-less if needs `begin..end` (pasgen does it).
+- A typed `file of T` passes SizeOf(T) to Reset/Rewrite; an untyped `File`
+  gets "Invalid file type" from `Read` (287F SndFile).
+- The program body (`src/match/0000_11C3.PAS`, `{ init }`) replaces the
+  generated keeper; every routine another unit or main calls must be
+  `{ interface }`, and with no stub left in a unit its private routines take
+  `{ keep: - }`.
 
 ## 7. Names, after the match, with their source
 
