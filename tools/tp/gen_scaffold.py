@@ -72,8 +72,9 @@ def regions(u, rec):
     merged = []
     for i, c in enumerate(cuts):
         end = cuts[i + 1] if i + 1 < len(cuts) else init
-        if merged and end - c < 8:
+        if merged and end - c < 8 and not fragment(seg, c):
             continue                                    # a stub needs 7 bytes; the previous one absorbs it
+                                                        # (a matched routine, e.g. an empty one, stays)
         if not merged and end - c < 8 and i + 1 < len(cuts):
             continue
         merged.append(c)
