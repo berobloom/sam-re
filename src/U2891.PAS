@@ -113,8 +113,7 @@ var
   Config: TConfig absolute HiName; { the high scores, sound switch and keys as SAM1.CFG holds them, GUESS }
   P_6D3E: array[1..18] of Byte;
   State: TState; { @6D3E }
-  W6D86: Integer; { @6D86 }
-  P_6D8C: array[1..4] of Byte;
+  W6D86, W6D88, W6D8A: Integer; { @6D86 }
   B6D8C: Byte; { @6D8C }
   JoyCenterX, JoyCenterY: Integer; { @6D8E; signed compares in main 0000:08A2 }
   JoyX, JoyY: Integer; { @6D92 }

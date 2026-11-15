@@ -795,6 +795,7 @@ FadeIn(0);;
 FadeOut(0);;
 DrawStatus;;
 ClearText;;
+if TextWindow(False) = #0 then;;
 ShowLogo;;
 TitleLoop;;
 LoadGraphics;;
@@ -833,7 +834,7 @@ Inline(>VideoTab/>Tick/>Regs/>VideoMode/>Adapter/>Map/>VideoSeg/>B21FE/>L2200/>W
 >B69F5/>B69F6/>B69F7/>B69F8/>B69F9/>B69FA/>B69FB/>B69FC/>B69FD/>B69FE/>B69FF/>B6A00/>B6A01/>B6A02/
 >B6A03/>B6A04/>B6A05/>B6A06/>W6A08/>W6A0A/>W6A0C/>B6A0E/>B6A0F/>B6A10/>B6A11/>B6A12/>B6A13/>B6A14/
 >B6A15/>B6A16/>B6A17/>B6A18/>B6A19/>B6A1A/>B6A1B/>ArcLen/>Arc/>B6A64/>RespawnDelay/>Lives/>B6A67/
->B6A68/>NameInput/>HiName/>HiScore/>Config/>P_6D3E/>State/>W6D86/>P_6D8C/>B6D8C/>JoyCenterX/
+>B6A68/>NameInput/>HiName/>HiScore/>Config/>P_6D3E/>State/>W6D86/>W6D88/>W6D8A/>B6D8C/>JoyCenterX/
 >JoyCenterY/>JoyX/>JoyY/>JoyMovedX/>JoyMovedY/>Gfx/>GfxFile/>GfxSmall/>GfxSmallFile/>P_6EE5/>B6EE5/
 >B6EE6/>B6EE7/>B6EE8/>B6EE9/>B6EEA/>B6EEB/>B6EEC/>B6EED/>B6EEE/>B6EEF/>B6EF0/>B6EF1/>B6EF2/>B6EF3/
 >NameUp/>NameDown/>NameFire/>NameRight/>NameJump/>NameLeft/>KeyUp/>KeyDown/>KeyLeft/>KeyRight/
@@ -1370,5 +1371,5 @@ Inline(>VideoTab/>Tick/>Regs/>VideoMode/>Adapter/>Map/>VideoSeg/>B21FE/>L2200/>W
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/$00)
+>$0000/>$0000/>$0000/>$0000/>$0000/$00)
 end.

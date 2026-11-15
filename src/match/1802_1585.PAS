@@ -4,7 +4,8 @@
   key's scan code (extended keys: the code less $80; $AA and $C5 read as $174)) }
 { from: 1535 }
 { to: 1D7E }
-{ keep: - }
+{ interface }
+{ keep: if TextWindow(False) = #0 then; }
 {$F+}
 function TextWindow(Wait: Boolean): Char;
 var

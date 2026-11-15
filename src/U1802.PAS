@@ -9,6 +9,7 @@ procedure FadeIn(D: Integer);
 procedure FadeOut(D: Integer);
 procedure DrawStatus;
 procedure ClearText;
+function TextWindow(Wait: Boolean): Char;
 procedure ShowLogo;
 procedure TitleLoop;
 procedure LoadGraphics;
@@ -25,7 +26,6 @@ procedure OrderScreen;
 procedure ShowEnding;
 implementation
 {$F+} procedure DrawText(X, Y: Integer; S: String); forward; {$F-}
-{$F+} function TextWindow(Wait: Boolean): Char; forward; {$F-}
 {$F+} function InputLine(N: Integer): String; forward; {$F-}
 {$F+} function PageWindow(Wait: Boolean): Char; forward; {$F-}
 {$F+} procedure CheckHighScore; forward; {$F-}
@@ -323,7 +323,8 @@ end;
   key's scan code (extended keys: the code less $80; $AA and $C5 read as $174)) }
 { from: 1535 }
 { to: 1D7E }
-{ keep: - }
+{ interface }
+{ keep: if TextWindow(False) = #0 then; }
 {$F+}
 function TextWindow(Wait: Boolean): Char;
 var
