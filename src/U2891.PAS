@@ -53,8 +53,7 @@ var
   B683C: Byte; { @683C }
   P_6842: array[1..4] of Byte;
   Level: Integer; { @6842 }
-  P_6846: array[1..2] of Byte;
-  W6846: Integer; { @6846 }
+  W6844, W6846: Integer; { @6844 }
   P_684A: array[1..2] of Byte;
   W684A: Integer; { @684A }
   W684C, W684E, W6850: Integer; { @684C; loop variables of the text windows }
@@ -72,7 +71,7 @@ var
   P_686A: array[1..2] of Byte;
   Bullets: array[1..20] of Byte; { @686A }
   Ammo: Integer; { @687E }
-  P_69C0: array[1..320] of Byte;
+  Shots: array[1..10] of TSlot; { @6880; a second slot table (0529:008D tests it like Slots), GUESS name }
   Score: LongInt; { @69C0 }
   W69C4: Integer; { @69C4 }
   W69C6: Integer; { @69C6 }
