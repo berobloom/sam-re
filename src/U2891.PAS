@@ -19,6 +19,12 @@ type
     Tail: array[1..5] of Byte;
   end;
   PGfxSmall = ^TGfxSmall;
+  TConfig = record                 { SAM1.CFG, one record of $1D3 bytes (main 0000:0EF2 / 0F75) }
+    HiName: array[1..10] of String[40];
+    HiScore: array[1..10] of LongInt;
+    Sound: Boolean;                { SoundOn }
+    KUp, KDown, KLeft, KRight, KJump, KFire, K70EC, K70EE: Integer;
+  end;
   TSlot = record                   { 32 bytes; slot n at DS:3512 + (n-1)*32 }
     W00, X, Y, W06, W08, W0A: Integer;  { +02/+04: position (SAM1RE) }
     W0C, W0E, W10, W12, W14, W16, W18, W1A, W1C: Integer;  { +14: T+150 at spawn (0529:03F0) }
@@ -104,6 +110,7 @@ var
   NameInput: String; { @6A6A }
   HiName: array[1..10] of String[40]; { @6B6A }
   HiScore: array[1..10] of LongInt; { @6D04 }
+  Config: TConfig absolute HiName; { the high scores, sound switch and keys as SAM1.CFG holds them, GUESS }
   P_6D3E: array[1..18] of Byte;
   State: TState; { @6D3E }
   W6D86: Integer; { @6D86 }
@@ -122,7 +129,10 @@ var
   KeyUp, KeyDown, KeyLeft, KeyRight, KeyFire, KeyJump: Integer; { @70E0; SAM1RE menus.md: 70E8 fire }
   W70EC: Integer; { @70EC }
   W70EE: Integer; { @70EE }
-var P_2891_END: array[1..16] of Byte;
+  OldExit: Pointer; { @70F0; main 0000:0E67 hooks ExitProc, int $1C and int 9 }
+  OldInt1C: Pointer; { @70F4 }
+  OldInt9: Pointer; { @70F8 }
+var P_2891_END: array[1..4] of Byte;
 procedure StartupInit;
 procedure NewGame;
 procedure LevelReset;

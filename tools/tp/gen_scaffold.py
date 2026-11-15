@@ -357,7 +357,8 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         g = sigs.get(r[1])
         if g and g['far']:
             L.append('{$F+}')
-        L.append(g['head'] if g else 'procedure %s%s;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
+        L.append(re.sub(r' interrupt;', '', g['head']) if g else   # forwarded: TP takes no directive again
+                 'procedure %s%s;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
         if g and g['lit'] > 1:                      # string literals of the same total size before the code, as
             L += ['var', '  Q_: String;', 'begin']  # the original (a 1-char constant is a Char unless compared
             n, ch = g['lit'], 0                     # with a string); distinct ones of <= 100 bytes, so no line
