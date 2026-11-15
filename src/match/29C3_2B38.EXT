@@ -1,0 +1,3 @@
+{ src: GUESS 29C3:2B38 (draws an 8x8 four-plane cell from Src at cell column X, row Y; retf 8) }
+{ interface }
+{$F+} procedure DrawCell(var Src; X, Y: Integer); external; {$F-}

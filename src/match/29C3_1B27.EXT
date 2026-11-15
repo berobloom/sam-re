@@ -1,0 +1,3 @@
+{ src: GUESS 29C3:1B27 (DrawCell at pixel column X: the scrolled status line; retf 8) }
+{ interface }
+{$F+} procedure DrawCellX(var Src; X, Y: Integer); external; {$F-}

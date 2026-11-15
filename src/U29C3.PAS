@@ -13,6 +13,8 @@ procedure SetViewStartAlt(X, Y: Integer);
 procedure SetPalReg(Reg, Color: Integer);
 procedure SetColor(C: Integer);
 procedure ClearRows(Base, Count, Row, Rows: Integer);
+procedure DrawCellX(var Src; X, Y: Integer);
+procedure DrawCell(var Src; X, Y: Integer);
 procedure Proc2ECF(A, B, C, D: Integer);
 procedure CopyPage;
 implementation
@@ -26,8 +28,10 @@ procedure SetViewStartAlt; external;
 procedure SetPalReg; external;
 procedure SetColor; external;
 procedure ClearRows; external;
+procedure DrawCellX; external;
 {$F+} procedure GetRomFonts; external; {$F-}
 {$F+} procedure Proc2981(X: Integer); external; {$F-}
+procedure DrawCell; external;
 procedure Proc2ECF; external;
 procedure CopyPage; external;
 begin

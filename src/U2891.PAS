@@ -7,7 +7,12 @@ uses U29C3;
 type
   TGfx = array[1..$1F80] of Byte;  { one record of SAM101.GFX }
   PGfx = ^TGfx;
-  TGfxSmall = array[1..$800] of Byte; { one record of SAM102.GFX }
+  TCell = array[1..40] of Byte;    { an 8x8 four-plane cell plus mask (GUESS) }
+  TGfxSmall = record               { one record of SAM102.GFX, $800 bytes; DrawStatus addresses Cell[N] }
+    Head: array[1..3] of Byte;     { at 3 + (N-1)*40: the 3-byte head is inferred from that, GUESS }
+    Cell: array[1..51] of TCell;
+    Tail: array[1..5] of Byte;
+  end;
   PGfxSmall = ^TGfxSmall;
   TSlot = record                   { 32 bytes; slot n at DS:3512 + (n-1)*32 }
     W00, X, Y, W06, W08, W0A: Integer;  { +02/+04: position (SAM1RE) }

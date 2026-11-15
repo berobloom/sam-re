@@ -9,8 +9,10 @@ global SETVIEWSTARTALT
 global SETPALREG
 global SETCOLOR
 global CLEARROWS
+global DRAWCELLX
 global GETROMFONTS
 global PROC2981
+global DRAWCELL
 global PROC2ECF
 global COPYPAGE
 OBJ29C3:
@@ -1112,6 +1114,7 @@ L1AB3:
     pop bp                                  ; 1B1E
     retf 8                                  ; 1B1F
     db 0x5A, 0x5A, 0x00, 0x00, 0x00
+DRAWCELLX:
     push bp                                 ; 1B27
     db 0x8B, 0xEC   ; mov bp, sp
     push ds                                 ; 1B2A
@@ -1719,6 +1722,7 @@ L2AE4:
     pop ds                                  ; 2B33
     pop bp                                  ; 2B34
     retf 8                                  ; 2B35
+DRAWCELL:
     push bp                                 ; 2B38
     db 0x8B, 0xEC   ; mov bp, sp
     push ds                                 ; 2B3B

@@ -276,6 +276,10 @@ so unknown variables between known ones need no declaration yet.
 - Crt in SAM1 (CONFIRMED by 1802:DB46 matching): 2961:016D TextMode,
   01C2 ClrScr, 0215 GotoXY, 0259 TextColor, 0273 TextBackground.
 - `tdis.py SEG:OFF SIZE` takes SIZE in hex.
+- `mov dx, N; mul dx` is array indexing over N-byte elements; an explicit
+  `* N` in the source is `mov cx, N; imul cx`. A constant part of the index
+  and the element's offset fold into one `add di, disp` (1802:01E5 DrawStatus:
+  disp -37 = Cell's offset 3 - 40).
 
 ## 7. Names, after the match, with their source
 
