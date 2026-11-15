@@ -10,7 +10,7 @@ var KF: file of KRec absolute TextLines; KT: Text absolute TextLines; KR: KRec a
 const
   VideoTab: array[0..12] of Byte = (5, 0, 1, 5, 3, 3, 5, 4, 4, 5, 1, 1, 1); { @0000; adapter by display code (int $10 $1A) }
 var
-  W02A2: Integer; { @02A2 }
+  Tick: Byte; { @02A2; TimerISR's 1/20 divider }
   Regs: Registers; { @02A4 }
   VideoMode: Integer; { @02B8; the mode at start, bit 7 off }
   Adapter: Byte; { @02BA; 0 mono, 1 CGA, 3 EGA, 4 VGA, 5 other (VideoTab), GUESS }
@@ -233,29 +233,90 @@ begin
   end;
 end;
 {$F-}
+{ src: GUESS 0000:0BE5 (the int $1C handler: W6852 counts ticks; every 20th tick the timers W69CC, W69D4 and
+  W69D0 run down (each end forces a status repaint, W6858 := -1); then the sound playing (287F) steps one
+  note: Sound(note), NoSound every Period notes, and at the -1 end Playing stops) }
+{ keep: - }
 procedure TimerISR;
 begin
-Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000)
+  Inline($FA);
+  Inc(W6852);
+  Inc(Tick);
+  if Tick = 20 then
+  begin
+    Tick := 0;
+    if W69CC > 0 then
+    begin
+      Dec(W69CC);
+      if W69CC = 0 then
+      begin
+        W69CA := 0;
+        W6858 := -1;
+      end;
+    end;
+    if W69D4 > 0 then
+    begin
+      Dec(W69D4, 2);
+      if W69D4 = 0 then
+      begin
+        B69D6 := 0;
+        W6858 := -1;
+      end;
+    end;
+    if W69D0 > 0 then
+    begin
+      Dec(W69D0, 2);
+      if W69D0 = 0 then
+      begin
+        B69D2 := 1;
+        B69D3 := 0;
+        W6858 := -1;
+      end;
+    end;
+  end;
+  if Playing and SoundOn then
+    case CurSound of
+    1..12:
+      begin
+        Sound(Bank1^[CurSound].Notes[NoteIdx]);
+        Inc(NoteIdx);
+        if NoteIdx mod Bank1^[CurSound].Period = 0 then
+          NoSound;
+        if Bank1^[CurSound].Notes[NoteIdx] = -1 then
+        begin
+          Playing := False;
+          NoteIdx := 1;
+          NoSound;
+        end;
+      end;
+    13..24:
+      begin
+        Sound(Bank2^[CurSound - 12].Notes[NoteIdx]);
+        Inc(NoteIdx);
+        if NoteIdx mod Bank2^[CurSound - 12].Period = 0 then
+          NoSound;
+        if Bank2^[CurSound - 12].Notes[NoteIdx] = -1 then
+        begin
+          Playing := False;
+          NoteIdx := 1;
+          NoSound;
+        end;
+      end;
+    25..36:
+      begin
+        Sound(Bank3^[CurSound - 24].Notes[NoteIdx]);
+        Inc(NoteIdx);
+        if NoteIdx mod Bank3^[CurSound - 24].Period = 0 then
+          NoSound;
+        if Bank3^[CurSound - 24].Notes[NoteIdx] = -1 then
+        begin
+          Playing := False;
+          NoteIdx := 1;
+          NoSound;
+        end;
+      end;
+    end;
+  Inline($FB);
 end;
 { src: GUESS 0000:0E33 (the exit procedure: puts back ExitProc and the int $1C and int 9 vectors) }
 { keep: - }
@@ -486,7 +547,7 @@ NewGame;;
 LevelReset;;
 OBJ2891;
 OBJ29C3;
-Inline(>VideoTab/>W02A2/>Regs/>VideoMode/>Adapter/>Map/>VideoSeg/>B21FE/>L2200/>W2204/>T_2643/>V_2643/
+Inline(>VideoTab/>Tick/>Regs/>VideoMode/>Adapter/>Map/>VideoSeg/>B21FE/>L2200/>W2204/>T_2643/>V_2643/
 >JoyOn/>Bank1/>Bank2/>Bank3/>SndFile/>CurSound/>NoteIdx/>Playing/>SoundOn/>JumpUp/>JumpDown/
 >JumpUpTop/>JumpDownTop/>Slots/>P_3838/>TextLines/>P681C/>B6820/>P_683A/>W683A/>B683C/>W683E/>W6840/
 >Level/>W6844/>W6846/>P_684A/>W684A/>W684C/>W684E/>W6850/>W6852/>W6854/>W6856/>W6858/>W685A/>B685C/

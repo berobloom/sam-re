@@ -352,7 +352,11 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
 
     for r in stubs:
         if frags[r[1]]:
-            L += frags[r[1]]['text'].split('\n')
+            f = frags[r[1]]
+            text = f['text']
+            if f['head'] and ' interrupt;' in f['head'] and not f['interface']:   # forwarded: no directive again
+                text = text.replace(f['head'], f['head'].replace(' interrupt;', ''), 1)
+            L += text.split('\n')
             continue
         g = sigs.get(r[1])
         if g and g['far']:
