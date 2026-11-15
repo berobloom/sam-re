@@ -276,6 +276,11 @@ so unknown variables between known ones need no declaration yet.
 - Crt in SAM1 (CONFIRMED by 1802:DB46 matching): 2961:016D TextMode,
   01C2 ClrScr, 0215 GotoXY, 0259 TextColor, 0273 TextBackground.
 - `tdis.py SEG:OFF SIZE` takes SIZE in hex.
+- A literal longer than a line fits: TP 5.0 folds `'abc' + 'def'` and
+  `'abc'#127#128` into one literal (tested: one copy in the image), so split
+  it over lines with `+` (1802:0816 DrawText, 175 characters).
+- Identical arms of a case are separate arms in the code (one `cmp/jne` each);
+  a range label `$A8..$B7:` would be one `jl/jg` pair.
 - `mov dx, N; mul dx` is array indexing over N-byte elements; an explicit
   `* N` in the source is `mov cx, N; imul cx`. A constant part of the index
   and the element's offset fold into one `add di, disp` (1802:01E5 DrawStatus:

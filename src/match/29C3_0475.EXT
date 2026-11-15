@@ -1,0 +1,3 @@
+{ src: GUESS 29C3:0475 (draws a 16x16 four-plane tile from Src at cell X, pixel row Y; retf 8) }
+{ interface }
+{$F+} procedure DrawTile(var Src; X, Y: Integer); external; {$F-}

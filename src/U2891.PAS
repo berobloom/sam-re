@@ -5,7 +5,12 @@ uses U29C3;
 { 2891 data, DS:34D6..70FF. An "@XXXX" comment pins a declaration's address (gen_scaffold.py fits a pad before it);
   names: SAM1RE (../SAM findings: physics.md, code-map.md) or the address. Grouped names share a line. }
 type
-  TGfx = array[1..$1F80] of Byte;  { one record of SAM101.GFX }
+  TTile = array[1..160] of Byte;   { a 16x16 four-plane tile plus mask (GUESS) }
+  TGfx = record                    { one record of SAM101.GFX, $1F80 bytes; DrawText addresses Tile[N] }
+    Head: array[1..3] of Byte;     { at 3 + (N-1)*160, as the cells of TGfxSmall (GUESS) }
+    Tile: array[1..50] of TTile;
+    Tail: array[1..61] of Byte;
+  end;
   PGfx = ^TGfx;
   TCell = array[1..40] of Byte;    { an 8x8 four-plane cell plus mask (GUESS) }
   TGfxSmall = record               { one record of SAM102.GFX, $800 bytes; DrawStatus addresses Cell[N] }
