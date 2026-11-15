@@ -279,6 +279,9 @@ so unknown variables between known ones need no declaration yet.
 - A literal longer than a line fits: TP 5.0 folds `'abc' + 'def'` and
   `'abc'#127#128` into one literal (tested: one copy in the image), so split
   it over lines with `+` (1802:0816 DrawText, 175 characters).
+- A `.SIG` with `{ interface }` exports the stub, so another unit's matched
+  code can call it (0D9C DrawBack/DrawFront from 0529 ShotHit); add the unit
+  to the caller's `.USES`.
 - Identical arms of a case are separate arms in the code (one `cmp/jne` each);
   a range label `$A8..$B7:` would be one `jl/jg` pair.
 - `mov dx, N; mul dx` is array indexing over N-byte elements; an explicit

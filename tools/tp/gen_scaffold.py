@@ -243,6 +243,9 @@ def outside_keeps(units, regs):
             f = fragment(u['seg'], off) if kind == 'stub' else None
             if f and f['interface']:
                 out.append(f['keep'])
+            g = signature(u['seg'], off) if kind == 'stub' and not f else None
+            if g and g['interface'] and g['keep'] != '-':
+                out.append(g['keep'])
             if kind == 'obj':
                 out.append(rname)
     return out
@@ -269,7 +272,8 @@ def signature(seg, off):
     head = re.sub(r'\{\$F[+-]\}', '', head).strip()
     keep = re.search(r'\{ keep: (.*) \}', text)
     return {'head': head, 'far': far, 'name': re.search(r'(?:procedure|function) (\w+)', head).group(1),
-            'keep': keep.group(1) if keep else '-', 'lit': h(os.path.basename(path)[5:9]) - off}
+            'keep': keep.group(1) if keep else '-', 'lit': h(os.path.basename(path)[5:9]) - off,
+            'interface': '{ interface }' in text}   # exported: other units' matched code calls the stub
 
 
 def keeper_of(regs):
@@ -311,6 +315,7 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         if keeper:
             L.append('procedure %s;' % keeper)          # exported: the main program calls it (far)
         L += [f['head'] for f in frags.values() if f and f['interface']]
+        L += [g['head'] for g in sigs.values() if g and g['interface']]
         L += ['procedure %s;' % r[1] for r in obj]
         L += [re.sub(r'\{\$F[+-]\}|external;', '', e['text']).strip() for e in externals(seg) if e['interface']]
         L.append('implementation')
@@ -322,7 +327,8 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
             L.append(('{$F+} %s forward; {$F-}' if '{$F+}' in f['text'] else '%s forward;') % f['head'])
         elif sigs.get(r[1]):
             g = sigs[r[1]]
-            L.append(('{$F+} %s forward; {$F-}' if g['far'] else '%s forward;') % g['head'])
+            if not g['interface']:                  # an exported one is declared in the interface
+                L.append(('{$F+} %s forward; {$F-}' if g['far'] else '%s forward;') % g['head'])
         elif not f and r[1] != keeper:
             L.append('procedure %s%s; forward;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
     for r in obj:
