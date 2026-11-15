@@ -19,5 +19,5 @@ begin
   Val(NameInput, N, Code);
   AskWarp := N;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;

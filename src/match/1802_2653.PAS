@@ -72,7 +72,7 @@ begin
   B6EF1 := 0;
   repeat
     MemW[0:$41C] := MemW[0:$41A];
-  until W684A > $80;
+  until ScanCode > $80;
   repeat
     repeat
       MemW[0:$41C] := MemW[0:$41A];
@@ -98,9 +98,9 @@ begin
           end;
         end;
       if CX <> 0 then
-        if W6852 > 20 then
+        if Ticks > 20 then
         begin
-          W6852 := 0;
+          Ticks := 0;
           if Spark then
           begin
             Inc(ST);
@@ -122,21 +122,21 @@ begin
             end;
           end;
         end;
-    until (W684A < $80) or (W684A = $E0);
-    K := W684A;
+    until (ScanCode < $80) or (ScanCode = $E0);
+    K := ScanCode;
     if K = $E0 then
     begin
       repeat
         MemW[0:$41C] := MemW[0:$41A];
-      until W684A in [$9C, $9D, $AA, $B5, $B8, $C5, $C7..$C9, $CB, $CD, $CF..$D3];
-      if W684A in [$AA, $C5] then
-        W684A := $1F4;
-      K := W684A - $80;
+      until ScanCode in [$9C, $9D, $AA, $B5, $B8, $C5, $C7..$C9, $CB, $CD, $CF..$D3];
+      if ScanCode in [$AA, $C5] then
+        ScanCode := $1F4;
+      K := ScanCode - $80;
     end
     else
       repeat
         MemW[0:$41C] := MemW[0:$41A];
-      until W684A > $80;
+      until ScanCode > $80;
     if (K = $50) or (K = $51) then
     begin
       Inc(Top, 17);
@@ -198,8 +198,8 @@ begin
     if not Wait then
     begin
       for RowIdx := 1 to 20 do
-        if B6820[RowIdx] <> 0 then
-          if B6820[RowIdx] = K then
+        if KeyFilter[RowIdx] <> 0 then
+          if KeyFilter[RowIdx] = K then
           begin
             PageWindow := Chr(K);
             Done := True;

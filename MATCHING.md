@@ -227,7 +227,12 @@ Other files in `src/match/`: `<SEG>_<OFF>.EXT` an asm entry of the unit's
 clause; `<SEG>.VAR` the unit's types and variables in place of its byte
 block. In a .VAR, `{ @XXXX }` after a declaration pins its DS address: the
 fit puts a pad before it (`P_XXXX`, sizes in `src/FILL.JSON` under `data`),
-so unknown variables between known ones need no declaration yet.
+so unknown variables between known ones need no declaration yet. A note
+goes after a semicolon, `{ @XXXX; note }`; any other text inside the braces
+leaves the variable unpinned. A comment line over 126 characters stops TP
+(Error 11), so long notes wrap. A build that fails part-way can leave
+`src/FILL.JSON` with pads fitted to the broken layout; restore it from the
+last green commit before rebuilding.
 
 ### Data traps (CONFIRMED by builds)
 

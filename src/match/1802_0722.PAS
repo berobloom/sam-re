@@ -9,5 +9,5 @@ begin
   for I := 1 to 299 do
     TextLines[I] := '';
   for I := 1 to 20 do
-    B6820[I] := 0;
+    KeyFilter[I] := 0;
 end;

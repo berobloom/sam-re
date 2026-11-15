@@ -13,30 +13,30 @@ begin
   TextLines[4] := 'Select (0-9) : ^';
   TextLines[5] := '';
   TextLines[6] := 'END OF WINDOW';
-  B6820[1] := 2;
-  B6820[2] := 3;
-  B6820[3] := 4;
-  B6820[4] := 5;
-  B6820[5] := 6;
-  B6820[6] := 7;
-  B6820[7] := 8;
-  B6820[8] := 9;
-  B6820[9] := $0A;
-  B6820[10] := $0B;
-  B6820[11] := $1C;
-  B6820[12] := 1;
+  KeyFilter[1] := 2;
+  KeyFilter[2] := 3;
+  KeyFilter[3] := 4;
+  KeyFilter[4] := 5;
+  KeyFilter[5] := 6;
+  KeyFilter[6] := 7;
+  KeyFilter[7] := 8;
+  KeyFilter[8] := 9;
+  KeyFilter[9] := $0A;
+  KeyFilter[10] := $0B;
+  KeyFilter[11] := $1C;
+  KeyFilter[12] := 1;
   MemW[0:$41C] := MemW[0:$41A];
-  W683A := Ord(TextWindow(False));
-  case W683A of
+  WinKey := Ord(TextWindow(False));
+  case WinKey of
     2..10:
-      if not LoadGame(W683A - 1) then
-        W683A := $1C;
+      if not LoadGame(WinKey - 1) then
+        WinKey := $1C;
     11:
       if not LoadGame(0) then
-        W683A := $1C;
+        WinKey := $1C;
   end;
-  RestoreMenu := W683A;
+  RestoreMenu := WinKey;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;
 {$F-}

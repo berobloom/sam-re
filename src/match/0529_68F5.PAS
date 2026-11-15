@@ -11,29 +11,29 @@ begin
   if B6EF1 <> 0 then
   begin
     Ramp;
-    if CanMove(W6846, 0) then
+    if CanMove(WalkSpeed, 0) then
     begin
       if (CamX < $140) and (CamX + $AA < Slots[1].X) then
       begin
-        Inc(CamX, W6846);
+        Inc(CamX, WalkSpeed);
         if CamX > $140 then
           CamX := $140;
       end;
-      Inc(Slots[1].X, W6846);
+      Inc(Slots[1].X, WalkSpeed);
     end;
   end;
   if B6EF0 <> 0 then
   begin
     Ramp;
-    if CanMove(-W6846, 0) then
+    if CanMove(-WalkSpeed, 0) then
     begin
       if (CamX > 0) and (CamX + $96 > Slots[1].X) then
       begin
-        Dec(CamX, W6846);
+        Dec(CamX, WalkSpeed);
         if CamX < 0 then
           CamX := 0;
       end;
-      Dec(Slots[1].X, W6846);
+      Dec(Slots[1].X, WalkSpeed);
     end;
   end;
   if B6EEA <> 0 then

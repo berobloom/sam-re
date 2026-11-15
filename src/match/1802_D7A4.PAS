@@ -21,13 +21,13 @@ begin
   TextLines[I] := 'Press ESCAPE!          ';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  B6820[1] := 1;
-  B6820[2] := $1C;
-  B6820[3] := $39;
-  W684A := 999;
+  KeyFilter[1] := 1;
+  KeyFilter[2] := $1C;
+  KeyFilter[3] := $39;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(False));
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   NoOp;
 end;

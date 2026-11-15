@@ -38,10 +38,10 @@ begin
   TextLines[N] := '              ^';
   Inc(N);
   TextLines[N] := 'END OF WINDOW';
-  B6820[1] := 1;
-  B6820[2] := $39;
-  W683A := Ord(TextWindow(False));
-  if W683A = $39 then
+  KeyFilter[1] := 1;
+  KeyFilter[2] := $39;
+  WinKey := Ord(TextWindow(False));
+  if WinKey = $39 then
   begin
     JoyOn := JoyPresent;
     if JoyOn then
@@ -51,12 +51,12 @@ begin
     end;
   end;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   B6EE9 := 0;
   B6EEA := 0;
   B6EF0 := 0;
   B6EF1 := 0;
   MemW[0:$41C] := MemW[0:$41A];
-  W684A := 0;
+  ScanCode := 0;
 end;
 {$F-}

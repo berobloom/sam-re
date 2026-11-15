@@ -3,7 +3,7 @@
 { keep: ShowPage; }
 procedure ShowPage;
 begin
-  if W70EC = 0 then
+  if AltVideo = 0 then
     SetViewStart(CamX, PageY + CamY)
   else
     SetViewStartAlt(CamX, PageY + CamY);

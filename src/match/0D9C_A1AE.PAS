@@ -59,7 +59,7 @@ begin
   case N of
     1:
       begin
-        W685A := 0;
+        SiteCounter := 0;
         Assign(F, 'SAM103.GFX');
         Reset(F);
         Read(F, Row);

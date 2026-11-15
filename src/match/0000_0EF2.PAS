@@ -14,8 +14,8 @@ begin
   Config.KRight := KeyRight;
   Config.KJump := KeyJump;
   Config.KFire := KeyFire;
-  Config.K70EC := W70EC;
-  Config.K70EE := W70EE;
+  Config.K70EC := AltVideo;
+  Config.K70EE := UseJoystick;
   Assign(F, 'SAM1.CFG');
   Rewrite(F);
   Write(F, Config);

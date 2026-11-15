@@ -2,19 +2,19 @@
 {$F+}
 procedure Ramp;
 begin
-  Inc(W6844);
-  if B69D6 = 0 then
-    case W6844 of
-      1..2: W6846 := 1;
-      3: W6846 := 2;
-      4..6: W6846 := 4;
-      7..1000: W6846 := W69CA + 4;
+  Inc(WalkHeld);
+  if SlowWalk = 0 then
+    case WalkHeld of
+      1..2: WalkSpeed := 1;
+      3: WalkSpeed := 2;
+      4..6: WalkSpeed := 4;
+      7..1000: WalkSpeed := SpeedBonus + 4;
     end
   else
-    case W6844 of
-      1..4: W6846 := 1;
-      5..6: W6846 := 2;
-      7..1000: W6846 := (W69CA + 4) shr 1;
+    case WalkHeld of
+      1..4: WalkSpeed := 1;
+      5..6: WalkSpeed := 2;
+      7..1000: WalkSpeed := (SpeedBonus + 4) shr 1;
     end;
 end;
 {$F-}

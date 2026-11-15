@@ -31,10 +31,10 @@ var
     TextLines[10] := 'Are these selections ok (Y-N): ^';
     TextLines[11] := '';
     TextLines[12] := 'END OF WINDOW';
-    B6820[1] := $15;
-    B6820[2] := $31;
-    W683A := Ord(TextWindow(False));
-    if W683A = $31 then
+    KeyFilter[1] := $15;
+    KeyFilter[2] := $31;
+    WinKey := Ord(TextWindow(False));
+    if WinKey = $31 then
       RedefineKeys
     else
     begin
@@ -90,7 +90,7 @@ begin
       TextLines[2] := '';
       TextLines[3] := 'Select key to move right: ^';
       TextLines[4] := 'END OF WINDOW';
-      B6820[1] := 1;
+      KeyFilter[1] := 1;
       Right := Ord(TextWindow(True));
       if Right = 1 then
         Valid := False;
@@ -110,7 +110,7 @@ begin
       TextLines[2] := '';
       TextLines[3] := 'Select key to move up: ^';
       TextLines[4] := 'END OF WINDOW';
-      B6820[1] := 1;
+      KeyFilter[1] := 1;
       Up := Ord(TextWindow(True));
       if Up = 1 then
         Valid := False;
@@ -130,7 +130,7 @@ begin
       TextLines[2] := '';
       TextLines[3] := 'Select key to move down: ^';
       TextLines[4] := 'END OF WINDOW';
-      B6820[1] := 1;
+      KeyFilter[1] := 1;
       Down := Ord(TextWindow(True));
       if Down = 1 then
         Valid := False;
@@ -151,7 +151,7 @@ begin
       TextLines[2] := '';
       TextLines[3] := 'Select key to jump: ^';
       TextLines[4] := 'END OF WINDOW';
-      B6820[1] := 1;
+      KeyFilter[1] := 1;
       Jump := Ord(TextWindow(True));
       if Jump = 1 then
         Valid := False;

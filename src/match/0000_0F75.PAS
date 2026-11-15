@@ -24,9 +24,9 @@ begin
     KeyRight := Config.KRight;
     KeyJump := Config.KJump;
     KeyFire := Config.KFire;
-    W70EC := Config.K70EC;
-    W70EE := Config.K70EE;
-    if W70EE = 1 then
+    AltVideo := Config.K70EC;
+    UseJoystick := Config.K70EE;
+    if UseJoystick = 1 then
       JoyOn := JoyPresent
     else
       JoyOn := False;
@@ -40,8 +40,8 @@ begin
     KeyRight := $4D;
     KeyJump := $1D;
     KeyFire := $38;
-    W70EC := 0;
-    W70EE := 0;
+    AltVideo := 0;
+    UseJoystick := 0;
     JoyOn := False;
   end;
 end;

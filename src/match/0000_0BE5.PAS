@@ -5,36 +5,36 @@
 procedure TimerISR; interrupt;
 begin
   Inline($FA);
-  Inc(W6852);
+  Inc(Ticks);
   Inc(Tick);
   if Tick = 20 then
   begin
     Tick := 0;
-    if W69CC > 0 then
+    if SpeedTimer > 0 then
     begin
-      Dec(W69CC);
-      if W69CC = 0 then
+      Dec(SpeedTimer);
+      if SpeedTimer = 0 then
       begin
-        W69CA := 0;
+        SpeedBonus := 0;
         StatusCamX := -1;
       end;
     end;
-    if W69D4 > 0 then
+    if SlowTimer > 0 then
     begin
-      Dec(W69D4, 2);
-      if W69D4 = 0 then
+      Dec(SlowTimer, 2);
+      if SlowTimer = 0 then
       begin
-        B69D6 := 0;
+        SlowWalk := 0;
         StatusCamX := -1;
       end;
     end;
-    if W69D0 > 0 then
+    if ConfuseTimer > 0 then
     begin
-      Dec(W69D0, 2);
-      if W69D0 = 0 then
+      Dec(ConfuseTimer, 2);
+      if ConfuseTimer = 0 then
       begin
-        B69D2 := 1;
-        B69D3 := 0;
+        UnconfuseMsg := 1;
+        Confused := 0;
         StatusCamX := -1;
       end;
     end;

@@ -24,21 +24,21 @@ begin
   TextLines[16] := '';
   TextLines[17] := '  Alternate video setting (Y-N) ^ ';
   TextLines[18] := 'END OF WINDOW';
-  B6820[1] := $15;
-  B6820[2] := $31;
-  B6820[3] := 1;
-  W683A := Ord(TextWindow(False));
-  if W683A = $15 then
-    W70EC := 1
+  KeyFilter[1] := $15;
+  KeyFilter[2] := $31;
+  KeyFilter[3] := 1;
+  WinKey := Ord(TextWindow(False));
+  if WinKey = $15 then
+    AltVideo := 1
   else
-    W70EC := 0;
+    AltVideo := 0;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   B6EE9 := 0;
   B6EEA := 0;
   B6EF0 := 0;
   B6EF1 := 0;
   MemW[0:$41C] := MemW[0:$41A];
-  W684A := 0;
+  ScanCode := 0;
 end;
 {$F-}

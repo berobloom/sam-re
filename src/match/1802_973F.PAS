@@ -24,18 +24,18 @@ begin
   TextLines[14] := 'Selection: ^';
   TextLines[15] := '';
   TextLines[16] := 'END OF WINDOW';
-  B6820[1] := $23;
-  B6820[2] := $14;
-  B6820[3] := $2F;
-  B6820[4] := $24;
-  B6820[5] := $2E;
-  B6820[6] := $25;
-  B6820[7] := $13;
-  B6820[8] := $1F;
-  B6820[9] := $10;
-  B6820[10] := 1;
-  W683A := Ord(TextWindow(False));
-  case W683A of
+  KeyFilter[1] := $23;
+  KeyFilter[2] := $14;
+  KeyFilter[3] := $2F;
+  KeyFilter[4] := $24;
+  KeyFilter[5] := $2E;
+  KeyFilter[6] := $25;
+  KeyFilter[7] := $13;
+  KeyFilter[8] := $1F;
+  KeyFilter[9] := $10;
+  KeyFilter[10] := 1;
+  WinKey := Ord(TextWindow(False));
+  case WinKey of
     $23:
       begin
         EscapeMenu := 'H';
@@ -86,10 +86,10 @@ begin
           TextLines[3] := '';
           TextLines[4] := 'Press ESCAPE';
           TextLines[5] := 'END OF WINDOW';
-          B6820[1] := 1;
-          W683A := Ord(TextWindow(False));
+          KeyFilter[1] := 1;
+          WinKey := Ord(TextWindow(False));
           B6EEB := 0;
-          B683C := 0;
+          MenuReq := 0;
         end;
       end;
     $10:

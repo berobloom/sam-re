@@ -9,7 +9,7 @@ procedure Jump;
 begin
   if (B6EE7 = 0) and (B6EE8 = 0) then
     Fall;
-  if (B69DA = 0) and (B6EE7 = 0) and (B6EE6 = 0) and ((B6EF3 <> 0) or (JumpButton and JoyOn))
+  if (KeysOff = 0) and (B6EE7 = 0) and (B6EE6 = 0) and ((B6EF3 <> 0) or (JumpButton and JoyOn))
     and (Map[(Slots[1].X + 3) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0)
     and (Map[(Slots[1].X + 12) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0) then
   begin

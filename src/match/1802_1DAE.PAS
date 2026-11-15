@@ -124,9 +124,9 @@ begin
             end;
         end;
       end;
-    if W6852 > 20 then
+    if Ticks > 20 then
     begin
-      W6852 := 0;
+      Ticks := 0;
       DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + W6862);
       DrawCellM(GfxSmall[3]^.Cell[Anim + $2D], CX, (CY shl 3) + W6862);
       Inc(Anim);

@@ -531,33 +531,33 @@ begin
     if S = 'L' then
       SetCell(X, Y, BackTile, 0, 0, 0, 0, FO);
     if S = 'M' then
-      if SiteDone[W685A + 2] <> 0 then
-        SetCell(X, Y, W685A + 2, 0, $205, 0, 0, FO)
+      if SiteDone[SiteCounter + 2] <> 0 then
+        SetCell(X, Y, SiteCounter + 2, 0, $205, 0, 0, FO)
       else
-        SetCell(X, Y, W685A + 2, 0, $201, 0, 0, FO);
+        SetCell(X, Y, SiteCounter + 2, 0, $201, 0, 0, FO);
     if S = 'N' then
     begin
-      if SiteDone[W685A + 2] <> 0 then
-        SetCell(X, Y, W685A + 2, 0, $206, 0, 0, FO)
+      if SiteDone[SiteCounter + 2] <> 0 then
+        SetCell(X, Y, SiteCounter + 2, 0, $206, 0, 0, FO)
       else
-        SetCell(X, Y, W685A + 2, 0, $202, 0, 0, FO);
-      Inc(W685A);
+        SetCell(X, Y, SiteCounter + 2, 0, $202, 0, 0, FO);
+      Inc(SiteCounter);
     end;
     if S = 'O' then
     begin
-      if SiteDone[W685A + 2] <> 0 then
-        SetCell(X, Y, W685A + 2, 0, $207, 0, 0, FO)
+      if SiteDone[SiteCounter + 2] <> 0 then
+        SetCell(X, Y, SiteCounter + 2, 0, $207, 0, 0, FO)
       else
-        SetCell(X, Y, W685A + 2, 0, $203, 0, 0, FO);
-      Inc(W685A);
+        SetCell(X, Y, SiteCounter + 2, 0, $203, 0, 0, FO);
+      Inc(SiteCounter);
     end;
     if S = 'P' then
     begin
-      if SiteDone[W685A + 2] <> 0 then
-        SetCell(X, Y, W685A + 2, 0, $208, 0, 0, FO)
+      if SiteDone[SiteCounter + 2] <> 0 then
+        SetCell(X, Y, SiteCounter + 2, 0, $208, 0, 0, FO)
       else
-        SetCell(X, Y, W685A + 2, 0, $204, 0, 0, FO);
-      Inc(W685A);
+        SetCell(X, Y, SiteCounter + 2, 0, $204, 0, 0, FO);
+      Inc(SiteCounter);
     end;
     if S = 'Q' then
       SetCell(X, Y, $205, 0, 0, 0, 0, FO);
@@ -2075,7 +2075,7 @@ begin
         CamY := 0;
       if CamY > $B8 then
         CamY := $B8;
-      if W70EC = 0 then
+      if AltVideo = 0 then
         SetViewStart(CamX, CamY + $10)
       else
         SetViewStartAlt(CamX, CamY + $10);
@@ -2146,7 +2146,7 @@ begin
   case N of
     1:
       begin
-        W685A := 0;
+        SiteCounter := 0;
         Assign(F, 'SAM103.GFX');
         Reset(F);
         Read(F, Row);

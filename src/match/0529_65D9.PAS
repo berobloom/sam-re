@@ -15,7 +15,7 @@ begin
   begin
     CanMove := False;
     if Level > 1 then
-      W6844 := 0;
+      WalkHeld := 0;
   end
   else
     CanMove := True;

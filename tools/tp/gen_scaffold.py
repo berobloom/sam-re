@@ -120,7 +120,7 @@ def var_pins(u):
         return []
     out = []
     for l in open(vf, encoding='latin1').read().replace('\r', '').split('\n'):
-        m = re.match(r'\s*(?:var\s+|const\s+)?(\w+)[\w, ]*:.*\{ @([0-9A-F]{4}) \}', l)
+        m = re.match(r'\s*(?:var\s+|const\s+)?(\w+)[\w, ]*:.*\{ @([0-9A-F]{4})[ ;]', l)
         if m:
             out.append((m.group(1), m.group(2)))
     return out
@@ -137,7 +137,7 @@ def data_decls(u, public):
         pads = DATAFILL.setdefault(u['seg'], {})
         lines = []
         for l in text.split('\n'):            # `{ @XXXX }` pins a variable's address: a fitted pad goes before it
-            m = re.search(r'\{ @([0-9A-F]{4}) \}', l)
+            m = re.search(r'\{ @([0-9A-F]{4})[ ;]', l)
             if m and pads.get(m.group(1), 0) > 0:
                 lines.append('  P_%s: array[1..%d] of Byte;' % (m.group(1), pads[m.group(1)]))
             lines.append(l)

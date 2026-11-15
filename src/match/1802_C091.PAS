@@ -45,7 +45,7 @@ begin
   TextLines[I] := '        Press Any Key ^';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -85,7 +85,7 @@ begin
   TextLines[I] := '';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -121,7 +121,7 @@ begin
   TextLines[I] := '';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -161,7 +161,7 @@ begin
   TextLines[I] := 'money orders.';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -201,7 +201,7 @@ begin
   TextLines[I] := 'order, or C.O.D.';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -241,7 +241,7 @@ begin
   TextLines[I] := 'Make cheques payable to PSA.';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;

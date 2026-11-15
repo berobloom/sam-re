@@ -44,7 +44,7 @@ begin
   TextLines[I] := '        Press any key ^';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;

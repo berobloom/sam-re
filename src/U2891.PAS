@@ -55,21 +55,24 @@ var
   W3832, W3834, W3836: Integer; { @3832 }
   TextLines: array[1..299] of String[40]; { @3838 }
   P681C: Pointer; { @681C; TextWindow's save-under buffer (30000 bytes) }
-  B6820: array[1..20] of Byte; { @6820 }
+  KeyFilter: array[1..20] of Byte; { @6820; keys TextWindow accepts (SAM1RE text-windows.md) }
   P_683A: array[1..6] of Byte;
-  W683A: Integer; { @683A }
-  B683C: Byte; { @683C }
-  W683E: Integer; { @683E; counts the player's landings (0529:66B3), GUESS }
+  WinKey: Integer; { @683A; scan code TextWindow returns (SAM1RE text-windows.md) }
+  MenuReq: Byte; { @683C; menu/pause request (SAM1RE input.md) }
+  Landings: Integer; { @683E; counts the player's landings (0529:66B3), GUESS }
   BackTile: Integer; { @6840; the number in a level's header record (0D9C:A1AE) }
   Level: Integer; { @6842 }
-  W6844, W6846, W6848: Integer; { @6844 }
-  W684A: Integer; { @684A }
+  WalkHeld, WalkSpeed, PageStride: Integer; { @6844;
+    WalkHeld: frames a walk key is held (SAM1RE physics.md);
+    WalkSpeed: no reader (SAM1RE physics.md);
+    PageStride: := $50 at level entry (SAM1RE level-load.md) }
+  ScanCode: Integer; { @684A; key ISR scan code, break = make + $80 (SAM1RE input.md) }
   SlotIdx, RowIdx, W6850: Integer; { @684C; loop variables of the text windows }
-  W6852: Integer; { @6852 }
+  Ticks: Integer; { @6852; timer ISR ticks, frame gate > 7 (SAM1RE input.md) }
   SlotCount: Integer; { @6854 }
   W6856: Integer; { @6856 }
   StatusCamX: Integer; { @6858 }
-  W685A: Integer; { @685A }
+  SiteCounter: Integer; { @685A; world-map site counter (SAM1RE level-load.md) }
   B685C: Byte; { @685C }
   CamX: Integer; { @685E }
   CamY: Integer; { @6860 }
@@ -84,26 +87,29 @@ var
   W69C4: Integer; { @69C4 }
   W69C6: Integer; { @69C6 }
   Gun: Integer; { @69C8 }
-  W69CA: Integer; { @69CA }
-  W69CC: Integer; { @69CC }
+  SpeedBonus: Integer; { @69CA; walk speed bonus, tile N (SAM1RE physics.md) }
+  SpeedTimer: Integer; { @69CC; speed power-up, $D8, -1 per 20 ticks (SAM1RE physics.md) }
   W69CE: Integer; { @69CE }
-  W69D0: Integer; { @69D0 }
-  B69D2: Byte; { @69D2 }
-  B69D3: Byte; { @69D3 }
-  W69D4: Integer; { @69D4 }
-  B69D6: Byte; { @69D6 }
+  ConfuseTimer: Integer; { @69D0; confusion, $D8, -2 (SAM1RE physics.md) }
+  UnconfuseMsg: Byte; { @69D2; 1: print YOU FEEL LESS CONFUSED (SAM1RE physics.md) }
+  Confused: Byte; { @69D3; walk keys mirrored (SAM1RE input.md) }
+  SlowTimer: Integer; { @69D4; slow-walk power-up, $D8, -2 (SAM1RE physics.md) }
+  SlowWalk: Byte; { @69D6; tile H (SAM1RE physics.md) }
   W69D8: Integer; { @69D8 }
-  B69DA: Byte; { @69DA }
+  KeysOff: Byte; { @69DA; <> 0: game keys skipped (SAM1RE input.md) }
   W69DC: Integer; { @69DC }
   MapSite: Integer; { @69DE }
   SiteDone: array[1..20] of Byte; { @69E0 }
   ExitArmed, B69F5, B69F6, B69F7, B69F8, B69F9, B69FA, B69FB, B69FC, B69FD, B69FE, B69FF: Byte; { @69F4 }
   B6A00, B6A01, B6A02, B6A03, B6A04, B6A05, B6A06: Byte; { @6A00 }
-  W6A08, W6A0A, W6A0C: Integer; { @6A08 }
+  WarpTimer, WarpX, WarpY: Integer; { @6A08;
+    WarpTimer: warp countdown, := $13 (SAM1RE level-load.md);
+    WarpX: warp destination (SAM1RE level-load.md);
+    WarpY: warp destination (SAM1RE level-load.md) }
   B6A0E, B6A0F, B6A10, B6A11, B6A12, B6A13, B6A14, VGunOff, B6A16, B6A17, B6A18, B6A19, B6A1A, B6A1B: Byte; { @6A0E }
   ArcLen: Byte; { @6A1C }
   Arc: array[1..35] of Integer; { @6A1E; indexed by ArcLen (main 0000:1B35) }
-  B6A64: Byte; { @6A64 }
+  ExitLock: Byte; { @6A64; exit/cutscene lock (SAM1RE physics.md) }
   RespawnDelay: Byte; { @6A65 }
   Lives: Byte; { @6A66 }
   B6A67: Byte; { @6A67 }
@@ -114,7 +120,10 @@ var
   Config: TConfig absolute HiName; { the high scores, sound switch and keys as SAM1.CFG holds them, GUESS }
   P_6D3E: array[1..18] of Byte;
   State: TState; { @6D3E }
-  W6D86, W6D88, W6D8A: Integer; { @6D86 }
+  SaveSlot, MarkerX, MarkerY: Integer; { @6D86;
+    SaveSlot: save slot = scan - 1 (SAM1RE menus.md);
+    MarkerX: player x at a site marker (SAM1RE level-load.md);
+    MarkerY: player y at a site marker (SAM1RE level-load.md) }
   B6D8C: Byte; { @6D8C }
   JoyCenterX, JoyCenterY: Integer; { @6D8E; signed compares in main 0000:08A2 }
   JoyX, JoyY: Integer; { @6D92 }
@@ -128,8 +137,8 @@ var
   B6EF2, B6EF3: Byte; { @6EF2 }
   NameUp, NameDown, NameFire, NameRight, NameJump, NameLeft: String[80]; { @6EF4; key names (redefine menu) }
   KeyUp, KeyDown, KeyLeft, KeyRight, KeyFire, KeyJump: Integer; { @70E0; SAM1RE menus.md: 70E8 fire }
-  W70EC: Integer; { @70EC }
-  W70EE: Integer; { @70EE }
+  AltVideo: Integer; { @70EC; Alternate video setting Y/N (SAM1RE menus.md) }
+  UseJoystick: Integer; { @70EE; 1 when the joystick was chosen (SAM1RE input.md) }
   OldExit: Pointer; { @70F0; main 0000:0E67 hooks ExitProc, int $1C and int 9 }
   OldInt1C: Pointer; { @70F4 }
   OldInt9: Pointer; { @70F8 }
@@ -158,9 +167,9 @@ begin
   CopyPage;
   StatusCamX := -1;
   CamY := 0;
-  W6852 := 0;
-  W70EC := 0;
-  W70EE := 0;
+  Ticks := 0;
+  AltVideo := 0;
+  UseJoystick := 0;
   KeyUp := $48;
   KeyDown := $50;
   KeyLeft := $4B;
@@ -203,7 +212,7 @@ begin
   PageY := $10;
   W6864 := 0;
   W6862 := 0;
-  W6846 := 0;
+  WalkSpeed := 0;
   B685C := 1;
   Score := 0;
   W69C4 := 1;
@@ -212,14 +221,14 @@ begin
   W69C6 := 0;
   for I := 1 to 15 do
     Bullets[I] := 0;
-  W69CA := 0;
-  W69CC := 0;
+  SpeedBonus := 0;
+  SpeedTimer := 0;
   W69CE := 0;
-  B69D3 := 0;
-  W69D0 := 0;
-  B69D2 := 0;
-  B69D6 := 0;
-  W69D4 := 0;
+  Confused := 0;
+  ConfuseTimer := 0;
+  UnconfuseMsg := 0;
+  SlowWalk := 0;
+  SlowTimer := 0;
   W69D8 := 0;
   VGunOff := 0;
   B6A12 := 0;
@@ -231,7 +240,7 @@ begin
   B6A19 := 0;
   B6A1A := 0;
   B6A14 := 0;
-  B69DA := 0;
+  KeysOff := 0;
   W69DC := 0;
   MapSite := 1;
   B6A16 := 0;
@@ -241,13 +250,13 @@ begin
     SiteDone[I] := 0;
   B6A1B := 0;
   ArcLen := $23;
-  B6A64 := 0;
+  ExitLock := 0;
   RespawnDelay := 8;
   Lives := 3;
   B6A67 := 0;
   B6A68 := 0;
   ExitArmed := 0;
-  B683C := 0;
+  MenuReq := 0;
   B69FA := 0;
   B69FB := 0;
   B69FC := 0;
@@ -266,9 +275,9 @@ begin
   B69FD := 0;
   B69FE := 0;
   B6A06 := 0;
-  W6A08 := 0;
-  W6A0A := 0;
-  W6A0C := 0;
+  WarpTimer := 0;
+  WarpX := 0;
+  WarpY := 0;
   State.X := 0;
   State.Y := 0;
   State.Score := Score;
@@ -276,19 +285,19 @@ begin
   State.Ammo := Ammo;
   for I := 1 to 20 do
     State.Bullets[I] := Bullets[I];
-  State.W22 := W69CA;
-  State.W24 := W69CC;
-  State.B26 := B69D3;
-  State.W27 := W69D0;
-  State.B29 := B69D2;
-  State.B2A := B69D6;
-  State.W2B := W69D4;
+  State.W22 := SpeedBonus;
+  State.W24 := SpeedTimer;
+  State.B26 := Confused;
+  State.W27 := ConfuseTimer;
+  State.B29 := UnconfuseMsg;
+  State.B2A := SlowWalk;
+  State.W2B := SlowTimer;
   State.W2D := W69D8;
   State.W2F := W69DC;
   State.MapSite := MapSite;
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];
-  W6D86 := 0;
+  SaveSlot := 0;
   JumpUp[1] := 0;
   JumpUp[2] := 8;
   JumpUp[3] := 8;
@@ -399,7 +408,7 @@ begin
   CopyPage;
   StatusCamX := -1;
   CamY := 0;
-  W6852 := 0;
+  Ticks := 0;
   B6EE5 := 0;
   B6EF0 := 0;
   B6EF1 := 0;
@@ -419,7 +428,7 @@ begin
   PageY := $10;
   W6864 := 0;
   W6862 := 0;
-  W6846 := 0;
+  WalkSpeed := 0;
   B685C := 1;
   Score := 0;
   W69C4 := 1;
@@ -428,14 +437,14 @@ begin
   W69C6 := 0;
   for I := 1 to 15 do
     Bullets[I] := 0;
-  W69CA := 0;
-  W69CC := 0;
+  SpeedBonus := 0;
+  SpeedTimer := 0;
   W69CE := 0;
-  B69D3 := 0;
-  W69D0 := 0;
-  B69D2 := 0;
-  B69D6 := 0;
-  W69D4 := 0;
+  Confused := 0;
+  ConfuseTimer := 0;
+  UnconfuseMsg := 0;
+  SlowWalk := 0;
+  SlowTimer := 0;
   W69D8 := 0;
   VGunOff := 0;
   B6A12 := 0;
@@ -447,7 +456,7 @@ begin
   B6A19 := 0;
   B6A1A := 0;
   B6A14 := 0;
-  B69DA := 0;
+  KeysOff := 0;
   W69DC := 0;
   MapSite := 1;
   B6A16 := 0;
@@ -458,12 +467,12 @@ begin
   B6A1B := 0;
   ArcLen := $23;
   ExitArmed := 0;
-  B6A64 := 0;
+  ExitLock := 0;
   RespawnDelay := 8;
   Lives := 3;
   B6A67 := 0;
   B6A68 := 0;
-  B683C := 0;
+  MenuReq := 0;
   B69FA := 0;
   B69FB := 0;
   B69FC := 0;
@@ -482,9 +491,9 @@ begin
   B69FD := 0;
   B69FE := 0;
   B6A06 := 0;
-  W6A08 := 0;
-  W6A0A := 0;
-  W6A0C := 0;
+  WarpTimer := 0;
+  WarpX := 0;
+  WarpY := 0;
   State.X := 0;
   State.Y := 0;
   State.Score := Score;
@@ -492,13 +501,13 @@ begin
   State.Ammo := Ammo;
   for I := 1 to 20 do
     State.Bullets[I] := Bullets[I];
-  State.W22 := W69CA;
-  State.W24 := W69CC;
-  State.B26 := B69D3;
-  State.W27 := W69D0;
-  State.B29 := B69D2;
-  State.B2A := B69D6;
-  State.W2B := W69D4;
+  State.W22 := SpeedBonus;
+  State.W24 := SpeedTimer;
+  State.B26 := Confused;
+  State.W27 := ConfuseTimer;
+  State.B29 := UnconfuseMsg;
+  State.B2A := SlowWalk;
+  State.W2B := SlowTimer;
   State.W2D := W69D8;
   State.W2F := W69DC;
   State.MapSite := MapSite;
@@ -533,7 +542,7 @@ begin
   B6EF3 := 0;
   B6EE6 := 0;
   W6856 := 0;
-  W6846 := 0;
+  WalkSpeed := 0;
   VGunOff := 0;
   B6A12 := 0;
   B6A13 := 0;
@@ -543,20 +552,20 @@ begin
   B6A11 := 0;
   B6A1A := 0;
   B6A14 := 0;
-  B69DA := 0;
+  KeysOff := 0;
   B6A16 := 0;
   B6A17 := 0;
   B6A18 := 1;
-  W69CA := 0;
-  W69CC := 0;
+  SpeedBonus := 0;
+  SpeedTimer := 0;
   W69CE := 0;
-  B69D3 := 0;
-  W69D0 := 0;
-  B69D2 := 0;
-  B69D6 := 0;
-  W69D4 := 0;
-  B683C := 0;
-  B6A64 := 0;
+  Confused := 0;
+  ConfuseTimer := 0;
+  UnconfuseMsg := 0;
+  SlowWalk := 0;
+  SlowTimer := 0;
+  MenuReq := 0;
+  ExitLock := 0;
   RespawnDelay := 8;
   Lives := 3;
   B6A67 := 0;
@@ -582,9 +591,9 @@ begin
   B69FD := 0;
   B69FE := 0;
   B6A06 := 0;
-  W6A08 := 0;
-  W6A0A := 0;
-  W6A0C := 0;
+  WarpTimer := 0;
+  WarpX := 0;
+  WarpY := 0;
 end;
 begin
 { init }

@@ -229,10 +229,10 @@ begin
       if not Playing then
         PlaySound($1C);
       if B6A19 = 0 then
-        B69DA := 1;
+        KeysOff := 1;
       W69DC := $33;
-      W6D88 := Slots[1].X;
-      W6D8A := Slots[1].Y;
+      MarkerX := Slots[1].X;
+      MarkerY := Slots[1].Y;
       case Map[X shr 4 + 1, Y shr 4 + 1].Front of
         $113..$122:
         begin
@@ -326,17 +326,17 @@ begin
           TextLines[3] := '';
           TextLines[4] := 'Press ESCAPE  ';
           TextLines[5] := 'END OF WINDOW';
-          B6820[1] := 1;
-          W683A := Ord(TextWindow(False));
+          KeyFilter[1] := 1;
+          WinKey := Ord(TextWindow(False));
           B6EEB := 0;
-          B683C := 0;
+          MenuReq := 0;
         end;
     $27E:
       if ExitArmed <> 0 then
       begin
         if B6D8C <> 0 then
           B6EEC := 1;
-        B6A64 := 1;
+        ExitLock := 1;
         SiteDone[Level] := 1;
         if Lives = 3 then
         begin
@@ -384,10 +384,10 @@ begin
           TextLines[6] := '                       ';
           TextLines[7] := 'Press ESCAPE!          ';
           TextLines[8] := 'END OF WINDOW';
-          B6820[1] := 1;
-          W683A := Ord(TextWindow(False));
+          KeyFilter[1] := 1;
+          WinKey := Ord(TextWindow(False));
           B6EEB := 0;
-          B683C := 0;
+          MenuReq := 0;
           if (X shr 4 = 0) or (Map[X shr 4 + 1 - 1, Y shr 4 + 1].Solid = 1) then
           begin
             Slots[1].PrevX := Slots[1].X;
@@ -436,7 +436,7 @@ begin
       Slots[I].Free := 0;
       Slots[I].Remove := 0;
       if B6A19 = 0 then
-        B69DA := 1;
+        KeysOff := 1;
       if (B6A1B = 0) and (B6A19 = 0) then
       begin
         B6A1B := 1;
@@ -487,10 +487,10 @@ begin
           TextLines[3] := '';
           TextLines[4] := 'Press ESCAPE';
           TextLines[5] := 'END OF WINDOW';
-          B6820[1] := 1;
-          W683A := Ord(TextWindow(False));
+          KeyFilter[1] := 1;
+          WinKey := Ord(TextWindow(False));
           B6EEB := 0;
-          B683C := 0;
+          MenuReq := 0;
         end;
     $25D:
     begin
@@ -512,18 +512,18 @@ begin
           for PX := 1 to $28 do
             if (Map[PX, PY].Front = $B7) and ((X shr 4 + 1 <> PX) or (Y shr 4 + 1 <> PY)) then
             begin
-              W6A0A := (PX - 1) shl 4;
-              W6A0C := (PY - 1) shl 4;
-              if Map[W6A0A shr 4, W6A0C shr 4 + 1].Solid <> 0 then
-                W6A0A := W6A0A + 3
+              WarpX := (PX - 1) shl 4;
+              WarpY := (PY - 1) shl 4;
+              if Map[WarpX shr 4, WarpY shr 4 + 1].Solid <> 0 then
+                WarpX := WarpX + 3
               else
-                W6A0A := W6A0A - 3;
+                WarpX := WarpX - 3;
               PX := $28;
               PY := $18;
             end;
         B6A06 := 1;
-        W6A08 := $13;
-        B69DA := 1;
+        WarpTimer := $13;
+        KeysOff := 1;
         if (B6EF1 = 1) or (Slots[1].Sprite = 1) then
           Slots[1].Sprite := 9
         else
@@ -542,8 +542,8 @@ begin
       StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
-      W69CA := 4;
-      W69CC := $D8;
+      SpeedBonus := 4;
+      SpeedTimer := $D8;
     end;
     $143..$145:
     begin
@@ -585,18 +585,18 @@ begin
     begin
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound($1A);
-      B69D3 := 1;
+      Confused := 1;
       B6EF0 := 0;
       B6EF1 := 0;
-      W69D0 := $D8;
+      ConfuseTimer := $D8;
       ShowMessage('YOU FEEL A BIT CONFUSED!');
     end;
     $1D4:
     begin
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound($1B);
-      B69D6 := 1;
-      W69D4 := $D8;
+      SlowWalk := 1;
+      SlowTimer := $D8;
     end;
     $269:
     begin

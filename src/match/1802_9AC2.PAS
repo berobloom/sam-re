@@ -10,8 +10,8 @@ begin
   TextLines[2] := '';
   TextLines[3] := 'Press ESCAPE';
   TextLines[4] := 'END OF WINDOW';
-  B6820[1] := 1;
-  W683A := Ord(TextWindow(False));
+  KeyFilter[1] := 1;
+  WinKey := Ord(TextWindow(False));
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;

@@ -3,4 +3,4 @@ var
   VideoSeg: Word; { @21FC }
   B21FE: Boolean; { @21FE }
   L2200: LongInt; { @2200 }
-  W2204: Integer; { @2204 }
+  BiosMode: Integer; { @2204; BIOS mode at the adapter detect (SAM1RE code-map.md 4:054f) }

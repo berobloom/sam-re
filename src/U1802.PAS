@@ -74,7 +74,7 @@ end;
 { keep: ShowPage; }
 procedure ShowPage;
 begin
-  if W70EC = 0 then
+  if AltVideo = 0 then
     SetViewStart(CamX, PageY + CamY)
   else
     SetViewStartAlt(CamX, PageY + CamY);
@@ -160,7 +160,7 @@ begin
     DrawCell(GfxSmall[1]^.Cell[11], 13, 1);
     DrawCell(GfxSmall[1]^.Cell[Ammo div 10 + 1], 14, 1);
     DrawCell(GfxSmall[1]^.Cell[Ammo mod 10 + 1], 15, 1);
-    if W69CA > 0 then
+    if SpeedBonus > 0 then
       DrawCell(GfxSmall[1]^.Cell[14], 20, 1);
     if B6A1A <> 0 then
       DrawCell(GfxSmall[1]^.Cell[21], 25, 1);
@@ -187,7 +187,7 @@ begin
     DrawCellX(GfxSmall[1]^.Cell[11], Sh + $68, 1);
     DrawCellX(GfxSmall[1]^.Cell[Ammo div 10 + 1], Sh + $70, 1);
     DrawCellX(GfxSmall[1]^.Cell[Ammo mod 10 + 1], Sh + $78, 1);
-    if W69CA > 0 then
+    if SpeedBonus > 0 then
       DrawCellX(GfxSmall[1]^.Cell[14], Sh + $A0, 1);
     if B6A1A <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[21], Sh + $C8, 1);
@@ -214,7 +214,7 @@ begin
   for I := 1 to 299 do
     TextLines[I] := '';
   for I := 1 to 20 do
-    B6820[I] := 0;
+    KeyFilter[I] := 0;
 end;
 { src: SAM1RE 1802:0816 (../SAM menus.md: the window font: each character of S is looked up in the table T;
   1..$48 are cells of SAM102.GFX record 2, $49..$75 of record 3, $76.. game tiles of SAM101.GFX; '^' is
@@ -392,7 +392,7 @@ begin
   B6EF1 := 0;
   repeat
     MemW[0:$41C] := MemW[0:$41A];
-  until W684A > $80;
+  until ScanCode > $80;
   PlaySound($11);
   repeat
     repeat
@@ -419,9 +419,9 @@ begin
           end;
         end;
       if CX <> 0 then
-        if W6852 > 20 then
+        if Ticks > 20 then
         begin
-          W6852 := 0;
+          Ticks := 0;
           DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + W6862);
           DrawCellM(GfxSmall[3]^.Cell[Anim + $2D], CX, (CY shl 3) + W6862);
           Inc(Anim);
@@ -448,26 +448,26 @@ begin
             end;
           end;
         end;
-    until (W684A < $80) or (W684A = $E0);
-    K := W684A;
+    until (ScanCode < $80) or (ScanCode = $E0);
+    K := ScanCode;
     if K = $E0 then
     begin
       repeat
         MemW[0:$41C] := MemW[0:$41A];
-      until W684A in [$9C, $9D, $AA, $B5, $B8, $C5, $C7..$C9, $CB, $CD, $CF..$D3];
-      if W684A in [$AA, $C5] then
-        W684A := $1F4;
-      K := W684A - $80;
+      until ScanCode in [$9C, $9D, $AA, $B5, $B8, $C5, $C7..$C9, $CB, $CD, $CF..$D3];
+      if ScanCode in [$AA, $C5] then
+        ScanCode := $1F4;
+      K := ScanCode - $80;
     end
     else
       repeat
         MemW[0:$41C] := MemW[0:$41A];
-      until W684A > $80;
+      until ScanCode > $80;
     if not Wait then
     begin
       for RowIdx := 1 to 20 do
-        if B6820[RowIdx] <> 0 then
-          if B6820[RowIdx] = K then
+        if KeyFilter[RowIdx] <> 0 then
+          if KeyFilter[RowIdx] = K then
           begin
             TextWindow := Chr(K);
             Done := True;
@@ -615,9 +615,9 @@ begin
             end;
         end;
       end;
-    if W6852 > 20 then
+    if Ticks > 20 then
     begin
-      W6852 := 0;
+      Ticks := 0;
       DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + W6862);
       DrawCellM(GfxSmall[3]^.Cell[Anim + $2D], CX, (CY shl 3) + W6862);
       Inc(Anim);
@@ -729,7 +729,7 @@ begin
   B6EF1 := 0;
   repeat
     MemW[0:$41C] := MemW[0:$41A];
-  until W684A > $80;
+  until ScanCode > $80;
   repeat
     repeat
       MemW[0:$41C] := MemW[0:$41A];
@@ -755,9 +755,9 @@ begin
           end;
         end;
       if CX <> 0 then
-        if W6852 > 20 then
+        if Ticks > 20 then
         begin
-          W6852 := 0;
+          Ticks := 0;
           if Spark then
           begin
             Inc(ST);
@@ -779,21 +779,21 @@ begin
             end;
           end;
         end;
-    until (W684A < $80) or (W684A = $E0);
-    K := W684A;
+    until (ScanCode < $80) or (ScanCode = $E0);
+    K := ScanCode;
     if K = $E0 then
     begin
       repeat
         MemW[0:$41C] := MemW[0:$41A];
-      until W684A in [$9C, $9D, $AA, $B5, $B8, $C5, $C7..$C9, $CB, $CD, $CF..$D3];
-      if W684A in [$AA, $C5] then
-        W684A := $1F4;
-      K := W684A - $80;
+      until ScanCode in [$9C, $9D, $AA, $B5, $B8, $C5, $C7..$C9, $CB, $CD, $CF..$D3];
+      if ScanCode in [$AA, $C5] then
+        ScanCode := $1F4;
+      K := ScanCode - $80;
     end
     else
       repeat
         MemW[0:$41C] := MemW[0:$41A];
-      until W684A > $80;
+      until ScanCode > $80;
     if (K = $50) or (K = $51) then
     begin
       Inc(Top, 17);
@@ -855,8 +855,8 @@ begin
     if not Wait then
     begin
       for RowIdx := 1 to 20 do
-        if B6820[RowIdx] <> 0 then
-          if B6820[RowIdx] = K then
+        if KeyFilter[RowIdx] <> 0 then
+          if KeyFilter[RowIdx] = K then
           begin
             PageWindow := Chr(K);
             Done := True;
@@ -900,10 +900,10 @@ begin
   FadeIn($14);
   PlaySound($15);
   MemW[0:$41C] := MemW[0:$41A];
-  W6852 := 0;
+  Ticks := 0;
   repeat
-  until KeyPressed or (W6852 > $2D0);
-  W6852 := 0;
+  until KeyPressed or (Ticks > $2D0);
+  Ticks := 0;
   FadeOut(0);
 end;
 { src: SAM1RE 1802:3489 (../SAM menus: the title: sam1.crd and sam1.ttl, the view scrolls down and up between
@@ -931,25 +931,25 @@ begin
   FadeIn($14);
   Dir := 1;
   Y := 0;
-  W684A := 0;
+  ScanCode := 0;
   Key := ' ';
-  W6852 := 0;
+  Ticks := 0;
   repeat
-    if W684A > 0 then
+    if ScanCode > 0 then
     begin
       Key := MainMenu;
-      W684A := 0;
+      ScanCode := 0;
     end
     else
-      W684A := 0;
-  until (W6852 > $90) or (Key <> ' ');
+      ScanCode := 0;
+  until (Ticks > $90) or (Key <> ' ');
   if (Key <> 'B') and (Key <> 'R') and (Key <> 'Q') then
   repeat
     if (Key <> 'B') and (Key <> 'R') and (Key <> 'Q') then
       Key := ' ';
     if Dir = 1 then
     begin
-      if W70EC = 0 then
+      if AltVideo = 0 then
         SetViewStart(0, Y)
       else
         SetViewStartAlt(0, Y);
@@ -957,7 +957,7 @@ begin
     end
     else
     begin
-      if W70EC = 0 then
+      if AltVideo = 0 then
         SetViewStart(0, 200 - Y)
       else
         SetViewStartAlt(0, 200 - Y);
@@ -968,15 +968,15 @@ begin
     begin
       Y := 0;
       Dir := -Dir;
-      W6852 := 0;
+      Ticks := 0;
       repeat
-        if W684A > 0 then
+        if ScanCode > 0 then
         begin
           Key := MainMenu;
-          W684A := 0;
-          W6852 := 0;
+          ScanCode := 0;
+          Ticks := 0;
         end;
-      until (W6852 > $1B0) or (Key <> ' ');
+      until (Ticks > $1B0) or (Key <> ' ');
     end;
     B6EE9 := 0;
     B6EEA := 0;
@@ -984,11 +984,11 @@ begin
     B6EF1 := 0;
     B6EEB := 0;
     MemW[0:$41C] := MemW[0:$41A];
-    if W684A <> 0 then
+    if ScanCode <> 0 then
     begin
       Key := MainMenu;
-      W6852 := 0;
-      W684A := 0;
+      Ticks := 0;
+      ScanCode := 0;
     end;
   until (Key = 'B') or (Key = 'R') or (Key = 'Q');
   PlaySound(12);
@@ -1125,13 +1125,13 @@ begin
   State.Gun := Gun;
   for I := 1 to 20 do
     State.Bullets[I] := Bullets[I];
-  State.W22 := W69CA;
-  State.W24 := W69CC;
-  State.B26 := B69D3;
-  State.W27 := W69D0;
-  State.B29 := B69D2;
-  State.B2A := B69D6;
-  State.W2B := W69D4;
+  State.W22 := SpeedBonus;
+  State.W24 := SpeedTimer;
+  State.B26 := Confused;
+  State.W27 := ConfuseTimer;
+  State.B29 := UnconfuseMsg;
+  State.B2A := SlowWalk;
+  State.W2B := SlowTimer;
   State.W2D := W69D8;
   State.W2F := W69DC;
   State.MapSite := MapSite;
@@ -1155,13 +1155,13 @@ begin
   Gun := State.Gun;
   for I := 1 to 20 do
     Bullets[I] := State.Bullets[I];
-  W69CA := State.W22;
-  W69CC := State.W24;
-  B69D3 := State.B26;
-  W69D0 := State.W27;
-  B69D2 := State.B29;
-  B69D6 := State.B2A;
-  W69D4 := State.W2B;
+  SpeedBonus := State.W22;
+  SpeedTimer := State.W24;
+  Confused := State.B26;
+  ConfuseTimer := State.W27;
+  UnconfuseMsg := State.B29;
+  SlowWalk := State.B2A;
+  SlowTimer := State.W2B;
   W69D8 := State.W2D;
   W69DC := State.W2F;
   MapSite := State.MapSite;
@@ -1190,13 +1190,13 @@ begin
   State.Gun := Gun;
   for I := 1 to 20 do
     State.Bullets[I] := Bullets[I];
-  State.W22 := W69CA;
-  State.W24 := W69CC;
-  State.B26 := B69D3;
-  State.W27 := W69D0;
-  State.B29 := B69D2;
-  State.B2A := B69D6;
-  State.W2B := W69D4;
+  State.W22 := SpeedBonus;
+  State.W24 := SpeedTimer;
+  State.B26 := Confused;
+  State.W27 := ConfuseTimer;
+  State.B29 := UnconfuseMsg;
+  State.B2A := SlowWalk;
+  State.W2B := SlowTimer;
   State.W2D := W69D8;
   State.W2F := W69DC;
   State.MapSite := MapSite;
@@ -1243,13 +1243,13 @@ begin
     Gun := State.Gun;
     for I := 1 to 20 do
       Bullets[I] := State.Bullets[I];
-    W69CA := State.W22;
-    W69CC := State.W24;
-    B69D3 := State.B26;
-    W69D0 := State.W27;
-    B69D2 := State.B29;
-    B69D6 := State.B2A;
-    W69D4 := State.W2B;
+    SpeedBonus := State.W22;
+    SpeedTimer := State.W24;
+    Confused := State.B26;
+    ConfuseTimer := State.W27;
+    UnconfuseMsg := State.B29;
+    SlowWalk := State.B2A;
+    SlowTimer := State.W2B;
     W69D8 := State.W2D;
     W69DC := State.W2F;
     MapSite := State.MapSite;
@@ -1754,10 +1754,10 @@ begin
   TextLines[I] := 'Press PgUp-PgDn        Esc-Exit';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  B6820[1] := 1;
-  W683A := Ord(PageWindow(False));
+  KeyFilter[1] := 1;
+  WinKey := Ord(PageWindow(False));
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;
 {$F-}
 { src: SAM1RE 1802:6E2D (../SAM menus.md: the story pages of the title menu's S, through PageWindow) }
@@ -1907,10 +1907,10 @@ begin
   TextLines[I] := 'Press PgUp-PgDn        Esc-Exit';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  B6820[1] := 1;
-  W683A := Ord(PageWindow(False));
+  KeyFilter[1] := 1;
+  WinKey := Ord(PageWindow(False));
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;
 {$F-}
 { src: GUESS 1802:7B9B (the ordering-information pages, shown through PageWindow; the ending shows them) }
@@ -2060,10 +2060,10 @@ begin
   TextLines[I] := 'Press PgUp-PgDn        Esc-Exit';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  B6820[1] := 1;
-  W683A := Ord(PageWindow(False));
+  KeyFilter[1] := 1;
+  WinKey := Ord(PageWindow(False));
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;
 {$F-}
 { src: GUESS 1802:8412 (the high-score name prompt in the text window; the name goes to NameInput) }
@@ -2115,10 +2115,10 @@ var
     TextLines[10] := 'Are these selections ok (Y-N): ^';
     TextLines[11] := '';
     TextLines[12] := 'END OF WINDOW';
-    B6820[1] := $15;
-    B6820[2] := $31;
-    W683A := Ord(TextWindow(False));
-    if W683A = $31 then
+    KeyFilter[1] := $15;
+    KeyFilter[2] := $31;
+    WinKey := Ord(TextWindow(False));
+    if WinKey = $31 then
       RedefineKeys
     else
     begin
@@ -2174,7 +2174,7 @@ begin
       TextLines[2] := '';
       TextLines[3] := 'Select key to move right: ^';
       TextLines[4] := 'END OF WINDOW';
-      B6820[1] := 1;
+      KeyFilter[1] := 1;
       Right := Ord(TextWindow(True));
       if Right = 1 then
         Valid := False;
@@ -2194,7 +2194,7 @@ begin
       TextLines[2] := '';
       TextLines[3] := 'Select key to move up: ^';
       TextLines[4] := 'END OF WINDOW';
-      B6820[1] := 1;
+      KeyFilter[1] := 1;
       Up := Ord(TextWindow(True));
       if Up = 1 then
         Valid := False;
@@ -2214,7 +2214,7 @@ begin
       TextLines[2] := '';
       TextLines[3] := 'Select key to move down: ^';
       TextLines[4] := 'END OF WINDOW';
-      B6820[1] := 1;
+      KeyFilter[1] := 1;
       Down := Ord(TextWindow(True));
       if Down = 1 then
         Valid := False;
@@ -2235,7 +2235,7 @@ begin
       TextLines[2] := '';
       TextLines[3] := 'Select key to jump: ^';
       TextLines[4] := 'END OF WINDOW';
-      B6820[1] := 1;
+      KeyFilter[1] := 1;
       Jump := Ord(TextWindow(True));
       if Jump = 1 then
         Valid := False;
@@ -2294,7 +2294,7 @@ begin
   Val(NameInput, N, Code);
   AskWarp := N;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;
 { src: SAM1RE 1802:8F3A (../SAM menus.md: the save menu; keys 1..9 save to slots 1..9, 0 to slot 0, the first
   IOResult only clears the error state) }
@@ -2310,37 +2310,37 @@ begin
   TextLines[4] := 'Select (0-9) : ^';
   TextLines[5] := '';
   TextLines[6] := 'END OF WINDOW';
-  B6820[1] := 2;
-  B6820[2] := 3;
-  B6820[3] := 4;
-  B6820[4] := 5;
-  B6820[5] := 6;
-  B6820[6] := 7;
-  B6820[7] := 8;
-  B6820[8] := 9;
-  B6820[9] := $0A;
-  B6820[10] := $0B;
-  B6820[11] := $1C;
-  B6820[12] := 1;
+  KeyFilter[1] := 2;
+  KeyFilter[2] := 3;
+  KeyFilter[3] := 4;
+  KeyFilter[4] := 5;
+  KeyFilter[5] := 6;
+  KeyFilter[6] := 7;
+  KeyFilter[7] := 8;
+  KeyFilter[8] := 9;
+  KeyFilter[9] := $0A;
+  KeyFilter[10] := $0B;
+  KeyFilter[11] := $1C;
+  KeyFilter[12] := 1;
   MemW[0:$41C] := MemW[0:$41A];
-  W683A := Ord(TextWindow(False));
+  WinKey := Ord(TextWindow(False));
   if IOResult = 0 then;
-  case W683A of
-    2..10: SaveGame(W683A - 1);
+  case WinKey of
+    2..10: SaveGame(WinKey - 1);
     11: SaveGame(0);
   end;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   ClearText;
   if IOResult = 0 then
     TextLines[1] := 'Game Saved!'
   else
     TextLines[1] := 'File Error!';
   TextLines[2] := 'END OF WINDOW';
-  B6820[1] := $1C;
-  B6820[2] := 1;
+  KeyFilter[1] := $1C;
+  KeyFilter[2] := 1;
   MemW[0:$41C] := MemW[0:$41A];
-  W683A := Ord(TextWindow(True));
+  WinKey := Ord(TextWindow(True));
 end;
 {$F-}
 { src: SAM1RE 1802:90E7 (../SAM menus.md: the restore menu; keys 1..9 load slots 1..9, 0 slot 0; returns
@@ -2358,31 +2358,31 @@ begin
   TextLines[4] := 'Select (0-9) : ^';
   TextLines[5] := '';
   TextLines[6] := 'END OF WINDOW';
-  B6820[1] := 2;
-  B6820[2] := 3;
-  B6820[3] := 4;
-  B6820[4] := 5;
-  B6820[5] := 6;
-  B6820[6] := 7;
-  B6820[7] := 8;
-  B6820[8] := 9;
-  B6820[9] := $0A;
-  B6820[10] := $0B;
-  B6820[11] := $1C;
-  B6820[12] := 1;
+  KeyFilter[1] := 2;
+  KeyFilter[2] := 3;
+  KeyFilter[3] := 4;
+  KeyFilter[4] := 5;
+  KeyFilter[5] := 6;
+  KeyFilter[6] := 7;
+  KeyFilter[7] := 8;
+  KeyFilter[8] := 9;
+  KeyFilter[9] := $0A;
+  KeyFilter[10] := $0B;
+  KeyFilter[11] := $1C;
+  KeyFilter[12] := 1;
   MemW[0:$41C] := MemW[0:$41A];
-  W683A := Ord(TextWindow(False));
-  case W683A of
+  WinKey := Ord(TextWindow(False));
+  case WinKey of
     2..10:
-      if not LoadGame(W683A - 1) then
-        W683A := $1C;
+      if not LoadGame(WinKey - 1) then
+        WinKey := $1C;
     11:
       if not LoadGame(0) then
-        W683A := $1C;
+        WinKey := $1C;
   end;
-  RestoreMenu := W683A;
+  RestoreMenu := WinKey;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;
 {$F-}
 { src: SAM1RE 1802:92C4 (../SAM menus.md: the title menu; N, Space and Enter start a game ('B'); a failed
@@ -2433,22 +2433,22 @@ begin
   TextLines[I] := 'Make a selection: ^';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  B6820[1] := $31;
-  B6820[2] := $17;
-  B6820[3] := $23;
-  B6820[4] := $13;
-  B6820[5] := $1F;
-  B6820[6] := $18;
-  B6820[7] := $10;
-  B6820[8] := $01;
-  B6820[9] := $39;
-  B6820[10] := $1C;
-  B6820[11] := $21;
-  B6820[12] := $1E;
-  B6820[13] := $2E;
-  B6820[14] := $2F;
-  W683A := Ord(TextWindow(False));
-  case W683A of
+  KeyFilter[1] := $31;
+  KeyFilter[2] := $17;
+  KeyFilter[3] := $23;
+  KeyFilter[4] := $13;
+  KeyFilter[5] := $1F;
+  KeyFilter[6] := $18;
+  KeyFilter[7] := $10;
+  KeyFilter[8] := $01;
+  KeyFilter[9] := $39;
+  KeyFilter[10] := $1C;
+  KeyFilter[11] := $21;
+  KeyFilter[12] := $1E;
+  KeyFilter[13] := $2E;
+  KeyFilter[14] := $2F;
+  WinKey := Ord(TextWindow(False));
+  case WinKey of
     $31, $39, $1C:
       begin
         MainMenu := 'B';
@@ -2489,10 +2489,10 @@ begin
       begin
         MainMenu := 'R';
         W69C4 := 1;
-        W6D86 := RestoreMenu;
-        if W6D86 = $1C then
+        SaveSlot := RestoreMenu;
+        if SaveSlot = $1C then
         begin
-          W6D86 := 0;
+          SaveSlot := 0;
           MainMenu := ' ';
         end
         else
@@ -2550,18 +2550,18 @@ begin
   TextLines[14] := 'Selection: ^';
   TextLines[15] := '';
   TextLines[16] := 'END OF WINDOW';
-  B6820[1] := $23;
-  B6820[2] := $14;
-  B6820[3] := $2F;
-  B6820[4] := $24;
-  B6820[5] := $2E;
-  B6820[6] := $25;
-  B6820[7] := $13;
-  B6820[8] := $1F;
-  B6820[9] := $10;
-  B6820[10] := 1;
-  W683A := Ord(TextWindow(False));
-  case W683A of
+  KeyFilter[1] := $23;
+  KeyFilter[2] := $14;
+  KeyFilter[3] := $2F;
+  KeyFilter[4] := $24;
+  KeyFilter[5] := $2E;
+  KeyFilter[6] := $25;
+  KeyFilter[7] := $13;
+  KeyFilter[8] := $1F;
+  KeyFilter[9] := $10;
+  KeyFilter[10] := 1;
+  WinKey := Ord(TextWindow(False));
+  case WinKey of
     $23:
       begin
         EscapeMenu := 'H';
@@ -2612,10 +2612,10 @@ begin
           TextLines[3] := '';
           TextLines[4] := 'Press ESCAPE';
           TextLines[5] := 'END OF WINDOW';
-          B6820[1] := 1;
-          W683A := Ord(TextWindow(False));
+          KeyFilter[1] := 1;
+          WinKey := Ord(TextWindow(False));
           B6EEB := 0;
-          B683C := 0;
+          MenuReq := 0;
         end;
       end;
     $10:
@@ -2646,10 +2646,10 @@ begin
   TextLines[15] := 'Press any key ^';
   TextLines[16] := '';
   TextLines[17] := 'END OF WINDOW';
-  B6820[1] := 1;
-  W683A := Ord(TextWindow(True));
+  KeyFilter[1] := 1;
+  WinKey := Ord(TextWindow(True));
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;
 {$F-}
 { src: GUESS 1802:9AC2 (a one-line message in the text window, closed with Escape) }
@@ -2664,10 +2664,10 @@ begin
   TextLines[2] := '';
   TextLines[3] := 'Press ESCAPE';
   TextLines[4] := 'END OF WINDOW';
-  B6820[1] := 1;
-  W683A := Ord(TextWindow(False));
+  KeyFilter[1] := 1;
+  WinKey := Ord(TextWindow(False));
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;
 { src: GUESS 1802:9B63 (quit prompt: B6820 = [1, $15, $31] lists the accepted scan codes Y and N;
   Y sets B6EEC) }
@@ -2679,20 +2679,20 @@ begin
   ClearText;
   TextLines[1] := 'Quit To Dos (Y-N) ^';
   TextLines[2] := 'END OF WINDOW';
-  B6820[1] := 1;
-  B6820[2] := $15;
-  B6820[3] := $31;
-  W683A := Ord(TextWindow(True));
-  if W683A = $15 then
+  KeyFilter[1] := 1;
+  KeyFilter[2] := $15;
+  KeyFilter[3] := $31;
+  WinKey := Ord(TextWindow(True));
+  if WinKey = $15 then
     B6EEC := 1;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   B6EE9 := 0;
   B6EEA := 0;
   B6EF0 := 0;
   B6EF1 := 0;
   MemW[0:$41C] := MemW[0:$41A];
-  W684A := 0;
+  ScanCode := 0;
 end;
 {$F-}
 { src: GUESS 1802:9C2D (quit menu by scan code: D $20 -> B6EEC, T $14 -> B6EED, I $17 -> B6EEE) }
@@ -2708,38 +2708,38 @@ begin
   TextLines[4] := ' T)itle Screen';
   TextLines[5] := ' I)sland Map';
   TextLines[6] := 'END OF WINDOW';
-  B6820[1] := $20;
-  B6820[2] := $14;
-  B6820[3] := $17;
-  B6820[4] := 1;
-  W683A := Ord(TextWindow(True));
-  if W683A = $20 then
+  KeyFilter[1] := $20;
+  KeyFilter[2] := $14;
+  KeyFilter[3] := $17;
+  KeyFilter[4] := 1;
+  WinKey := Ord(TextWindow(True));
+  if WinKey = $20 then
   begin
     CheckHighScore;
     B6EEC := 1;
     B6D8C := 0;
     PlaySound($12);
   end
-  else if W683A = $14 then
+  else if WinKey = $14 then
   begin
     CheckHighScore;
     B6EED := 1;
     B6D8C := 0;
     PlaySound($12);
   end
-  else if W683A = $17 then
+  else if WinKey = $17 then
   begin
     B6EEE := 1;
     B6D8C := 0;
   end;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   B6EE9 := 0;
   B6EEA := 0;
   B6EF0 := 0;
   B6EF1 := 0;
   MemW[0:$41C] := MemW[0:$41A];
-  W684A := 0;
+  ScanCode := 0;
 end;
 {$F-}
 { src: GUESS 1802:9D64 (sound on/off prompt: Y $15 sets SoundOn, else off) }
@@ -2751,22 +2751,22 @@ begin
   ClearText;
   TextLines[1] := 'Sounds On (Y-N) ^';
   TextLines[2] := 'END OF WINDOW';
-  B6820[1] := $15;
-  B6820[2] := $31;
-  B6820[3] := 1;
-  W683A := Ord(TextWindow(True));
-  if W683A = $15 then
+  KeyFilter[1] := $15;
+  KeyFilter[2] := $31;
+  KeyFilter[3] := 1;
+  WinKey := Ord(TextWindow(True));
+  if WinKey = $15 then
     SoundOn := True
   else
     SoundOn := False;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   B6EE9 := 0;
   B6EEA := 0;
   B6EF0 := 0;
   B6EF1 := 0;
   MemW[0:$41C] := MemW[0:$41A];
-  W684A := 0;
+  ScanCode := 0;
 end;
 {$F-}
 { src: SAM1RE 1802:9FAB (../SAM: the alternate video setting prompt; Y sets W70EC, which picks
@@ -2795,22 +2795,22 @@ begin
   TextLines[16] := '';
   TextLines[17] := '  Alternate video setting (Y-N) ^ ';
   TextLines[18] := 'END OF WINDOW';
-  B6820[1] := $15;
-  B6820[2] := $31;
-  B6820[3] := 1;
-  W683A := Ord(TextWindow(False));
-  if W683A = $15 then
-    W70EC := 1
+  KeyFilter[1] := $15;
+  KeyFilter[2] := $31;
+  KeyFilter[3] := 1;
+  WinKey := Ord(TextWindow(False));
+  if WinKey = $15 then
+    AltVideo := 1
   else
-    W70EC := 0;
+    AltVideo := 0;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   B6EE9 := 0;
   B6EEA := 0;
   B6EF0 := 0;
   B6EF1 := 0;
   MemW[0:$41C] := MemW[0:$41A];
-  W684A := 0;
+  ScanCode := 0;
 end;
 {$F-}
 { src: GUESS 1802:A15C (joystick prompt: Y -> JoyOn := JoyPresent, W70EE := 1; N -> both off) }
@@ -2822,28 +2822,28 @@ begin
   ClearText;
   TextLines[1] := 'Joystick On (Y-N) ^';
   TextLines[2] := 'END OF WINDOW';
-  B6820[1] := $15;
-  B6820[2] := $31;
-  B6820[3] := 1;
-  W683A := Ord(TextWindow(True));
-  if W683A = $15 then
+  KeyFilter[1] := $15;
+  KeyFilter[2] := $31;
+  KeyFilter[3] := 1;
+  WinKey := Ord(TextWindow(True));
+  if WinKey = $15 then
   begin
     JoyOn := JoyPresent;
-    W70EE := 1;
+    UseJoystick := 1;
   end
-  else if W683A = $31 then
+  else if WinKey = $31 then
   begin
     JoyOn := False;
-    W70EE := 0;
+    UseJoystick := 0;
   end;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   B6EE9 := 0;
   B6EEA := 0;
   B6EF0 := 0;
   B6EF1 := 0;
   MemW[0:$41C] := MemW[0:$41A];
-  W684A := 0;
+  ScanCode := 0;
 end;
 {$F-}
 { src: GUESS 1802:A33A (joystick calibration: Space ($39) with the stick centred stores both axes) }
@@ -2886,10 +2886,10 @@ begin
   TextLines[N] := '              ^';
   Inc(N);
   TextLines[N] := 'END OF WINDOW';
-  B6820[1] := 1;
-  B6820[2] := $39;
-  W683A := Ord(TextWindow(False));
-  if W683A = $39 then
+  KeyFilter[1] := 1;
+  KeyFilter[2] := $39;
+  WinKey := Ord(TextWindow(False));
+  if WinKey = $39 then
   begin
     JoyOn := JoyPresent;
     if JoyOn then
@@ -2899,13 +2899,13 @@ begin
     end;
   end;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   B6EE9 := 0;
   B6EEA := 0;
   B6EF0 := 0;
   B6EF1 := 0;
   MemW[0:$41C] := MemW[0:$41A];
-  W684A := 0;
+  ScanCode := 0;
 end;
 {$F-}
 { src: SAM1RE 1802:A67A (../SAM menus.md: the name of a set-1 scan code; NULL for keys that cannot be used) }
@@ -3221,7 +3221,7 @@ begin
   TextLines[I] := '        Press Any Key ^';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -3261,7 +3261,7 @@ begin
   TextLines[I] := '';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -3297,7 +3297,7 @@ begin
   TextLines[I] := '';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -3337,7 +3337,7 @@ begin
   TextLines[I] := 'money orders.';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -3377,7 +3377,7 @@ begin
   TextLines[I] := 'order, or C.O.D.';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -3417,7 +3417,7 @@ begin
   TextLines[I] := 'Make cheques payable to PSA.';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -3469,7 +3469,7 @@ begin
   TextLines[I] := '        Press Any Key ^';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -3521,7 +3521,7 @@ begin
   TextLines[I] := '        Press any key ^';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  W684A := 999;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
   NoOp;
@@ -3557,14 +3557,14 @@ begin
   TextLines[I] := 'Press ESCAPE!          ';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  B6820[1] := 1;
-  B6820[2] := $1C;
-  B6820[3] := $39;
-  W684A := 999;
+  KeyFilter[1] := 1;
+  KeyFilter[2] := $1C;
+  KeyFilter[3] := $39;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(False));
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   NoOp;
 end;
 { src: SAM1RE 1802:D7A4 (../SAM physics.md: the perfect-health bonus window; the caller adds the 25000) }
@@ -3590,14 +3590,14 @@ begin
   TextLines[I] := 'Press ESCAPE!          ';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  B6820[1] := 1;
-  B6820[2] := $1C;
-  B6820[3] := $39;
-  W684A := 999;
+  KeyFilter[1] := 1;
+  KeyFilter[2] := $1C;
+  KeyFilter[3] := $39;
+  ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(False));
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   NoOp;
 end;
 { src: SAM1RE 1802:DB46 (../SAM menus.md: the text-mode order screen of episodes 2 and 3; 20 columns of

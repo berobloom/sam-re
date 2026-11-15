@@ -145,9 +145,9 @@ begin
   TextLines[I] := 'Press PgUp-PgDn        Esc-Exit';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  B6820[1] := 1;
-  W683A := Ord(PageWindow(False));
+  KeyFilter[1] := 1;
+  WinKey := Ord(PageWindow(False));
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;
 {$F-}

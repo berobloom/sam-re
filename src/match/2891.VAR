@@ -51,20 +51,23 @@ var
   W3832, W3834, W3836: Integer; { @3832 }
   TextLines: array[1..299] of String[40]; { @3838 }
   P681C: Pointer; { @681C; TextWindow's save-under buffer (30000 bytes) }
-  B6820: array[1..20] of Byte; { @6820 }
-  W683A: Integer; { @683A }
-  B683C: Byte; { @683C }
-  W683E: Integer; { @683E; counts the player's landings (0529:66B3), GUESS }
+  KeyFilter: array[1..20] of Byte; { @6820; keys TextWindow accepts (SAM1RE text-windows.md) }
+  WinKey: Integer; { @683A; scan code TextWindow returns (SAM1RE text-windows.md) }
+  MenuReq: Byte; { @683C; menu/pause request (SAM1RE input.md) }
+  Landings: Integer; { @683E; counts the player's landings (0529:66B3), GUESS }
   BackTile: Integer; { @6840; the number in a level's header record (0D9C:A1AE) }
   Level: Integer; { @6842 }
-  W6844, W6846, W6848: Integer; { @6844 }
-  W684A: Integer; { @684A }
+  WalkHeld, WalkSpeed, PageStride: Integer; { @6844;
+    WalkHeld: frames a walk key is held (SAM1RE physics.md);
+    WalkSpeed: no reader (SAM1RE physics.md);
+    PageStride: := $50 at level entry (SAM1RE level-load.md) }
+  ScanCode: Integer; { @684A; key ISR scan code, break = make + $80 (SAM1RE input.md) }
   SlotIdx, RowIdx, W6850: Integer; { @684C; loop variables of the text windows }
-  W6852: Integer; { @6852 }
+  Ticks: Integer; { @6852; timer ISR ticks, frame gate > 7 (SAM1RE input.md) }
   SlotCount: Integer; { @6854 }
   W6856: Integer; { @6856 }
   StatusCamX: Integer; { @6858 }
-  W685A: Integer; { @685A }
+  SiteCounter: Integer; { @685A; world-map site counter (SAM1RE level-load.md) }
   B685C: Byte; { @685C }
   CamX: Integer; { @685E }
   CamY: Integer; { @6860 }
@@ -79,26 +82,29 @@ var
   W69C4: Integer; { @69C4 }
   W69C6: Integer; { @69C6 }
   Gun: Integer; { @69C8 }
-  W69CA: Integer; { @69CA }
-  W69CC: Integer; { @69CC }
+  SpeedBonus: Integer; { @69CA; walk speed bonus, tile N (SAM1RE physics.md) }
+  SpeedTimer: Integer; { @69CC; speed power-up, $D8, -1 per 20 ticks (SAM1RE physics.md) }
   W69CE: Integer; { @69CE }
-  W69D0: Integer; { @69D0 }
-  B69D2: Byte; { @69D2 }
-  B69D3: Byte; { @69D3 }
-  W69D4: Integer; { @69D4 }
-  B69D6: Byte; { @69D6 }
+  ConfuseTimer: Integer; { @69D0; confusion, $D8, -2 (SAM1RE physics.md) }
+  UnconfuseMsg: Byte; { @69D2; 1: print YOU FEEL LESS CONFUSED (SAM1RE physics.md) }
+  Confused: Byte; { @69D3; walk keys mirrored (SAM1RE input.md) }
+  SlowTimer: Integer; { @69D4; slow-walk power-up, $D8, -2 (SAM1RE physics.md) }
+  SlowWalk: Byte; { @69D6; tile H (SAM1RE physics.md) }
   W69D8: Integer; { @69D8 }
-  B69DA: Byte; { @69DA }
+  KeysOff: Byte; { @69DA; <> 0: game keys skipped (SAM1RE input.md) }
   W69DC: Integer; { @69DC }
   MapSite: Integer; { @69DE }
   SiteDone: array[1..20] of Byte; { @69E0 }
   ExitArmed, B69F5, B69F6, B69F7, B69F8, B69F9, B69FA, B69FB, B69FC, B69FD, B69FE, B69FF: Byte; { @69F4 }
   B6A00, B6A01, B6A02, B6A03, B6A04, B6A05, B6A06: Byte; { @6A00 }
-  W6A08, W6A0A, W6A0C: Integer; { @6A08 }
+  WarpTimer, WarpX, WarpY: Integer; { @6A08;
+    WarpTimer: warp countdown, := $13 (SAM1RE level-load.md);
+    WarpX: warp destination (SAM1RE level-load.md);
+    WarpY: warp destination (SAM1RE level-load.md) }
   B6A0E, B6A0F, B6A10, B6A11, B6A12, B6A13, B6A14, VGunOff, B6A16, B6A17, B6A18, B6A19, B6A1A, B6A1B: Byte; { @6A0E }
   ArcLen: Byte; { @6A1C }
   Arc: array[1..35] of Integer; { @6A1E; indexed by ArcLen (main 0000:1B35) }
-  B6A64: Byte; { @6A64 }
+  ExitLock: Byte; { @6A64; exit/cutscene lock (SAM1RE physics.md) }
   RespawnDelay: Byte; { @6A65 }
   Lives: Byte; { @6A66 }
   B6A67: Byte; { @6A67 }
@@ -108,7 +114,10 @@ var
   HiScore: array[1..10] of LongInt; { @6D04 }
   Config: TConfig absolute HiName; { the high scores, sound switch and keys as SAM1.CFG holds them, GUESS }
   State: TState; { @6D3E }
-  W6D86, W6D88, W6D8A: Integer; { @6D86 }
+  SaveSlot, MarkerX, MarkerY: Integer; { @6D86;
+    SaveSlot: save slot = scan - 1 (SAM1RE menus.md);
+    MarkerX: player x at a site marker (SAM1RE level-load.md);
+    MarkerY: player y at a site marker (SAM1RE level-load.md) }
   B6D8C: Byte; { @6D8C }
   JoyCenterX, JoyCenterY: Integer; { @6D8E; signed compares in main 0000:08A2 }
   JoyX, JoyY: Integer; { @6D92 }
@@ -122,8 +131,8 @@ var
   B6EF2, B6EF3: Byte; { @6EF2 }
   NameUp, NameDown, NameFire, NameRight, NameJump, NameLeft: String[80]; { @6EF4; key names (redefine menu) }
   KeyUp, KeyDown, KeyLeft, KeyRight, KeyFire, KeyJump: Integer; { @70E0; SAM1RE menus.md: 70E8 fire }
-  W70EC: Integer; { @70EC }
-  W70EE: Integer; { @70EE }
+  AltVideo: Integer; { @70EC; Alternate video setting Y/N (SAM1RE menus.md) }
+  UseJoystick: Integer; { @70EE; 1 when the joystick was chosen (SAM1RE input.md) }
   OldExit: Pointer; { @70F0; main 0000:0E67 hooks ExitProc, int $1C and int 9 }
   OldInt1C: Pointer; { @70F4 }
   OldInt9: Pointer; { @70F8 }

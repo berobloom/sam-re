@@ -13,7 +13,7 @@ begin
   if (Map[(Slots[1].X + 3) shr 4 + 1, Slots[1].Y shr 4 + 2].Solid <> 0)
     or (Map[(Slots[1].X + 12) shr 4 + 1, Slots[1].Y shr 4 + 2].Solid <> 0) then
   begin
-    Inc(W683E);
+    Inc(Landings);
     Slots[1].Y := Slots[1].Y and $FFF0;
     B6EE6 := 0;
   end;
@@ -22,14 +22,14 @@ begin
       or (Map[(Slots[1].X + 12) shr 4 + 1, (Slots[1].Y + 16) shr 4 + 1].FlagB <> 0) then
       if Slots[1].Y < 5 then
       begin
-        Inc(W683E);
+        Inc(Landings);
         Slots[1].Y := Slots[1].Y and $FFF0;
         B6EE6 := 0;
       end
       else if (Map[(Slots[1].X + 3) shr 4 + 1, (Slots[1].Y + 7) shr 4 + 1].FlagB = 0)
         and (Map[(Slots[1].X + 12) shr 4 + 1, (Slots[1].Y + 7) shr 4 + 1].FlagB = 0) then
       begin
-        Inc(W683E);
+        Inc(Landings);
         Slots[1].Y := Slots[1].Y and $FFF0;
         B6EE6 := 0;
       end;

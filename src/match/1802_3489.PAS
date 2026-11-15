@@ -23,25 +23,25 @@ begin
   FadeIn($14);
   Dir := 1;
   Y := 0;
-  W684A := 0;
+  ScanCode := 0;
   Key := ' ';
-  W6852 := 0;
+  Ticks := 0;
   repeat
-    if W684A > 0 then
+    if ScanCode > 0 then
     begin
       Key := MainMenu;
-      W684A := 0;
+      ScanCode := 0;
     end
     else
-      W684A := 0;
-  until (W6852 > $90) or (Key <> ' ');
+      ScanCode := 0;
+  until (Ticks > $90) or (Key <> ' ');
   if (Key <> 'B') and (Key <> 'R') and (Key <> 'Q') then
   repeat
     if (Key <> 'B') and (Key <> 'R') and (Key <> 'Q') then
       Key := ' ';
     if Dir = 1 then
     begin
-      if W70EC = 0 then
+      if AltVideo = 0 then
         SetViewStart(0, Y)
       else
         SetViewStartAlt(0, Y);
@@ -49,7 +49,7 @@ begin
     end
     else
     begin
-      if W70EC = 0 then
+      if AltVideo = 0 then
         SetViewStart(0, 200 - Y)
       else
         SetViewStartAlt(0, 200 - Y);
@@ -60,15 +60,15 @@ begin
     begin
       Y := 0;
       Dir := -Dir;
-      W6852 := 0;
+      Ticks := 0;
       repeat
-        if W684A > 0 then
+        if ScanCode > 0 then
         begin
           Key := MainMenu;
-          W684A := 0;
-          W6852 := 0;
+          ScanCode := 0;
+          Ticks := 0;
         end;
-      until (W6852 > $1B0) or (Key <> ' ');
+      until (Ticks > $1B0) or (Key <> ' ');
     end;
     B6EE9 := 0;
     B6EEA := 0;
@@ -76,11 +76,11 @@ begin
     B6EF1 := 0;
     B6EEB := 0;
     MemW[0:$41C] := MemW[0:$41A];
-    if W684A <> 0 then
+    if ScanCode <> 0 then
     begin
       Key := MainMenu;
-      W6852 := 0;
-      W684A := 0;
+      Ticks := 0;
+      ScanCode := 0;
     end;
   until (Key = 'B') or (Key = 'R') or (Key = 'Q');
   PlaySound(12);

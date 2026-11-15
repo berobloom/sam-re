@@ -27,7 +27,7 @@ begin
     DrawCell(GfxSmall[1]^.Cell[11], 13, 1);
     DrawCell(GfxSmall[1]^.Cell[Ammo div 10 + 1], 14, 1);
     DrawCell(GfxSmall[1]^.Cell[Ammo mod 10 + 1], 15, 1);
-    if W69CA > 0 then
+    if SpeedBonus > 0 then
       DrawCell(GfxSmall[1]^.Cell[14], 20, 1);
     if B6A1A <> 0 then
       DrawCell(GfxSmall[1]^.Cell[21], 25, 1);
@@ -54,7 +54,7 @@ begin
     DrawCellX(GfxSmall[1]^.Cell[11], Sh + $68, 1);
     DrawCellX(GfxSmall[1]^.Cell[Ammo div 10 + 1], Sh + $70, 1);
     DrawCellX(GfxSmall[1]^.Cell[Ammo mod 10 + 1], Sh + $78, 1);
-    if W69CA > 0 then
+    if SpeedBonus > 0 then
       DrawCellX(GfxSmall[1]^.Cell[14], Sh + $A0, 1);
     if B6A1A <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[21], Sh + $C8, 1);

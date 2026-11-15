@@ -16,9 +16,9 @@ begin
   TextLines[15] := 'Press any key ^';
   TextLines[16] := '';
   TextLines[17] := 'END OF WINDOW';
-  B6820[1] := 1;
-  W683A := Ord(TextWindow(True));
+  KeyFilter[1] := 1;
+  WinKey := Ord(TextWindow(True));
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
 end;
 {$F-}

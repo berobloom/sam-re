@@ -40,18 +40,18 @@ var
   I: Integer;
   Fired: Boolean;
 begin
-  W684A := Port[$60];
-  if B69D3 = 1 then
-    if W684A = KeyLeft then
-      W684A := KeyRight
-    else if KeyLeft + $80 = W684A then
-      W684A := KeyRight + $80
-    else if W684A = KeyRight then
-      W684A := KeyLeft
-    else if KeyRight + $80 = W684A then
-      W684A := KeyLeft + $80;
-  if B69DA = 0 then
-    if W684A = KeyLeft then
+  ScanCode := Port[$60];
+  if Confused = 1 then
+    if ScanCode = KeyLeft then
+      ScanCode := KeyRight
+    else if KeyLeft + $80 = ScanCode then
+      ScanCode := KeyRight + $80
+    else if ScanCode = KeyRight then
+      ScanCode := KeyLeft
+    else if KeyRight + $80 = ScanCode then
+      ScanCode := KeyLeft + $80;
+  if KeysOff = 0 then
+    if ScanCode = KeyLeft then
     begin
       B6EF0 := 1;
       B6EF1 := 0;
@@ -60,7 +60,7 @@ begin
       if B6EE7 <> 0 then
         Slots[1].Sprite := $E;
     end
-    else if KeyLeft + $80 = W684A then
+    else if KeyLeft + $80 = ScanCode then
     begin
       B6EF0 := 0;
       if B6EE7 = 0 then
@@ -75,7 +75,7 @@ begin
       else
         Slots[1].Sprite := $E;
     end
-    else if W684A = KeyRight then
+    else if ScanCode = KeyRight then
     begin
       B6EF1 := 1;
       B6EF0 := 0;
@@ -84,7 +84,7 @@ begin
       if B6EE7 <> 0 then
         Slots[1].Sprite := $D;
     end
-    else if KeyRight + $80 = W684A then
+    else if KeyRight + $80 = ScanCode then
     begin
       B6EF1 := 0;
       if B6EE7 = 0 then
@@ -99,7 +99,7 @@ begin
       else
         Slots[1].Sprite := $D;
     end
-    else if W684A = KeyFire then
+    else if ScanCode = KeyFire then
     begin
       if Ammo = 0 then
         PlaySound($14)
@@ -146,18 +146,18 @@ begin
         until (I = Gun) or Fired;
       end;
     end
-    else if KeyFire + $80 = W684A then
+    else if KeyFire + $80 = ScanCode then
     begin
       if Slots[1].Sprite = $B then
         Slots[1].Sprite := 9
       else if Slots[1].Sprite = $C then
         Slots[1].Sprite := $A;
     end
-    else if W684A = KeyJump then
+    else if ScanCode = KeyJump then
       B6EF3 := 1
-    else if KeyJump + $80 = W684A then
+    else if KeyJump + $80 = ScanCode then
       B6EF3 := 0
-    else if W684A = KeyUp then
+    else if ScanCode = KeyUp then
     begin
       if Level = 1 then
       begin
@@ -169,7 +169,7 @@ begin
           Slots[1].Sprite := 5;
       end;
     end
-    else if KeyUp + $80 = W684A then
+    else if KeyUp + $80 = ScanCode then
     begin
       if Level = 1 then
       begin
@@ -180,7 +180,7 @@ begin
           Slots[1].Sprite := $A;
       end;
     end
-    else if W684A = KeyDown then
+    else if ScanCode = KeyDown then
     begin
       if Level = 1 then
       begin
@@ -192,7 +192,7 @@ begin
           Slots[1].Sprite := 5;
       end;
     end
-    else if KeyDown + $80 = W684A then
+    else if KeyDown + $80 = ScanCode then
     begin
       if Level = 1 then
       begin
@@ -203,34 +203,34 @@ begin
           Slots[1].Sprite := $A;
       end;
     end
-    else if W684A = 1 then
+    else if ScanCode = 1 then
     begin
       B6EEB := 1;
-      B683C := 1;
+      MenuReq := 1;
     end
-    else if W684A = $10 then
-      B683C := 1
-    else if W684A = $3B then
-      B683C := 1
-    else if W684A = $3C then
-      B683C := 1
-    else if W684A = $3D then
-      B683C := 1
-    else if W684A = $3E then
-      B683C := 1
-    else if W684A = $3F then
-      B683C := 1
-    else if W684A = $40 then
-      B683C := 1
-    else if W684A = $41 then
-      B683C := 1
-    else if W684A = $42 then
-      B683C := 1
-    else if W684A = $43 then
-      B683C := 1
-    else if W684A = $44 then
-      B683C := 1
-    else if W684A = $16 then
+    else if ScanCode = $10 then
+      MenuReq := 1
+    else if ScanCode = $3B then
+      MenuReq := 1
+    else if ScanCode = $3C then
+      MenuReq := 1
+    else if ScanCode = $3D then
+      MenuReq := 1
+    else if ScanCode = $3E then
+      MenuReq := 1
+    else if ScanCode = $3F then
+      MenuReq := 1
+    else if ScanCode = $40 then
+      MenuReq := 1
+    else if ScanCode = $41 then
+      MenuReq := 1
+    else if ScanCode = $42 then
+      MenuReq := 1
+    else if ScanCode = $43 then
+      MenuReq := 1
+    else if ScanCode = $44 then
+      MenuReq := 1
+    else if ScanCode = $16 then
     begin
       B69FF := 1;
       if (B6A00 <> 0) and (B6A01 <> 0) and (B6A02 = 0) then
@@ -240,9 +240,9 @@ begin
         StatusCamX := -1;
       end;
     end
-    else if W684A = $96 then
+    else if ScanCode = $96 then
       B69FF := 0
-    else if W684A = $2F then
+    else if ScanCode = $2F then
     begin
       B6A00 := 1;
       if (B69FF <> 0) and (B6A01 <> 0) and (B6A02 = 0) then
@@ -252,9 +252,9 @@ begin
         StatusCamX := -1;
       end;
     end
-    else if W684A = $AF then
+    else if ScanCode = $AF then
       B6A00 := 0
-    else if W684A = $25 then
+    else if ScanCode = $25 then
     begin
       B6A01 := 1;
       if (B69FF <> 0) and (B6A00 <> 0) and (B6A02 = 0) then
@@ -264,9 +264,9 @@ begin
         StatusCamX := -1;
       end;
     end
-    else if W684A = $A5 then
+    else if ScanCode = $A5 then
       B6A01 := 0
-    else if W684A = $2C then
+    else if ScanCode = $2C then
     begin
       B6A03 := 1;
       if (B6A04 <> 0) and (B6A05 <> 0) then
@@ -276,9 +276,9 @@ begin
         StatusCamX := -1;
       end;
     end
-    else if W684A = $AC then
+    else if ScanCode = $AC then
       B6A03 := 0
-    else if W684A = $22 then
+    else if ScanCode = $22 then
     begin
       B6A04 := 1;
       if (B6A03 <> 0) and (B6A05 <> 0) then
@@ -288,9 +288,9 @@ begin
         StatusCamX := -1;
       end;
     end
-    else if W684A = $A2 then
+    else if ScanCode = $A2 then
       B6A04 := 0
-    else if W684A = $17 then
+    else if ScanCode = $17 then
     begin
       B6A05 := 1;
       if (B6A04 <> 0) and (B6A03 <> 0) then
@@ -300,9 +300,9 @@ begin
         StatusCamX := -1;
       end;
     end
-    else if W684A = $97 then
+    else if ScanCode = $97 then
       B6A05 := 0
-    else if W684A = $19 then
+    else if ScanCode = $19 then
     begin
       B69FA := 1;
       if (B69FB <> 0) and (B69FC <> 0) then
@@ -317,12 +317,12 @@ begin
       if (B69F5 <> 0) and (B69F6 <> 0) and (B69F7 <> 0) then
         B69F9 := 1;
     end
-    else if W684A = $99 then
+    else if ScanCode = $99 then
     begin
       B69FA := 0;
       B69F8 := 0;
     end
-    else if W684A = $24 then
+    else if ScanCode = $24 then
     begin
       B69FB := 1;
       if (B69FA <> 0) and (B69FC <> 0) then
@@ -334,9 +334,9 @@ begin
         B69FD := 1;
       end;
     end
-    else if W684A = $A4 then
+    else if ScanCode = $A4 then
       B69FB := 0
-    else if W684A = $2D then
+    else if ScanCode = $2D then
     begin
       B69FC := 1;
       if (B69FA <> 0) and (B69FB <> 0) then
@@ -348,38 +348,38 @@ begin
         B69FD := 1;
       end;
     end
-    else if W684A = $30 then
+    else if ScanCode = $30 then
       B69F8 := 1
-    else if W684A = $B0 then
+    else if ScanCode = $B0 then
       B69F8 := 0
-    else if W684A = $AD then
+    else if ScanCode = $AD then
       B69FC := 0
-    else if W684A = $18 then
+    else if ScanCode = $18 then
     begin
       B69F5 := 1;
       if (B69F8 <> 0) and (B69F6 <> 0) and (B69F7 <> 0) then
         B69F9 := 1;
     end
-    else if W684A = $98 then
+    else if ScanCode = $98 then
       B69F5 := 0
-    else if W684A = $31 then
+    else if ScanCode = $31 then
     begin
       B69F6 := 1;
       if (B69F5 <> 0) and (B69F8 <> 0) and (B69F7 <> 0) then
         B69F9 := 1;
     end
-    else if W684A = $B1 then
+    else if ScanCode = $B1 then
       B69F6 := 0
-    else if W684A = $20 then
+    else if ScanCode = $20 then
     begin
       B69F7 := 1;
       if (B69F5 <> 0) and (B69F6 <> 0) and (B69F8 <> 0) then
         B69F9 := 1;
     end
-    else if W684A = $A0 then
+    else if ScanCode = $A0 then
       B69F7 := 0;
   if (B6EE9 = 0) and (B6EEA = 0) and (B6EF1 = 0) and (B6EF0 = 0) then
-    W6844 := 0;
+    WalkHeld := 0;
   Inline($FF/$36/>OldInt9 + 2/$FF/$36/>OldInt9/$5B/$58/$87/$5E/$0E/$87/$46/$10/$89/$EC/$5D/$07/$1F/$5F/$5E/
     $5A/$59/$CB);
   Inline($E4/$61/$8A/$E0/$0C/$80/$E6/$61/$86/$E0/$E6/$61/$80/$20/$E6/$20);
@@ -517,36 +517,36 @@ end;
 procedure TimerISR;
 begin
   Inline($FA);
-  Inc(W6852);
+  Inc(Ticks);
   Inc(Tick);
   if Tick = 20 then
   begin
     Tick := 0;
-    if W69CC > 0 then
+    if SpeedTimer > 0 then
     begin
-      Dec(W69CC);
-      if W69CC = 0 then
+      Dec(SpeedTimer);
+      if SpeedTimer = 0 then
       begin
-        W69CA := 0;
+        SpeedBonus := 0;
         StatusCamX := -1;
       end;
     end;
-    if W69D4 > 0 then
+    if SlowTimer > 0 then
     begin
-      Dec(W69D4, 2);
-      if W69D4 = 0 then
+      Dec(SlowTimer, 2);
+      if SlowTimer = 0 then
       begin
-        B69D6 := 0;
+        SlowWalk := 0;
         StatusCamX := -1;
       end;
     end;
-    if W69D0 > 0 then
+    if ConfuseTimer > 0 then
     begin
-      Dec(W69D0, 2);
-      if W69D0 = 0 then
+      Dec(ConfuseTimer, 2);
+      if ConfuseTimer = 0 then
       begin
-        B69D2 := 1;
-        B69D3 := 0;
+        UnconfuseMsg := 1;
+        Confused := 0;
         StatusCamX := -1;
       end;
     end;
@@ -639,8 +639,8 @@ begin
   Config.KRight := KeyRight;
   Config.KJump := KeyJump;
   Config.KFire := KeyFire;
-  Config.K70EC := W70EC;
-  Config.K70EE := W70EE;
+  Config.K70EC := AltVideo;
+  Config.K70EE := UseJoystick;
   Assign(F, 'SAM1.CFG');
   Rewrite(F);
   Write(F, Config);
@@ -674,9 +674,9 @@ begin
     KeyRight := Config.KRight;
     KeyJump := Config.KJump;
     KeyFire := Config.KFire;
-    W70EC := Config.K70EC;
-    W70EE := Config.K70EE;
-    if W70EE = 1 then
+    AltVideo := Config.K70EC;
+    UseJoystick := Config.K70EE;
+    if UseJoystick = 1 then
       JoyOn := JoyPresent
     else
       JoyOn := False;
@@ -690,8 +690,8 @@ begin
     KeyRight := $4D;
     KeyJump := $1D;
     KeyFire := $38;
-    W70EC := 0;
-    W70EE := 0;
+    AltVideo := 0;
+    UseJoystick := 0;
     JoyOn := False;
   end;
 end;
@@ -786,25 +786,25 @@ begin
         NewGame;
       if (B6EEC = 0) and (B6EED = 0) then
       begin
-        W6848 := SetStride($50);
+        PageStride := SetStride($50);
         SetBorder(4);
         Blackout;
-        if W70EC = 0 then
+        if AltVideo = 0 then
           SetViewStart(0, $10)
         else
           SetViewStartAlt(0, $10);
         LevelReset;
-        if W6D86 <> 0 then
+        if SaveSlot <> 0 then
         begin
-          case W6D86 of
+          case SaveSlot of
             2..$A:
-              if LoadGame(W6D86 - 1) then
+              if LoadGame(SaveSlot - 1) then
                 begin end;
             $B:
               if LoadGame(0) then
                 begin end;
           end;
-          W6D86 := 0;
+          SaveSlot := 0;
         end;
         LoadLevel(1);
         if Adapter = 4 then
@@ -815,9 +815,9 @@ begin
         begin
           if StatusCamX <> CamX then
             DrawStatus;
-          if W6852 > 7 then
+          if Ticks > 7 then
           begin
-            W6852 := 0;
+            Ticks := 0;
             if JoyOn then
               ReadJoystick;
             if (Slots[1].Sprite = 9) and (B6EF1 <> 0) then
@@ -899,7 +899,7 @@ begin
               DrawBack(Shots[SlotIdx].PrevX, Shots[SlotIdx].PrevY + $10);
               DrawBack(Shots[SlotIdx].PrevX + $10, Shots[SlotIdx].PrevY + $10);
             end;
-            if (B6A1B = 0) and (B6A64 = 0) then
+            if (B6A1B = 0) and (ExitLock = 0) then
             begin
               MovePlayer;
               if Level > 1 then
@@ -933,7 +933,7 @@ begin
                 end;
               end
               else
-                if B6A64 <> 0 then
+                if ExitLock <> 0 then
                 begin
                   Slots[1].PrevX := Slots[1].X;
                   Slots[1].PrevY := Slots[1].Y;
@@ -1014,21 +1014,21 @@ begin
                 end;
             if B6A06 <> 0 then
             begin
-              Dec(W6A08);
-              if W6A08 = 0 then
+              Dec(WarpTimer);
+              if WarpTimer = 0 then
                 B69FE := 1
               else
-                if W6A08 = -19 then
+                if WarpTimer = -19 then
                 begin
-                  B69DA := 0;
+                  KeysOff := 0;
                   B6A06 := 0;
                 end;
             end;
             if B69FE <> 0 then
             begin
               B69FE := 0;
-              Slots[1].X := W6A0A;
-              Slots[1].Y := W6A0C;
+              Slots[1].X := WarpX;
+              Slots[1].Y := WarpY;
               CamX := Slots[1].X - $A0;
               if CamX < 0 then
                 CamX := 0;
@@ -1039,7 +1039,7 @@ begin
                 CamY := 0;
               if CamY > $B8 then
                 CamY := $B8;
-              if W70EC = 0 then
+              if AltVideo = 0 then
                 SetViewStart(CamX, CamY + $10)
               else
                 SetViewStartAlt(CamX, CamY + $10);
@@ -1079,10 +1079,10 @@ begin
               else
                 DrawTileB(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
             if B6A06 <> 0 then
-              if W6A08 < 0 then
-                DrawTileB(Gfx[10]^.Tile[W6A08 div 5 + $28], Slots[1].X, Slots[1].Y + PageY)
+              if WarpTimer < 0 then
+                DrawTileB(Gfx[10]^.Tile[WarpTimer div 5 + $28], Slots[1].X, Slots[1].Y + PageY)
               else
-                DrawTileB(Gfx[10]^.Tile[$28 - W6A08 div 5], Slots[1].X, Slots[1].Y + PageY);
+                DrawTileB(Gfx[10]^.Tile[$28 - WarpTimer div 5], Slots[1].X, Slots[1].Y + PageY);
             if (B6EF0 <> 0) and (Slots[1].Sprite = $C) then
               Slots[1].Sprite := 5
             else
@@ -1521,15 +1521,15 @@ begin
             if B6A1B <> 0 then
               DrawTileB(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
             ShowPage;
-            if B69D2 <> 0 then
+            if UnconfuseMsg <> 0 then
             begin
-              B69D2 := 0;
+              UnconfuseMsg := 0;
               ShowMessage('YOU FEEL LESS CONFUSED');
             end;
-            if B683C <> 0 then
+            if MenuReq <> 0 then
             begin
               EscKey := EscapeMenu;
-              B683C := 0;
+              MenuReq := 0;
             end;
             if B6EEE <> 0 then
             begin

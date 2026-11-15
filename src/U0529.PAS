@@ -64,19 +64,19 @@ end;
 {$F+}
 procedure Ramp;
 begin
-  Inc(W6844);
-  if B69D6 = 0 then
-    case W6844 of
-      1..2: W6846 := 1;
-      3: W6846 := 2;
-      4..6: W6846 := 4;
-      7..1000: W6846 := W69CA + 4;
+  Inc(WalkHeld);
+  if SlowWalk = 0 then
+    case WalkHeld of
+      1..2: WalkSpeed := 1;
+      3: WalkSpeed := 2;
+      4..6: WalkSpeed := 4;
+      7..1000: WalkSpeed := SpeedBonus + 4;
     end
   else
-    case W6844 of
-      1..4: W6846 := 1;
-      5..6: W6846 := 2;
-      7..1000: W6846 := (W69CA + 4) shr 1;
+    case WalkHeld of
+      1..4: WalkSpeed := 1;
+      5..6: WalkSpeed := 2;
+      7..1000: WalkSpeed := (SpeedBonus + 4) shr 1;
     end;
 end;
 {$F-}
@@ -2041,7 +2041,7 @@ begin
   begin
     CanMove := False;
     if Level > 1 then
-      W6844 := 0;
+      WalkHeld := 0;
   end
   else
     CanMove := True;
@@ -2062,7 +2062,7 @@ begin
   if (Map[(Slots[1].X + 3) shr 4 + 1, Slots[1].Y shr 4 + 2].Solid <> 0)
     or (Map[(Slots[1].X + 12) shr 4 + 1, Slots[1].Y shr 4 + 2].Solid <> 0) then
   begin
-    Inc(W683E);
+    Inc(Landings);
     Slots[1].Y := Slots[1].Y and $FFF0;
     B6EE6 := 0;
   end;
@@ -2071,14 +2071,14 @@ begin
       or (Map[(Slots[1].X + 12) shr 4 + 1, (Slots[1].Y + 16) shr 4 + 1].FlagB <> 0) then
       if Slots[1].Y < 5 then
       begin
-        Inc(W683E);
+        Inc(Landings);
         Slots[1].Y := Slots[1].Y and $FFF0;
         B6EE6 := 0;
       end
       else if (Map[(Slots[1].X + 3) shr 4 + 1, (Slots[1].Y + 7) shr 4 + 1].FlagB = 0)
         and (Map[(Slots[1].X + 12) shr 4 + 1, (Slots[1].Y + 7) shr 4 + 1].FlagB = 0) then
       begin
-        Inc(W683E);
+        Inc(Landings);
         Slots[1].Y := Slots[1].Y and $FFF0;
         B6EE6 := 0;
       end;
@@ -2123,29 +2123,29 @@ begin
   if B6EF1 <> 0 then
   begin
     Ramp;
-    if CanMove(W6846, 0) then
+    if CanMove(WalkSpeed, 0) then
     begin
       if (CamX < $140) and (CamX + $AA < Slots[1].X) then
       begin
-        Inc(CamX, W6846);
+        Inc(CamX, WalkSpeed);
         if CamX > $140 then
           CamX := $140;
       end;
-      Inc(Slots[1].X, W6846);
+      Inc(Slots[1].X, WalkSpeed);
     end;
   end;
   if B6EF0 <> 0 then
   begin
     Ramp;
-    if CanMove(-W6846, 0) then
+    if CanMove(-WalkSpeed, 0) then
     begin
       if (CamX > 0) and (CamX + $96 > Slots[1].X) then
       begin
-        Dec(CamX, W6846);
+        Dec(CamX, WalkSpeed);
         if CamX < 0 then
           CamX := 0;
       end;
-      Dec(Slots[1].X, W6846);
+      Dec(Slots[1].X, WalkSpeed);
     end;
   end;
   if B6EEA <> 0 then
@@ -2179,7 +2179,7 @@ procedure Jump;
 begin
   if (B6EE7 = 0) and (B6EE8 = 0) then
     Fall;
-  if (B69DA = 0) and (B6EE7 = 0) and (B6EE6 = 0) and ((B6EF3 <> 0) or (JumpButton and JoyOn))
+  if (KeysOff = 0) and (B6EE7 = 0) and (B6EE6 = 0) and ((B6EF3 <> 0) or (JumpButton and JoyOn))
     and (Map[(Slots[1].X + 3) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0)
     and (Map[(Slots[1].X + 12) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0) then
   begin
@@ -2450,10 +2450,10 @@ begin
       if not Playing then
         PlaySound($1C);
       if B6A19 = 0 then
-        B69DA := 1;
+        KeysOff := 1;
       W69DC := $33;
-      W6D88 := Slots[1].X;
-      W6D8A := Slots[1].Y;
+      MarkerX := Slots[1].X;
+      MarkerY := Slots[1].Y;
       case Map[X shr 4 + 1, Y shr 4 + 1].Front of
         $113..$122:
         begin
@@ -2547,17 +2547,17 @@ begin
           TextLines[3] := '';
           TextLines[4] := 'Press ESCAPE  ';
           TextLines[5] := 'END OF WINDOW';
-          B6820[1] := 1;
-          W683A := Ord(TextWindow(False));
+          KeyFilter[1] := 1;
+          WinKey := Ord(TextWindow(False));
           B6EEB := 0;
-          B683C := 0;
+          MenuReq := 0;
         end;
     $27E:
       if ExitArmed <> 0 then
       begin
         if B6D8C <> 0 then
           B6EEC := 1;
-        B6A64 := 1;
+        ExitLock := 1;
         SiteDone[Level] := 1;
         if Lives = 3 then
         begin
@@ -2605,10 +2605,10 @@ begin
           TextLines[6] := '                       ';
           TextLines[7] := 'Press ESCAPE!          ';
           TextLines[8] := 'END OF WINDOW';
-          B6820[1] := 1;
-          W683A := Ord(TextWindow(False));
+          KeyFilter[1] := 1;
+          WinKey := Ord(TextWindow(False));
           B6EEB := 0;
-          B683C := 0;
+          MenuReq := 0;
           if (X shr 4 = 0) or (Map[X shr 4 + 1 - 1, Y shr 4 + 1].Solid = 1) then
           begin
             Slots[1].PrevX := Slots[1].X;
@@ -2657,7 +2657,7 @@ begin
       Slots[I].Free := 0;
       Slots[I].Remove := 0;
       if B6A19 = 0 then
-        B69DA := 1;
+        KeysOff := 1;
       if (B6A1B = 0) and (B6A19 = 0) then
       begin
         B6A1B := 1;
@@ -2708,10 +2708,10 @@ begin
           TextLines[3] := '';
           TextLines[4] := 'Press ESCAPE';
           TextLines[5] := 'END OF WINDOW';
-          B6820[1] := 1;
-          W683A := Ord(TextWindow(False));
+          KeyFilter[1] := 1;
+          WinKey := Ord(TextWindow(False));
           B6EEB := 0;
-          B683C := 0;
+          MenuReq := 0;
         end;
     $25D:
     begin
@@ -2733,18 +2733,18 @@ begin
           for PX := 1 to $28 do
             if (Map[PX, PY].Front = $B7) and ((X shr 4 + 1 <> PX) or (Y shr 4 + 1 <> PY)) then
             begin
-              W6A0A := (PX - 1) shl 4;
-              W6A0C := (PY - 1) shl 4;
-              if Map[W6A0A shr 4, W6A0C shr 4 + 1].Solid <> 0 then
-                W6A0A := W6A0A + 3
+              WarpX := (PX - 1) shl 4;
+              WarpY := (PY - 1) shl 4;
+              if Map[WarpX shr 4, WarpY shr 4 + 1].Solid <> 0 then
+                WarpX := WarpX + 3
               else
-                W6A0A := W6A0A - 3;
+                WarpX := WarpX - 3;
               PX := $28;
               PY := $18;
             end;
         B6A06 := 1;
-        W6A08 := $13;
-        B69DA := 1;
+        WarpTimer := $13;
+        KeysOff := 1;
         if (B6EF1 = 1) or (Slots[1].Sprite = 1) then
           Slots[1].Sprite := 9
         else
@@ -2763,8 +2763,8 @@ begin
       StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
-      W69CA := 4;
-      W69CC := $D8;
+      SpeedBonus := 4;
+      SpeedTimer := $D8;
     end;
     $143..$145:
     begin
@@ -2806,18 +2806,18 @@ begin
     begin
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound($1A);
-      B69D3 := 1;
+      Confused := 1;
       B6EF0 := 0;
       B6EF1 := 0;
-      W69D0 := $D8;
+      ConfuseTimer := $D8;
       ShowMessage('YOU FEEL A BIT CONFUSED!');
     end;
     $1D4:
     begin
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound($1B);
-      B69D6 := 1;
-      W69D4 := $D8;
+      SlowWalk := 1;
+      SlowTimer := $D8;
     end;
     $269:
     begin

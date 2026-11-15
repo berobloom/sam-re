@@ -716,7 +716,7 @@ begin
         CamY := 0;
       if CamY > $B8 then
         CamY := $B8;
-      if W70EC = 0 then
+      if AltVideo = 0 then
         SetViewStart(CamX, CamY + $10)
       else
         SetViewStartAlt(CamX, CamY + $10);

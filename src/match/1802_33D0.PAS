@@ -20,9 +20,9 @@ begin
   FadeIn($14);
   PlaySound($15);
   MemW[0:$41C] := MemW[0:$41A];
-  W6852 := 0;
+  Ticks := 0;
   repeat
-  until KeyPressed or (W6852 > $2D0);
-  W6852 := 0;
+  until KeyPressed or (Ticks > $2D0);
+  Ticks := 0;
   FadeOut(0);
 end;

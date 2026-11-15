@@ -59,25 +59,25 @@
         NewGame;
       if (B6EEC = 0) and (B6EED = 0) then
       begin
-        W6848 := SetStride($50);
+        PageStride := SetStride($50);
         SetBorder(4);
         Blackout;
-        if W70EC = 0 then
+        if AltVideo = 0 then
           SetViewStart(0, $10)
         else
           SetViewStartAlt(0, $10);
         LevelReset;
-        if W6D86 <> 0 then
+        if SaveSlot <> 0 then
         begin
-          case W6D86 of
+          case SaveSlot of
             2..$A:
-              if LoadGame(W6D86 - 1) then
+              if LoadGame(SaveSlot - 1) then
                 begin end;
             $B:
               if LoadGame(0) then
                 begin end;
           end;
-          W6D86 := 0;
+          SaveSlot := 0;
         end;
         LoadLevel(1);
         if Adapter = 4 then
@@ -88,9 +88,9 @@
         begin
           if StatusCamX <> CamX then
             DrawStatus;
-          if W6852 > 7 then
+          if Ticks > 7 then
           begin
-            W6852 := 0;
+            Ticks := 0;
             if JoyOn then
               ReadJoystick;
             if (Slots[1].Sprite = 9) and (B6EF1 <> 0) then
@@ -172,7 +172,7 @@
               DrawBack(Shots[SlotIdx].PrevX, Shots[SlotIdx].PrevY + $10);
               DrawBack(Shots[SlotIdx].PrevX + $10, Shots[SlotIdx].PrevY + $10);
             end;
-            if (B6A1B = 0) and (B6A64 = 0) then
+            if (B6A1B = 0) and (ExitLock = 0) then
             begin
               MovePlayer;
               if Level > 1 then
@@ -206,7 +206,7 @@
                 end;
               end
               else
-                if B6A64 <> 0 then
+                if ExitLock <> 0 then
                 begin
                   Slots[1].PrevX := Slots[1].X;
                   Slots[1].PrevY := Slots[1].Y;
@@ -287,21 +287,21 @@
                 end;
             if B6A06 <> 0 then
             begin
-              Dec(W6A08);
-              if W6A08 = 0 then
+              Dec(WarpTimer);
+              if WarpTimer = 0 then
                 B69FE := 1
               else
-                if W6A08 = -19 then
+                if WarpTimer = -19 then
                 begin
-                  B69DA := 0;
+                  KeysOff := 0;
                   B6A06 := 0;
                 end;
             end;
             if B69FE <> 0 then
             begin
               B69FE := 0;
-              Slots[1].X := W6A0A;
-              Slots[1].Y := W6A0C;
+              Slots[1].X := WarpX;
+              Slots[1].Y := WarpY;
               CamX := Slots[1].X - $A0;
               if CamX < 0 then
                 CamX := 0;
@@ -312,7 +312,7 @@
                 CamY := 0;
               if CamY > $B8 then
                 CamY := $B8;
-              if W70EC = 0 then
+              if AltVideo = 0 then
                 SetViewStart(CamX, CamY + $10)
               else
                 SetViewStartAlt(CamX, CamY + $10);
@@ -352,10 +352,10 @@
               else
                 DrawTileB(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
             if B6A06 <> 0 then
-              if W6A08 < 0 then
-                DrawTileB(Gfx[10]^.Tile[W6A08 div 5 + $28], Slots[1].X, Slots[1].Y + PageY)
+              if WarpTimer < 0 then
+                DrawTileB(Gfx[10]^.Tile[WarpTimer div 5 + $28], Slots[1].X, Slots[1].Y + PageY)
               else
-                DrawTileB(Gfx[10]^.Tile[$28 - W6A08 div 5], Slots[1].X, Slots[1].Y + PageY);
+                DrawTileB(Gfx[10]^.Tile[$28 - WarpTimer div 5], Slots[1].X, Slots[1].Y + PageY);
             if (B6EF0 <> 0) and (Slots[1].Sprite = $C) then
               Slots[1].Sprite := 5
             else
@@ -794,15 +794,15 @@
             if B6A1B <> 0 then
               DrawTileB(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
             ShowPage;
-            if B69D2 <> 0 then
+            if UnconfuseMsg <> 0 then
             begin
-              B69D2 := 0;
+              UnconfuseMsg := 0;
               ShowMessage('YOU FEEL LESS CONFUSED');
             end;
-            if B683C <> 0 then
+            if MenuReq <> 0 then
             begin
               EscKey := EscapeMenu;
-              B683C := 0;
+              MenuReq := 0;
             end;
             if B6EEE <> 0 then
             begin

@@ -46,22 +46,22 @@ begin
   TextLines[I] := 'Make a selection: ^';
   Inc(I);
   TextLines[I] := 'END OF WINDOW';
-  B6820[1] := $31;
-  B6820[2] := $17;
-  B6820[3] := $23;
-  B6820[4] := $13;
-  B6820[5] := $1F;
-  B6820[6] := $18;
-  B6820[7] := $10;
-  B6820[8] := $01;
-  B6820[9] := $39;
-  B6820[10] := $1C;
-  B6820[11] := $21;
-  B6820[12] := $1E;
-  B6820[13] := $2E;
-  B6820[14] := $2F;
-  W683A := Ord(TextWindow(False));
-  case W683A of
+  KeyFilter[1] := $31;
+  KeyFilter[2] := $17;
+  KeyFilter[3] := $23;
+  KeyFilter[4] := $13;
+  KeyFilter[5] := $1F;
+  KeyFilter[6] := $18;
+  KeyFilter[7] := $10;
+  KeyFilter[8] := $01;
+  KeyFilter[9] := $39;
+  KeyFilter[10] := $1C;
+  KeyFilter[11] := $21;
+  KeyFilter[12] := $1E;
+  KeyFilter[13] := $2E;
+  KeyFilter[14] := $2F;
+  WinKey := Ord(TextWindow(False));
+  case WinKey of
     $31, $39, $1C:
       begin
         MainMenu := 'B';
@@ -102,10 +102,10 @@ begin
       begin
         MainMenu := 'R';
         W69C4 := 1;
-        W6D86 := RestoreMenu;
-        if W6D86 = $1C then
+        SaveSlot := RestoreMenu;
+        if SaveSlot = $1C then
         begin
-          W6D86 := 0;
+          SaveSlot := 0;
           MainMenu := ' ';
         end
         else

@@ -12,36 +12,36 @@ begin
   TextLines[4] := 'Select (0-9) : ^';
   TextLines[5] := '';
   TextLines[6] := 'END OF WINDOW';
-  B6820[1] := 2;
-  B6820[2] := 3;
-  B6820[3] := 4;
-  B6820[4] := 5;
-  B6820[5] := 6;
-  B6820[6] := 7;
-  B6820[7] := 8;
-  B6820[8] := 9;
-  B6820[9] := $0A;
-  B6820[10] := $0B;
-  B6820[11] := $1C;
-  B6820[12] := 1;
+  KeyFilter[1] := 2;
+  KeyFilter[2] := 3;
+  KeyFilter[3] := 4;
+  KeyFilter[4] := 5;
+  KeyFilter[5] := 6;
+  KeyFilter[6] := 7;
+  KeyFilter[7] := 8;
+  KeyFilter[8] := 9;
+  KeyFilter[9] := $0A;
+  KeyFilter[10] := $0B;
+  KeyFilter[11] := $1C;
+  KeyFilter[12] := 1;
   MemW[0:$41C] := MemW[0:$41A];
-  W683A := Ord(TextWindow(False));
+  WinKey := Ord(TextWindow(False));
   if IOResult = 0 then;
-  case W683A of
-    2..10: SaveGame(W683A - 1);
+  case WinKey of
+    2..10: SaveGame(WinKey - 1);
     11: SaveGame(0);
   end;
   B6EEB := 0;
-  B683C := 0;
+  MenuReq := 0;
   ClearText;
   if IOResult = 0 then
     TextLines[1] := 'Game Saved!'
   else
     TextLines[1] := 'File Error!';
   TextLines[2] := 'END OF WINDOW';
-  B6820[1] := $1C;
-  B6820[2] := 1;
+  KeyFilter[1] := $1C;
+  KeyFilter[2] := 1;
   MemW[0:$41C] := MemW[0:$41A];
-  W683A := Ord(TextWindow(True));
+  WinKey := Ord(TextWindow(True));
 end;
 {$F-}
