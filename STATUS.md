@@ -21,8 +21,7 @@ keep a session diary here.
   `library` lines). The data segment is identical.
 - Build: `tools/tp/gen_scaffold.py` assembles `src/match/` into `src/`,
   builds, checks every routine's offset and size and fits the data pads
-  (the stub/keeper scaffold that led here is in git before `36f8b8f`'s
-  successor).
+  (the stub/keeper scaffold that led here is in git up to `36f8b8f`).
 - Source: 165 Pascal routines in `src/match/<SEG>_<OFF>.PAS`, the `.OBJ`
   blocks as NASM in `src/match/OBJ<SEG>.ASM` (`tools/tp/obj2asm.py`), the
   asm entry points in `.EXT`, the data in `<SEG>.VAR`. The largest routines
@@ -39,5 +38,6 @@ keep a session diary here.
 
 ## Next
 
-- Names: the 29C3 and Genus asm routines; the last 27 globals need an
-  experiment or a closer read; `match.py` must stay green after each rename.
+- Names: every routine and asm entry point is named; the last 27 globals
+  need an experiment or a closer read (none in ../SAM); `match.py` must stay
+  green after each rename. The asm blocks' internal labels are `L<offset>`.
