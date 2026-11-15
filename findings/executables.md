@@ -186,9 +186,14 @@ first; System's `Input` is at DS:71B8 (`2961:0006` `mov di,0x71b8` is Crt's
   `SetIntVec`. Crt links whole (one `.OBJ`). One use of each, in
   `src/RTLKEEP.INC`, makes TP 5.0 emit SAM's System, Dos and Crt **byte for
   byte** (`tools/tp/match.py`, `library` lines).
-- **Heap**: SAM uses the default `{$M 16384,0,655360}` (STRONGLY SUPPORTED).
-  The packed header's min/max (11482/52442, which `unlzexe.py` copies into
-  the unpacked file) are LZEXE's: packing a TP 5.0 build shows LZEXE writes
-  maxalloc = its own minalloc + (original maxalloc - original minalloc), and
-  SAM's difference is 40960 paragraphs = 655360 bytes, the default heapmax
-  with heapmin 0. So the unpacked file's minalloc is not a target.
+- **Heap and header** (CONFIRMED, `tools/tp/pack.py`): the stack is 16384
+  (SS:SP as TP writes it); the file LZEXE packed had min/max alloc
+  3248/44208 paragraphs. LZEXE maps them one to one (packed min = input +
+  8234, packed max = input + 8645; measured with inputs 2837/43797 and
+  3248/43797), and the matched build with exactly these two words set packs
+  to the shipped SAM1.EXE byte for byte. TP 5.0 cannot write that pair here:
+  the default `{$M 16384,0,655360}` gives 2837/43797, heapmin 6576 gives the
+  minimum, and the maximum would need heapmax 661936, which TP rejects. So the
+  two words were edited after linking (LIKELY an EXEMOD-style tool). This
+  corrects the earlier reading that the unpacked header's values are
+  LZEXE's own.
