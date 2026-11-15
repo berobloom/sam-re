@@ -28,10 +28,10 @@ procedure S0000_10F6(x: KRec); forward;
 procedure OBJ0000; external;
 { src: GUESS 0000:0000 (the int 9 handler: reads the scan code into W684A (left/right swapped while B69D3 = 1,
   the "confused" body), and unless B69DA turns the defined keys into the walk/jump/fire flags and poses (up and
-  down on the world map only; fire with no ammo plays sound $14); Esc, Tab and F1..F10 set B683C; three
-  three-key cheats (U+V+K: Ammo + 25 once; Z+H+I: B6A12/B6A1A; P+J+X toggles B6A19; O+B+N+SPACE... see the
-  flags); then chains to the old int 9. The tail after the chain is dead: an EOI whose `mov al,$20` reads
-  $80/$20) }
+  down on the world map only; fire with no ammo plays sound $14); Esc, Tab and F1..F10 set B683C. Held-key
+  cheats: U+V+K Ammo + 25 once (B6A02); Z+G+I B6A12/B6A1A; P+J+X toggles B6A19 (B69FD); O+N+D with B (or P)
+  B69F9. Then it chains to the old int 9; the inline tail after the chain is dead (an EOI whose
+  `mov al,$20` reads $80/$20) }
 { keep: - }
 procedure KeyISR;
 var
@@ -787,6 +787,7 @@ if ShotOnScreen(0, 1) then;;
 KillPlayer;;
 TouchPlayer;
 S0D9C_3A91;
+DrawFront(0, 0);;
 FlipPage;;
 ShowPage;;
 FadeIn(0);;
@@ -1369,5 +1370,5 @@ Inline(>VideoTab/>Tick/>Regs/>VideoMode/>Adapter/>Map/>VideoSeg/>B21FE/>L2200/>W
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000)
+>$0000/>$0000/>$0000/>$0000/>$0000/$00)
 end.
