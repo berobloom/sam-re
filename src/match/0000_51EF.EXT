@@ -1,0 +1,2 @@
+{ src: EXE 0000:51EF (the .OBJ: reads the CMOS clock (ports 70h/71h, BCD) into its code-segment bytes 51CC..51D2; 5233 would set the DOS date and time from them and is never called) }
+{$F+} procedure ReadCMOSClock; external; {$F-}

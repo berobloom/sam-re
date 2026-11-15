@@ -155,6 +155,7 @@ def load_vars():
                     VARS.append((addr, n.strip(), t))
                     addr += size(t)
             starts[kw] = addr
+    VARS.extend([(0x71B8, 'Input', ('basic', 'text')), (0x72B8, 'Output', ('basic', 'text'))])   # System (TURBO.TPL)
     VARS.sort()
 
 
@@ -246,10 +247,22 @@ def load_sigs():
         SIGS[(int(m.group(1), 16), int(m.group(2), 16))] = (d.group(2), ps, ptype(d.group(6)) if d.group(6) else None)
 
 
-LIB = {(0x2CD1, 0x980): ('Random', [('N', ('basic', 'word'), False)], ('basic', 'word')),
-       (0x2961, 0x29E): ('Delay', [('N', ('basic', 'word'), False)], None),
-       (0x2961, 0x2A5): ('Sound', [('N', ('basic', 'word'), False)], None),
-       (0x2961, 0x2CE): ('NoSound', [], None)}
+W, B, C, L = ('basic', 'word'), ('basic', 'boolean'), ('basic', 'char'), ('basic', 'longint')
+U = ('untyped',)
+LIB = {(0x2CD1, 0x980): ('Random', [('N', W, False)], W),
+       (0x2CD1, 0x3B5): ('MemAvail', [], L),
+       (0x2CD1, 0x207): ('IOResult', [], W),
+       (0x2CD1, 0xFA9): ('Assign', [('F', U, True), ('S', ('str', 255), False)], None),
+       (0x2CD1, 0x1058): ('Close', [('F', U, True)], None),
+       (0x2CD1, 0x329): ('GetMem', [('P', U, True), ('N', W, False)], None),
+       (0x2CD1, 0x364): ('FreeMem', [('P', U, True), ('N', W, False)], None),
+       (0x2961, 0x29E): ('Delay', [('N', W, False)], None),
+       (0x2961, 0x2BC): ('Sound', [('N', W, False)], None),
+       (0x2961, 0x2F3): ('NoSound', [], None),
+       (0x2961, 0x2FA): ('KeyPressed', [], B),
+       (0x2961, 0x30C): ('ReadKey', [], C)}
+SPECIAL = {(0x2CD1, 0xFD7): 'Reset', (0x2CD1, 0xFE0): 'Rewrite', (0x2CD1, 0x108C): 'Read', (0x2CD1, 0x1093): 'Write',
+           (0x2CD1, 0xF6B): 'WriteStr', (0x2CD1, 0xEEE): 'WriteLn', (0x2CD1, 0xD8): 'Halt'}
 
 
 # ---------------------------------------------------------------- expressions
@@ -314,6 +327,7 @@ class Dec:
     def __init__(self, L, img, seg, frame, epi):
         self.L, self.img, self.seg, self.frame, self.epi = L, img, seg, frame, epi
         self.idx = {a: i for i, (a, _) in enumerate(L)}
+        self.backt = {tgt(t) for a, t in L if isj(t) and tgt(t) <= a}
         self.reset()
 
     def reset(self):
@@ -322,11 +336,11 @@ class Dec:
 
     def save(self):
         return (self.ax, self.dx, self.bx, self.di, self.es, self.cx, list(self.stack), getattr(self, 'cxe', None),
-                getattr(self, 'dxe', None))
+                getattr(self, 'dxe', None), list(getattr(self, 'witems', [])))
 
     def restore(self, st):
-        self.ax, self.dx, self.bx, self.di, self.es, self.cx, stack, self.cxe, self.dxe = st
-        self.stack = list(stack)
+        self.ax, self.dx, self.bx, self.di, self.es, self.cx, stack, self.cxe, self.dxe, w = st
+        self.stack, self.witems = list(stack), list(w)
 
     def addr(self, i):
         return self.L[i][0] if i < len(self.L) else 0x10000
@@ -334,6 +348,10 @@ class Dec:
     # -- operands
     def mem(self, o):
         """a memory operand -> E"""
+        m = re.match(r'(word|byte) ptr es:\[di\]$', o)
+        if m and self.di and self.di[0] == 'abs':
+            return E('%s[%s:%s]' % ('MemW' if m.group(1) == 'word' else 'Mem', self.di[1].s, hexn(self.di[2], False)),
+                     3, ('basic', 'word' if m.group(1) == 'word' else 'byte'))
         m = re.match(r'(word|byte|dword)? ?ptr (?:ss:|ds:)?\[(.*)\]$', o)
         if not m:
             raise ValueError(o)
@@ -397,6 +415,12 @@ class Dec:
     def cond_at(self, i):
         """a test at i -> (left E, right E, index of its jcc) or None; evaluates the code before the test"""
         t = self.L[i][1]
+        m = re.match(r'cmp dx, (-?0x[0-9a-f]+|-?\d+)$', t)
+        if m:                                       # LongInt against a constant: hi, then lo
+            k = next(k for k in range(i + 1, i + 6) if self.L[k][1].startswith('cmp ax, '))
+            v = ((int(m.group(1), 0) & 0xFFFF) << 16) | (int(self.L[k][1].split(', ')[1], 0) & 0xFFFF)
+            v = v - (1 << 32) if v >= 1 << 31 else v
+            return self.ax, E(str(v), 3, L), k + 1
         if t == 'cmp dx, bx':                       # LongInt: the hi jumps, then the lo compare decides
             k = next(k for k in range(i + 1, i + 6) if self.L[k][1] == 'cmp ax, cx')
             return self.ax, self.cxe, k + 1
@@ -428,6 +452,8 @@ class Dec:
         A test is the evaluation code up to a cmp/or plus its jcc (or the long `jcc +; jmp T` form)."""
         out = []
         while i < len(self.L) and self.addr(i) < stop and (limit is None or len(out) < limit):
+            if out and self.addr(i) in self.backt:     # a loop head starts its own statement
+                break
             start = i
             j = self.eval_until_test(i, stop)
             if j is None:
@@ -439,7 +465,7 @@ class Dec:
                 break
             op = jt.split()[0]
             target = tgt(jt)
-            if target == self.addr(k + 2) and self.L[k + 1][1].startswith('jmp '):   # long form
+            if target == self.addr(k + 2) and self.L[k + 1][1].startswith('jmp ') and self.addr(k + 1) < stop:
                 op, target, k = INV[op], tgt(self.L[k + 1][1]), k + 1
             out.append((c[0], c[1], op, target, start, k + 1))
             i = k + 1
@@ -461,18 +487,18 @@ class Dec:
 
     def next_is_test(self, i, stop):
         """does a test follow at i (before any statement)?"""
-        save = (self.ax, self.dx, self.bx, self.di, self.es, self.cx, list(self.stack))
+        save = self.save()
         try:
             j = self.eval_until_test(i, stop)
             return j is not None and iscj(self.L[j + 1][1])
         except Exception:
             return False
         finally:
-            self.ax, self.dx, self.bx, self.di, self.es, self.cx, self.stack = save
+            self.restore(save)
 
     def eval_until_test(self, i, stop):
         """evaluate expression code from i up to a test; None if a statement comes first"""
-        save = (self.ax, self.dx, self.bx, self.di, self.es, self.cx, list(self.stack))
+        save = self.save()
         while i < len(self.L) and self.addr(i) < stop:
             t = self.L[i][1]
             if self.cond_at_ok(t) and i + 1 < len(self.L) and iscj(self.L[i + 1][1]):
@@ -480,7 +506,7 @@ class Dec:
             if not self.step(i):
                 break
             i += 1
-        self.ax, self.dx, self.bx, self.di, self.es, self.cx, self.stack = save
+        self.restore(save)
         return None
 
     def cond_at_ok(self, t):
@@ -574,6 +600,18 @@ class Dec:
                 r = self.opnd(v)
             self.ax = binop(ax, op, r)
             return True
+        if t == 'idiv cx':                          # cwd; idiv: div in ax, mod in dx
+            d = E(hexn(self.cx)) if not getattr(self, 'cxdiv', None) else self.cxdiv
+            a0 = E(ax.s, ax.p, ('basic', 'integer'))
+            self.ax = binop(a0, 'div', d)
+            self.dxe = binop(a0, 'mod', d)
+            self.ax.t = self.dxe.t = ('basic', 'integer')
+            self.cxdiv = None
+            return True
+        m = re.match(r'mov cx, (word ptr .*)$', t)
+        if m:
+            self.cxdiv = self.mem(m.group(1))
+            return True
         if t == 'neg ax':
             self.ax = E('-' + ax.at(2), 1, ax.t)
             return True
@@ -586,6 +624,7 @@ class Dec:
         m = re.match(r'mov (cx|cl), (0x[0-9a-f]+|\d+)$', t)
         if m:
             self.cx = int(m.group(2), 0)
+            self.cxdiv = None
             return True
         m = re.match(r'(shl|shr) ax, (cl|1)$', t)
         if m:
@@ -625,7 +664,11 @@ class Dec:
             return True
         m = re.match(r'add di, (0x[0-9a-f]+|\d+)$', t)
         if m and self.di and self.di[0] == 'ptr':
-            self.di = self.di[:3] + (self.di[3] + int(m.group(1), 0),)
+            v = int(m.group(1), 0)
+            self.di = self.di[:3] + (self.di[3] + (v - 0x10000 if v >= 0x8000 else v),) + self.di[4:]
+            return True
+        if t == 'add di, ax' and self.di and self.di[0] == 'ptr':     # a pointer's array indexed by ax
+            self.di = self.di[:4] + (self.scaled(self.ax),)
             return True
         m = re.match(r'les ax, ptr \[(.*)\]$', t)
         if m:
@@ -692,7 +735,7 @@ class Dec:
         if jback:
             k = jback[-1]
             after = self.addr(k + 1)
-            tests, j = self.chain(i, after)
+            tests, j = self.chain(i, self.addr(k))
             body, _ = self.block(j, self.addr(k))
             return ('while', self.boolexpr(tests, self.addr(j), after), body), k + 1
         f = self.for_at(i, end)
@@ -714,7 +757,9 @@ class Dec:
             tests, k = self.chain(i, end)
             T = self.addr(k)
             F = tests[-1][3]
-            if F <= T:
+            if F == T:                              # if C then ;
+                return ('if', self.boolexpr(tests, T, F), [], None), k
+            if F < T:
                 raise ValueError('backward if at %04X' % a)
             then_end, else_end = F, None
             last = self.idx[F] - 1
@@ -914,6 +959,10 @@ class Dec:
             if self.step(i):
                 i += 1
                 continue
+            m = re.match(r'mov (word|byte) ptr (es:\[di\]), (dx|dl|ax|al)$', t)
+            if m:
+                dst = self.mem('%s ptr %s' % (m.group(1), m.group(2)))
+                return self.assign(dst, self.opnd(m.group(3))), i + 1
             m = re.match(r'mov (word|byte) ptr (\[.*\]), (.*)$', t)
             if m:
                 v = m.group(3)
@@ -945,6 +994,14 @@ class Dec:
             self.stack.append(self.ax)
         elif t == 'push dx':
             self.stack.append(None)                 # the hi word of a LongInt temporary or argument
+        elif t == 'pop es' and self.di and self.di[0] == 'addr':   # Mem[seg:ofs]: seg pushed, ofs in di
+            self.di = ('abs', self.stack.pop(), self.di[1])
+        elif re.match(r'mov (dx|ax|al|dl), (word|byte) ptr es:\[di\]$', t):
+            v = self.mem(t.split(', ')[1])
+            if t.startswith('mov d'):
+                self.dxe = v
+            else:
+                self.ax = v
         elif t == 'pop cx':
             self.cxe = self.stack.pop()
         elif t == 'pop bx':
@@ -963,6 +1020,10 @@ class Dec:
         elif re.match(r'lea di, \[bp - (0x[0-9a-f]+|\d+)\]$', t):
             k = 'bp-' + str(int(t.split('- ')[1][:-1], 0))
             self.di = ('frame', self.frame[k][0])
+        elif (t.startswith('lcall ') or t.startswith('call ')) and SPECIAL.get(self.target(i)) == 'WriteStr':
+            f, item, w = self.stack[-3:]            # Write(t, s:w) item; the file stays pushed
+            self.witems = getattr(self, 'witems', []) + [item.s + ('' if w.s == '0' else ':' + w.s)]
+            self.stack = self.stack[:-3] + [f]
         elif t.startswith('lcall ') or t.startswith('call '):
             text, res = self.callexpr(i)
             if res is None:
@@ -981,6 +1042,14 @@ class Dec:
             return E(dsname(d[1])[0])
         if d[0] == 'frame':
             return E(d[1])
+        if d[0] == 'ptr' and len(d) > 4:            # base^ + index*stride + disp: an array field of the target
+            e, stride = d[4]
+            t = resolve(d[2])
+            for n, fo, ft in t[1] if t[0] == 'rec' else []:
+                ft = resolve(ft)
+                if ft[0] == 'arr' and len(ft[1]) == 1 and size(ft[2]) == stride and fo - ft[1][0][0] * stride == d[3]:
+                    return E('%s.%s[%s]' % (d[1], n, e.s), 3, ft[2])
+            raise ValueError('no array of stride %d at %d in %s' % (stride, d[3], d[1]))
         if d[0] == 'ptr':
             txt, tt, rest = access(d[2], d[3], d[1], True)
             return E(txt, 3, tt)
@@ -1007,7 +1076,7 @@ class Dec:
     def callexpr(self, i):
         """the call at i with the pushed arguments -> (text, result type or None)"""
         seg, off = self.target(i)
-        if (seg, off) == (0x2CD1, 0x64E):           # string assign: src, dst, max
+        if (seg, off) == (0x2CD1, 0x64E) or (seg, off) in SPECIAL:     # statements of their own
             return None, None
         sig = LIB.get((seg, off)) or SIGS.get((seg, off))
         if sig is None:
@@ -1028,6 +1097,27 @@ class Dec:
         if (seg, off) == (0x2CD1, 0x64E):
             src, dst = self.stack[0], self.stack[1]
             return '%s := %s' % (dst.s, src.s), i + 1
+        sp = SPECIAL.get((seg, off))
+        if sp:
+            st, self.stack = self.stack, []
+            if sp in ('Reset', 'Rewrite'):         # typed file: the record size is TP's
+                return '%s(%s)' % (sp, st[0].s), i + 1
+            if sp in ('Read', 'Write'):            # typed file: then `add sp, 4` drops the variable
+                assert self.L[i + 1][1] == 'add sp, 4', self.L[i + 1]
+                return '%s(%s, %s)' % (sp, st[0].s, st[1].s), i + 2
+            if sp == 'WriteStr':                   # Write(t, s:w) item; the file stays pushed
+                f, item, w = st
+                self.wfile = f
+                self.witems = getattr(self, 'witems', []) + [item.s + ('' if w.s == '0' else ':' + w.s)]
+                self.stack = [f]
+                return None, i + 1
+            if sp == 'WriteLn':
+                f, items = st[0], getattr(self, 'witems', [])
+                self.witems = []
+                args = ([] if f.s == 'Output' else [f.s]) + items
+                return 'WriteLn' + ('(%s)' % ', '.join(args) if args else ''), i + 1
+            if sp == 'Halt':
+                return ('Halt' if self.ax.s == '0' else 'Halt(%s)' % self.ax.s), i + 1
         text, res = self.callexpr(i)
         self.stack = []
         return text, i + 1

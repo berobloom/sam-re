@@ -117,6 +117,18 @@ def main(argv):
             fix[r - base] = 'CODE' if v == s else 'DATA'
     names = {lo: 'OBJ' + seg}
     d = os.path.join(ROOT, 'src', 'match')
+    # data only this .OBJ uses: `{ obj refs: NAME=BASE@OFF .. }` in SEG.VAR. The original OBJ reached it through
+    # fixups TP's smart linker sees; ours holds plain numbers, so the word at OFF (an address in NAME, which
+    # starts at DS:BASE) is written `dw NAME+delta`, an offset fixup with the same bytes
+    vf = os.path.join(d, seg + '.VAR')
+    m = re.search(r'\{ obj refs: ([\w=@ ]+) \}', open(vf, encoding='latin1').read()) if os.path.exists(vf) else None
+    externs = {}
+    for ref in (m.group(1).split() if m else []):
+        n, rest = ref.split('=')
+        b0, at = (int(x, 16) for x in rest.split('@'))
+        v = struct.unpack_from('<H', t.img, base + at)[0]
+        externs[n] = b0
+        fix[at] = '%s+0x%X' % (n, v - b0)
     for f in sorted(os.listdir(d)):
         if f.startswith(seg + '_') and f.endswith('.EXT'):
             nm = re.search(r'(?:procedure|function) (\w+)', open(os.path.join(d, f)).read()).group(1).upper()
@@ -140,6 +152,7 @@ def main(argv):
         if fix:
             lines.append('segment DATA public')
             lines.append('segment CODE')
+        lines += ['extern %s' % n for n in sorted(externs)]
         lines += ['global %s' % n for _, n in sorted(names.items())]
         if names[lo] != 'OBJ' + seg:                    # an .EXT entry at the block start: both labels
             lines += ['global OBJ%s' % seg, 'OBJ%s:' % seg]
@@ -177,15 +190,17 @@ def main(argv):
             src = os.path.join(tmp, 'a.asm')
             open(src, 'w').write('\n'.join(lines) + '\n')
             # NASM -f bin needs a plain section; assemble the same text with the segment line swapped
-            open(src, 'w').write('\n'.join(['bits 16', 'org %d' % lo, 'CODE equ 0x%04X' % s, 'DATA equ 0x%04X' % t.data_seg]
-                                           + [l for l in lines if not l.startswith(('segment', 'global'))]) + '\n')
+            hdr = ['bits 16', 'org %d' % lo, 'CODE equ 0x%04X' % s, 'DATA equ 0x%04X' % t.data_seg]
+            hdr += ['%s equ 0x%04X' % (n, b0) for n, b0 in sorted(externs.items())]
+            open(src, 'w').write('\n'.join(hdr + [l for l in lines if not l.startswith(('segment', 'global', 'extern'))])
+                                 + '\n')
             lst = os.path.join(tmp, 'a.lst')
             r = subprocess.run(['nasm', '-f', 'bin', '-l', lst, '-o', os.path.join(tmp, 'a.bin'), src],
                                capture_output=True, text=True)
-            body = [l for l in lines if not l.startswith(('segment', 'global'))]
+            body = [l for l in lines if not l.startswith(('segment', 'global', 'extern'))]
             bad = set()
             for m in re.finditer(r'a\.asm:(\d+): error', r.stderr):
-                ln = int(m.group(1)) - 4                 # the four header lines
+                ln = int(m.group(1)) - len(hdr)          # the header lines
                 hit = re.search(r'; ([0-9A-F]{4})$', body[ln - 1]) if 0 < ln <= len(body) else None
                 if hit:
                     bad.add(int(hit.group(1), 16))
@@ -200,8 +215,8 @@ def main(argv):
                 for l in open(lst).read().split('\n'):
                     m = re.match(r'\s*(\d+) [0-9A-F]{8} ([0-9A-F]+)', l)
                     if m:
-                        got.setdefault(int(m.group(1)) - 4, b'')
-                        got[int(m.group(1)) - 4] += bytes.fromhex(m.group(2))
+                        got.setdefault(int(m.group(1)) - len(hdr), b'')
+                        got[int(m.group(1)) - len(hdr)] += bytes.fromhex(m.group(2))
                 for i, l in enumerate(body, 1):
                     hit = re.search(r'; ([0-9A-F]{4})$', l)
                     if hit:

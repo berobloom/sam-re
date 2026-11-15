@@ -1,0 +1,2 @@
+{ src: EXE 0000:5261 (the .OBJ: PIT channel 0 divisor $2147, about 140 Hz, for the game timer) }
+{$F+} procedure FastTimer; external; {$F-}

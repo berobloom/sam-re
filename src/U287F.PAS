@@ -2,7 +2,7 @@ unit U287F;
 {$S-,D+,L+}
 interface
 { 287F data, DS:3444..34D5 (src: SAM1RE formats.md SND; the start-up code 0:1250..0:134b loads the
-  three .SND files through SndFile with BlockRead, record size 0x1C98 = 12 slots) }
+  three .SND files through SndFile, one TSoundBank record each, 0x1C98 bytes = 12 slots) }
 type
   TSound = record
     Notes: array[1..300] of Integer;
@@ -15,7 +15,7 @@ type
   TSoundBank = array[1..12] of TSound;
 var
   Bank1, Bank2, Bank3: ^TSoundBank;
-  SndFile: File;
+  SndFile: file of TSoundBank;  { Reset passes $1C98; Read is the typed-file Read (main 0000:1250) }
   CurSound: Integer;
   NoteIdx: Integer;
   Playing: Boolean;

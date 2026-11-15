@@ -3,6 +3,9 @@ segment CODE public align=1
 segment DATA public
 segment CODE
 global OBJ0000
+global READCMOSCLOCK
+global FASTTIMER
+global NORMALTIMER
 OBJ0000:
     db 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
     out 0x70, al                            ; 51D3
@@ -23,6 +26,7 @@ L51DF:
     and ax, 0xf0f                           ; 51E9
     aad 0xa                                 ; 51EC
     retf                                    ; 51EE
+READCMOSCLOCK:
     db 0x2B, 0xC0   ; sub ax, ax
     db 0x9A, 0xD3, 0x51
     dw CODE
@@ -52,6 +56,7 @@ L51DF:
     db 0xB4, 0x2D, 0x2E, 0x8A, 0x2E, 0xCC, 0x51, 0x2E, 0x8A, 0x0E, 0xCD, 0x51, 0x2E, 0x8A, 0x36, 0xCE
     db 0x51, 0xB2, 0x32, 0xCD, 0x21, 0x2B, 0xC0, 0xB4, 0x2B, 0xB9, 0x6C, 0x07, 0x2E, 0x03, 0x0E, 0xD1
     db 0x51, 0x2E, 0x8A, 0x36, 0xCF, 0x51, 0x2E, 0x8A, 0x16, 0xD0, 0x51, 0xCD, 0x21, 0xCB
+FASTTIMER:
     mov bx, 0x2147                          ; 5261
     cli                                     ; 5264
     mov al, 0x36                            ; 5265
@@ -63,6 +68,7 @@ L51DF:
     out 0x40, al                            ; 5271
     sti                                     ; 5273
     retf                                    ; 5274
+NORMALTIMER:
     cli                                     ; 5275
     mov al, 0x36                            ; 5276
     out 0x43, al                            ; 5278

@@ -7,9 +7,13 @@ var
   Copyright: String[80]; { @7166 }
 procedure OBJ29C3;
 procedure SetGraphMode(Sel: Integer);
+procedure SetBiosMode(Mode: Integer);
 function SetStride(N: Integer): Integer;
 procedure SetViewStart(X, Y: Integer);
 procedure SetViewStartAlt(X, Y: Integer);
+procedure SetSplit(Line: Integer);
+procedure SetSplitVGA(Line: Integer);
+procedure SetBorder(Color: Integer);
 procedure SetPalReg(Reg, Color: Integer);
 procedure DrawTile(var Src; X, Y: Integer);
 procedure DrawCellM(var Src; X, Y: Integer);
@@ -19,6 +23,7 @@ procedure GetImage(var Buf; X1, Y1, X2, Y2: Integer);
 procedure PutImage(var Buf; X, Y: Integer);
 procedure DrawTileB(var Src; X, Y: Integer);
 procedure DrawCellX(var Src; X, Y: Integer);
+procedure DrawSprite(var Src; X, Y: Integer);
 procedure DrawTileO(var Src; X, Y: Integer);
 procedure DrawCell(var Src; X, Y: Integer);
 procedure CopySheet(X, Y, Slot: Integer);
@@ -28,10 +33,13 @@ implementation
 {$L OBJ29C3.OBJ}
 procedure OBJ29C3; external;
 procedure SetGraphMode; external;
-{$F+} procedure SetBiosMode(Mode: Integer); external; {$F-}
+procedure SetBiosMode; external;
 function SetStride; external;
 procedure SetViewStart; external;
 procedure SetViewStartAlt; external;
+procedure SetSplit; external;
+procedure SetSplitVGA; external;
+procedure SetBorder; external;
 procedure SetPalReg; external;
 procedure DrawTile; external;
 procedure DrawCellM; external;
@@ -41,6 +49,7 @@ procedure GetImage; external;
 procedure PutImage; external;
 procedure DrawTileB; external;
 procedure DrawCellX; external;
+procedure DrawSprite; external;
 {$F+} procedure GetRomFonts; external; {$F-}
 {$F+} procedure Proc2981(X: Integer); external; {$F-}
 procedure DrawTileO; external;

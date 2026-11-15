@@ -6,6 +6,9 @@ global SETBIOSMODE
 global SETSTRIDE
 global SETVIEWSTART
 global SETVIEWSTARTALT
+global SETSPLIT
+global SETSPLITVGA
+global SETBORDER
 global SETPALREG
 global DRAWTILE
 global DRAWCELLM
@@ -15,6 +18,7 @@ global GETIMAGE
 global PUTIMAGE
 global DRAWTILEB
 global DRAWCELLX
+global DRAWSPRITE
 global GETROMFONTS
 global PROC2981
 global DRAWTILEO
@@ -177,6 +181,7 @@ L0281:
     sti                                     ; 029A
     pop bp                                  ; 029B
     retf 4                                  ; 029C
+SETSPLIT:
     push bp                                 ; 029F
     db 0x8B, 0xEC   ; mov bp, sp
     mov ax, 0x40                            ; 02A2
@@ -231,6 +236,7 @@ L02F4:
     je short L02F1                          ; 02F6
     pop es                                  ; 02F8
     retf                                    ; 02F9
+SETSPLITVGA:
     push bp                                 ; 02FA
     db 0x8B, 0xEC   ; mov bp, sp
     push cs                                 ; 02FD
@@ -269,6 +275,7 @@ L0332:
     pop es                                  ; 0332
     pop bp                                  ; 0333
     retf 2                                  ; 0334
+SETBORDER:
     push bp                                 ; 0337
     db 0x8B, 0xEC   ; mov bp, sp
     mov ah, 0x10                            ; 033A
@@ -1386,6 +1393,7 @@ L1BE8:
     db 0xE0, 0x26, 0x8B, 0x3F, 0x26, 0x08, 0x07, 0x59, 0x2E, 0x8A, 0x16, 0xC2, 0x18, 0x80, 0xFA, 0x00
     db 0x7F, 0xB0, 0x2E, 0x03, 0x1E, 0x1C, 0x01, 0x4B, 0x4B, 0x4B, 0x4B, 0xE2, 0xA3, 0xBA, 0xCE, 0x03
     db 0xB8, 0x08, 0xFF, 0xEF, 0x5F, 0x5E, 0x1F, 0x5D, 0xCA, 0x08, 0x00
+DRAWSPRITE:
     push bp                                 ; 2463
     db 0x8B, 0xEC   ; mov bp, sp
     push ds                                 ; 2466

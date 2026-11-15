@@ -1,0 +1,2 @@
+{ src: EXE 0000:5275 (the .OBJ: PIT channel 0 divisor 0, the BIOS 18.2 Hz) }
+{$F+} procedure NormalTimer; external; {$F-}

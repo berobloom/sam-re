@@ -4,6 +4,7 @@ interface
 { 2643 (Genus PCX Toolkit 3.56) data. Typed constants DS:000E..0265 (0000..000D is main's VideoTab):
   banner, EMMXXXX at DS:0090, the video-mode table at DS:0098 (bytes as in SAM1.EXE; structure open).
   Variables DS:2206..3441: one block, structure open. }
+{ obj refs: T_2643=000E@0242 V_2643=2206@0033 }
 const T_2643: array[0..599] of Byte = (
   $20,$50,
   $43,$58,$20,$50,$72,$6F,$67,$72,$61,$6D,$6D,$65,$72,$27,$73,$20,

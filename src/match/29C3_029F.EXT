@@ -1,0 +1,3 @@
+{ src: EXE 29C3:029F (waits for vertical retrace, then sets the CRTC line compare to Line: the EGA split screen; main uses it unless the adapter is 4) }
+{ interface }
+{$F+} procedure SetSplit(Line: Integer); external; {$F-}

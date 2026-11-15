@@ -17,6 +17,7 @@ procedure Blackout;
 procedure SaveState;
 procedure RestoreState;
 procedure SaveGame(N: Integer);
+function LoadGame(N: Integer): Boolean;
 function AskWarp: Integer;
 function EscapeMenu: Char;
 procedure ShowMessage(S: String);
@@ -29,7 +30,6 @@ implementation
 {$F+} function InputLine(N: Integer): String; forward; {$F-}
 {$F+} function PageWindow(Wait: Boolean): Char; forward; {$F-}
 {$F+} procedure CheckHighScore; forward; {$F-}
-{$F+} function LoadGame(N: Integer): Boolean; forward; {$F-}
 {$F+} procedure ShowHelp; forward; {$F-}
 {$F+} procedure Story; forward; {$F-}
 {$F+} procedure OrderInfo; forward; {$F-}
@@ -1214,6 +1214,7 @@ end;
   RestoreState does; Reset runs twice; a missing file shows 'File Not Found!' and returns False) }
 { from: 3EF5 }
 { to: 409B }
+{ interface }
 { keep: if LoadGame(0) then; }
 {$I-}
 {$F+}

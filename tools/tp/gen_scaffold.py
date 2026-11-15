@@ -141,8 +141,10 @@ def data_decls(u, public):
             if m and pads.get(m.group(1), 0) > 0:
                 lines.append('  P_%s: array[1..%d] of Byte;' % (m.group(1), pads[m.group(1)]))
             lines.append(l)
-        if pads.get('END', 0) > 0:
-            lines.append('var P_%s_END: array[1..%d] of Byte;' % (u['seg'], pads['END']))
+        if pads.get('END', 0) > 0:          # in the last var section: TP 5.0 drops a var section nothing uses
+            last = re.findall(r'^\s*(type|var|const)\b', re.sub(r'\{[^}]*\}', '', text), re.M)
+            lines.append('%sP_%s_END: array[1..%d] of Byte;' % ('  ' if last and last[-1] == 'var' else 'var ',
+                                                                 u['seg'], pads['END']))
         text = '\n'.join(lines)
         body = re.sub(r'\{[^}]*\}', '', text)
         sect = None
@@ -377,7 +379,11 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         if g and g['far']:
             L.append('{$F-}')
     L.append('begin')
-    if main:
+    fm = fragment(seg, next(r[2] for r in regs if r[0] == 'init')) if main else None
+    if fm:
+        # the hand-written program body: the real calls keep every unit routine, runtime routine and variable
+        L += [l for l in fm['text'].split('\n') if l.strip()]
+    elif main:
         L += body('INIT', calls + list(keepers_of_units), dnames + list(unit_data), rtl=True)
     else:
         init_off = next(r[2] for r in regs if r[0] == 'init')

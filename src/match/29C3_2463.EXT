@@ -1,0 +1,4 @@
+{ src: EXE 29C3:2463 (draws a masked 16x16 image from Src at pixel X (shifted by X and 7), row Y: the sprite blit
+  of the player and the actors; retf 8) }
+{ interface }
+{$F+} procedure DrawSprite(var Src; X, Y: Integer); external; {$F-}

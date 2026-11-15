@@ -50,7 +50,7 @@ var
   JumpUpTop: Byte; { @3510 }
   JumpDownTop: Byte; { @3511 }
   Slots: array[1..25] of TSlot; { @3512 }
-  P_3838: array[1..6] of Byte;
+  W3832, W3834, W3836: Integer; { @3832 }
   TextLines: array[1..299] of String[40]; { @3838 }
   P681C: Pointer; { @681C; TextWindow's save-under buffer (30000 bytes) }
   B6820: array[1..20] of Byte; { @6820 }
@@ -60,8 +60,7 @@ var
   W683E: Integer; { @683E; counts the player's landings (0529:66B3), GUESS }
   W6840: Integer; { @6840; the number in a level's header record (0D9C:A1AE) }
   Level: Integer; { @6842 }
-  W6844, W6846: Integer; { @6844 }
-  P_684A: array[1..2] of Byte;
+  W6844, W6846, W6848: Integer; { @6844 }
   W684A: Integer; { @684A }
   W684C, W684E, W6850: Integer; { @684C; loop variables of the text windows }
   W6852: Integer; { @6852 }
@@ -101,7 +100,7 @@ var
   W6A08, W6A0A, W6A0C: Integer; { @6A08 }
   B6A0E, B6A0F, B6A10, B6A11, B6A12, B6A13, B6A14, B6A15, B6A16, B6A17, B6A18, B6A19, B6A1A, B6A1B: Byte; { @6A0E }
   ArcLen: Byte; { @6A1C }
-  Arc: array[0..34] of Integer; { @6A1E }
+  Arc: array[1..35] of Integer; { @6A1E; indexed by ArcLen (main 0000:1B35) }
   B6A64: Byte; { @6A64 }
   RespawnDelay: Byte; { @6A65 }
   Lives: Byte; { @6A66 }
@@ -122,7 +121,7 @@ var
   GfxFile: file of TGfx; { @6DD8 }
   GfxSmall: array[1..3] of PGfxSmall; { @6E58 }
   GfxSmallFile: file of TGfxSmall; { @6E64 }
-  P_6EE5: array[1..1] of Byte;
+  EscKey: Char; { @6EE4; EscapeMenu's result (main 0000:5078) }
   B6EE5, B6EE6, B6EE7, B6EE8, B6EE9, B6EEA, B6EEB, B6EEC, B6EED, B6EEE, B6EEF, B6EF0, B6EF1: Byte; { @6EE5 }
   B6EF2, B6EF3: Byte; { @6EF2 }
   NameUp, NameDown, NameFire, NameRight, NameJump, NameLeft: String[80]; { @6EF4; key names (redefine menu) }
@@ -132,7 +131,7 @@ var
   OldExit: Pointer; { @70F0; main 0000:0E67 hooks ExitProc, int $1C and int 9 }
   OldInt1C: Pointer; { @70F4 }
   OldInt9: Pointer; { @70F8 }
-var P_2891_END: array[1..4] of Byte;
+  P_2891_END: array[1..4] of Byte;
 procedure StartupInit;
 procedure NewGame;
 procedure LevelReset;
@@ -347,7 +346,6 @@ begin
   JumpDown[36] := 8;
   JumpDown[37] := 8;
   JumpDownTop := 37;
-  Arc[0] := -8;
   Arc[1] := -8;
   Arc[2] := -8;
   Arc[3] := -8;
@@ -362,26 +360,27 @@ begin
   Arc[12] := -8;
   Arc[13] := -8;
   Arc[14] := -8;
-  Arc[15] := -6;
+  Arc[15] := -8;
   Arc[16] := -6;
   Arc[17] := -6;
   Arc[18] := -6;
   Arc[19] := -6;
   Arc[20] := -6;
-  Arc[21] := -4;
+  Arc[21] := -6;
   Arc[22] := -4;
   Arc[23] := -4;
   Arc[24] := -4;
-  Arc[25] := 0;
+  Arc[25] := -4;
   Arc[26] := 0;
   Arc[27] := 0;
-  Arc[28] := 4;
+  Arc[28] := 0;
   Arc[29] := 4;
-  Arc[30] := 8;
+  Arc[30] := 4;
   Arc[31] := 8;
   Arc[32] := 8;
   Arc[33] := 8;
   Arc[34] := 8;
+  Arc[35] := 8;
   B6D8C := 0;
 end;
 { src: SAM1RE 2891:07D5 (../SAM code-map.md: new game) }
