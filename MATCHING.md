@@ -259,6 +259,16 @@ so unknown variables between known ones need no declaration yet.
 - A test at the top that jumps past the loop plus the same test at the bottom
   jumping back into the body is `if C then repeat ... until not C`, not
   `while` (TP 5.0's while jumps back to the top test; 1802:3489).
+- An `interrupt` procedure starts 8 pushes (`push ax` .. `push es`) before
+  its `push bp`, so the cut is there (frame_only 0000:0BE5, not 0BED); its
+  `.SIG` says `procedure TimerISR; interrupt;` and the stub's body header
+  drops the directive (after `forward` TP 5.0 wants none: "BEGIN expected").
+- A whole-record `Write(F, R)` needs R of the file's component type: main's
+  SAM1.CFG record is `Config: TConfig absolute HiName` (2891.VAR), so the
+  matched 1802/2891 code keeps using HiName/HiScore.
+- The program's own typed constants come first in DS (main's 13-byte
+  `VideoTab` at DS:0000, then a pad byte, then Genus's at 000E), like its
+  variables (02A2): a `[di + 0]` table read in main code is one.
 - Stubs called by matched code need their header: `src/match/<SEG>_<OFF>.SIG`
   (e.g. `{$F+} function MainMenu: Char;`); `{ to: XXXX }` ends a fragment
   where the next routine's literals begin.
