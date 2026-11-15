@@ -5,6 +5,10 @@ uses U29C3;
 { 2891 data, DS:34D6..70FF. An "@XXXX" comment pins a declaration's address (gen_scaffold.py fits a pad before it);
   names: SAM1RE (../SAM findings: physics.md, code-map.md) or the address. Grouped names share a line. }
 type
+  TGfx = array[1..$1F80] of Byte;  { one record of SAM101.GFX }
+  PGfx = ^TGfx;
+  TGfxSmall = array[1..$800] of Byte; { one record of SAM102.GFX }
+  PGfxSmall = ^TGfxSmall;
   TSlot = record                   { 32 bytes; slot n at DS:3512 + (n-1)*32 }
     W00, X, Y, W06, W08, W0A: Integer;  { +02/+04: position (SAM1RE) }
     B0C: array[$0C..$1D] of Byte;
@@ -96,7 +100,12 @@ var
   P_6D8C: array[1..4] of Byte;
   B6D8C: Byte; { @6D8C }
   JoyCenterX, JoyCenterY: Word; { @6D8E }
-  P_6EE5: array[1..339] of Byte;
+  P_6D98: array[1..6] of Byte;
+  Gfx: array[1..16] of PGfx; { @6D98 }
+  GfxFile: file of TGfx; { @6DD8 }
+  GfxSmall: array[1..3] of PGfxSmall; { @6E58 }
+  GfxSmallFile: file of TGfxSmall; { @6E64 }
+  P_6EE5: array[1..1] of Byte;
   B6EE5, B6EE6, B6EE7, B6EE8, B6EE9, B6EEA, B6EEB, B6EEC, B6EED, B6EEE, B6EEF, B6EF0, B6EF1: Byte; { @6EE5 }
   P_6EF3: array[1..1] of Byte;
   B6EF3: Byte; { @6EF3 }
@@ -109,9 +118,11 @@ procedure StartupInit;
 procedure NewGame;
 procedure LevelReset;
 procedure OBJ2891;
+procedure Decrypt(var Buf; Size: Word);
 implementation
 {$L OBJ2891.OBJ}
 procedure OBJ2891; external;
+procedure Decrypt; external;
 { src: SAM1RE 2891:0136 (../SAM code-map.md: start-up init: key defaults, high-score table, jump and arc tables) }
 { from: 0000 }
 { interface }

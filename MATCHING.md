@@ -257,6 +257,9 @@ so unknown variables between known ones need no declaration yet.
   CODE` for segment fixups; TP links them (Genus, 106 fixups).
 - `{ keep: - }` on a private routine reached through exported ones: no keeper
   call (it may need arguments).
+- File I/O without `call 2CD1:020E` after each Reset/Read/Close was compiled
+  with `{$I-}`: wrap the routine in `{$I-}`...`{$I+}` (1802:3832 LoadGraphics).
+  A typed-file `Read(F, X)` is `call 2CD1:108C; add sp,4`.
 
 ## 7. Names, after the match, with their source
 
