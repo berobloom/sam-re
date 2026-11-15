@@ -57,8 +57,9 @@ PX, PY, PFO, PS = PROFILES['2E88']
 XN = 'X'
 
 
-FIELDS = {0: 'W00', 2: 'X', 4: 'Y', 6: 'W06', 8: 'W08', 0xA: 'W0A', 0xC: 'W0C', 0xE: 'W0E', 0x10: 'W10',
-          0x12: 'W12', 0x14: 'W14', 0x16: 'W16', 0x18: 'W18', 0x1A: 'W1A', 0x1C: 'W1C', 0x1E: 'Free', 0x1F: 'B1F'}
+FIELDS = {0: 'MaskFrames', 2: 'X', 4: 'Y', 6: 'PrevX', 8: 'PrevY', 0xA: 'Anim', 0xC: 'Limit', 0xE: 'Count',
+          0x10: 'Health', 0x12: 'Wait', 0x14: 'Sprite', 0x16: 'DirX', 0x18: 'DirY', 0x1A: 'Speed', 0x1C: 'Kind',
+          0x1E: 'Free', 0x1F: 'Remove'}
 CALLS = {'call 0x2c6e': 'SetCell', 'call 0x3a91': 'SpawnActor', 'call 0x2e88': 'WorldCell',
          'lcall 0x29c3, 0x19f9 R': 'DrawTileB'}
 NEG = {'jne': '=', 'je': '<>', 'jle': '>', 'jl': '>=', 'jg': '<=', 'jge': '<', 'jbe': '>', 'jae': '<', 'ja': '<=',

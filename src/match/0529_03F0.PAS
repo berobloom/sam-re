@@ -20,8 +20,8 @@ begin
       Slots[I].PrevY := Y;
       Slots[I].DirY := 0;
       Slots[I].Speed := 0;
-      Slots[I].W0C := 0;
-      Slots[I].W0E := $10;
+      Slots[I].Limit := 0;
+      Slots[I].Count := $10;
       Slots[I].Free := 0;
       Slots[I].Remove := 0;
       Slots[I].Kind := 5001;

@@ -30,8 +30,8 @@ begin
       Slots[I].PrevX := X;
       Slots[I].PrevY := Y;
       Slots[I].Speed := A;
-      Slots[I].W0C := 0;
-      Slots[I].W0E := 0;
+      Slots[I].Limit := 0;
+      Slots[I].Count := 0;
       Slots[I].Free := 0;
       Slots[I].Remove := 0;
       if T = 0 then
@@ -70,7 +70,7 @@ begin
         begin
           Slots[I].Kind := $28;
           Slots[I].Anim := 1;
-          Slots[I].W0E := $1E;
+          Slots[I].Count := $1E;
         end
         else
           Slots[I].Kind := $E;

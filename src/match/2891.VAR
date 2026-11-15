@@ -25,8 +25,10 @@ type
     MaskFrames, X, Y, PrevX, PrevY, Anim: Integer;  { src: SAM1RE objects.md: +02/+04 position, +06/+08 last
       frame's (the repaint), +0A animation counter (image = Sprite + Anim div 5); +00 frames still drawn
       with the masked DrawSprite, 3 or 5 after a hit (main 0000:11C3, 0529:0837) }
-    W0C, W0E, W10, W12, Sprite, DirX, DirY, Speed, Kind: Integer;  { src: SAM1RE objects.md: +14 sprite base
-      (T+150 at spawn, 0529:03F0), +16/+18 x/y direction -1/0/1, +1A speed, +1C behaviour kind }
+    Limit, Count, Health, Wait, Sprite, DirX, DirY, Speed, Kind: Integer;  { src: SAM1RE objects.md: +14 sprite base
+      (T+150 at spawn, 0529:03F0), +16/+18 x/y direction -1/0/1, +1A speed, +1C behaviour kind. LIKELY, per kind:
+      +0E counts up to the limit +0C; +10 hit points (3 at spawn, -1 per shot hit, removed at 0: 0529:2F6B),
+      a phase counter for some kinds; +12 a wait timer, several kinds act or draw only at 0 }
     Free: Byte;                    { +1E }
     Remove: Byte;                  { src: SAM1RE objects.md: := 1 asks the frame pass to free the slot }
   end;

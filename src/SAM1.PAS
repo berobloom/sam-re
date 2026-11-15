@@ -123,8 +123,8 @@ begin
             Shots[I].DirY := 0;
             Shots[I].Anim := 1;
             Shots[I].Speed := 8;
-            Shots[I].W0C := 0;
-            Shots[I].W0E := 0;
+            Shots[I].Limit := 0;
+            Shots[I].Count := 0;
             Shots[I].Kind := 7;
             Shots[I].Free := 0;
             Shots[I].Remove := 0;
@@ -486,8 +486,8 @@ begin
         Shots[I].DirY := 0;
         Shots[I].Anim := 1;
         Shots[I].Speed := 8;
-        Shots[I].W0C := 0;
-        Shots[I].W0E := 0;
+        Shots[I].Limit := 0;
+        Shots[I].Count := 0;
         Shots[I].Kind := 7;
         Shots[I].Free := 0;
         Shots[I].Remove := 0;
@@ -967,10 +967,10 @@ begin
                 begin
                   if Shots[SlotIdx].Sprite = $272 then
                   begin
-                    DrawTileB(Gfx[6]^.Tile[Shots[SlotIdx].W0E shr 1 + $19], Shots[SlotIdx].X,
+                    DrawTileB(Gfx[6]^.Tile[Shots[SlotIdx].Count shr 1 + $19], Shots[SlotIdx].X,
                         Shots[SlotIdx].Y + PageY);
-                    Dec(Shots[SlotIdx].W0E);
-                    if Shots[SlotIdx].W0E <= 0 then
+                    Dec(Shots[SlotIdx].Count);
+                    if Shots[SlotIdx].Count <= 0 then
                     begin
                       Shots[SlotIdx].Remove := 1;
                       DrawBack(Shots[SlotIdx].X, Shots[SlotIdx].Y);
@@ -1090,7 +1090,7 @@ begin
                       DrawSprite(Gfx[1]^.Tile[Slots[SlotIdx].Sprite + Slots[SlotIdx].Anim div 5], Slots[SlotIdx].X,
                           Slots[SlotIdx].Y + PageY);
                     $65:
-                      if Slots[SlotIdx].W12 = 0 then
+                      if Slots[SlotIdx].Wait = 0 then
                       begin
                         DrawSprite(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $64 + Slots[SlotIdx].Anim div 5],
                             Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
@@ -1164,7 +1164,7 @@ begin
                           Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                     end;
                     $331:
-                      if Slots[SlotIdx].W12 = 0 then
+                      if Slots[SlotIdx].Wait = 0 then
                       begin
                         DrawSprite(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
                             Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
@@ -1205,7 +1205,7 @@ begin
                         DrawTile(Gfx[1]^.Tile[Slots[SlotIdx].Sprite + Slots[SlotIdx].Anim div 5],
                             Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       $65:
-                        if Slots[SlotIdx].W12 = 0 then
+                        if Slots[SlotIdx].Wait = 0 then
                         begin
                           DrawTile(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $64 + Slots[SlotIdx].Anim div 5],
                               Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY - $10);
@@ -1285,7 +1285,7 @@ begin
                             Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY);
                       end;
                       $331:
-                        if Slots[SlotIdx].W12 = 0 then
+                        if Slots[SlotIdx].Wait = 0 then
                         begin
                           DrawTile(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
                               Slots[SlotIdx].X shr 3, Slots[SlotIdx].Y + PageY - $10);
@@ -1323,7 +1323,7 @@ begin
                         DrawTileB(Gfx[1]^.Tile[Slots[SlotIdx].Sprite + Slots[SlotIdx].Anim div 5], Slots[SlotIdx].X,
                             Slots[SlotIdx].Y + PageY);
                       $65:
-                        if Slots[SlotIdx].W12 = 0 then
+                        if Slots[SlotIdx].Wait = 0 then
                         begin
                           DrawTileB(Gfx[2]^.Tile[Slots[SlotIdx].Sprite - $64 + Slots[SlotIdx].Anim div 5],
                               Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);
@@ -1397,7 +1397,7 @@ begin
                             Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY);
                       end;
                       $331:
-                        if Slots[SlotIdx].W12 = 0 then
+                        if Slots[SlotIdx].Wait = 0 then
                         begin
                           DrawTileB(Gfx[12]^.Tile[Slots[SlotIdx].Sprite - $320 + Slots[SlotIdx].Anim div 5],
                               Slots[SlotIdx].X, Slots[SlotIdx].Y + PageY - $10);

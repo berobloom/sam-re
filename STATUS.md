@@ -31,13 +31,14 @@ keep a session diary here.
   `.VAR` comment; `tools/tp/rename.py` renames (code only, refuses a clash).
   9 globals keep `W<addr>`/`B<addr>` names because the code only clears them
   (`3832..3836`, `6856`, `6A0E`, `6EEF`, `6EF2`) or only saves them (`69D8`),
-  as their `.VAR` notes say; slot fields `W0C`..`W12` are open.
+  as their `.VAR` notes say. Every slot field is named.
 - Compiler: TP 5.0 / 5.5 / 6.0 compile headless (`tools/tp/tpc.sh`); 5.0 is
   SAM's (`tools/tp/pin_version.sh`).
 - Harness: DOSBox-X + MCP built (`./setup.sh` says ready); not used here.
 
 ## Next
 
-- Names: the slot fields `W0C`..`W12` (per-kind actor state, ActorAI); the
-  asm blocks' internal labels are `L<offset>`. `match.py` must stay green
+- Names are done but for the 9 write-only globals. Open: the asm blocks'
+  internal labels (`L<offset>`), and checking the LIKELY slot fields
+  (Limit/Count/Health/Wait) per actor kind. `match.py` must stay green
   after each rename.

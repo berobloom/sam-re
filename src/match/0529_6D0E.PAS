@@ -308,8 +308,8 @@ begin
         Slots[I].DirY := 0;
         Slots[I].Anim := 1;
         Slots[I].Speed := 0;
-        Slots[I].W0C := $28;
-        Slots[I].W0E := 0;
+        Slots[I].Limit := $28;
+        Slots[I].Count := 0;
         Slots[I].Kind := $16;
         Slots[I].Free := 0;
         Slots[I].Remove := 0;
@@ -429,8 +429,8 @@ begin
       Slots[I].DirY := 0;
       Slots[I].Anim := 1;
       Slots[I].Speed := 0;
-      Slots[I].W0C := $28;
-      Slots[I].W0E := 0;
+      Slots[I].Limit := $28;
+      Slots[I].Count := 0;
       Slots[I].Kind := $17;
       Slots[I].Free := 0;
       Slots[I].Remove := 0;

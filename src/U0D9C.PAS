@@ -668,9 +668,9 @@ begin
     else
       Slots[SlotCount].Anim := $29;
     Slots[SlotCount].Speed := 2;
-    Slots[SlotCount].W0C := 0;
-    Slots[SlotCount].W0E := 0;
-    Slots[SlotCount].W10 := 3;
+    Slots[SlotCount].Limit := 0;
+    Slots[SlotCount].Count := 0;
+    Slots[SlotCount].Health := 3;
     Slots[SlotCount].Kind := $2A;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -697,8 +697,8 @@ begin
     else
       Slots[SlotCount].Anim := $15;
     Slots[SlotCount].Speed := 1;
-    Slots[SlotCount].W0C := 0;
-    Slots[SlotCount].W0E := 0;
+    Slots[SlotCount].Limit := 0;
+    Slots[SlotCount].Count := 0;
     Slots[SlotCount].Kind := 1;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -725,7 +725,7 @@ begin
     else
       Slots[SlotCount].Anim := $15;
     Slots[SlotCount].Speed := 1;
-    Slots[SlotCount].W0C := 0;
+    Slots[SlotCount].Limit := 0;
     Slots[SlotCount].Kind := 2;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -752,7 +752,7 @@ begin
     else
       Slots[SlotCount].Anim := $15;
     Slots[SlotCount].Speed := 2;
-    Slots[SlotCount].W0C := 0;
+    Slots[SlotCount].Limit := 0;
     Slots[SlotCount].Kind := 3;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -779,8 +779,8 @@ begin
     else
       Slots[SlotCount].Anim := $15;
     Slots[SlotCount].Speed := 2;
-    Slots[SlotCount].W0C := Random($32) + $32;
-    Slots[SlotCount].W0E := 0;
+    Slots[SlotCount].Limit := Random($32) + $32;
+    Slots[SlotCount].Count := 0;
     Slots[SlotCount].Kind := 4;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -807,8 +807,8 @@ begin
     else
       Slots[SlotCount].Anim := $15;
     Slots[SlotCount].Speed := 2;
-    Slots[SlotCount].W0C := Random($14) + $1E;
-    Slots[SlotCount].W0E := 0;
+    Slots[SlotCount].Limit := Random($14) + $1E;
+    Slots[SlotCount].Count := 0;
     Slots[SlotCount].Kind := 5;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -837,9 +837,9 @@ begin
     else
       Slots[SlotCount].Anim := $29;
     Slots[SlotCount].Speed := 2;
-    Slots[SlotCount].W0C := Random($14) + $1E;
-    Slots[SlotCount].W0E := 0;
-    Slots[SlotCount].W10 := 3;
+    Slots[SlotCount].Limit := Random($14) + $1E;
+    Slots[SlotCount].Count := 0;
+    Slots[SlotCount].Health := 3;
     Slots[SlotCount].Kind := $1E;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -868,10 +868,10 @@ begin
     else
       Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 2;
-    Slots[SlotCount].W0C := $3C;
-    Slots[SlotCount].W0E := 0;
-    Slots[SlotCount].W10 := 3;
-    Slots[SlotCount].W12 := Random($14) + $3C;
+    Slots[SlotCount].Limit := $3C;
+    Slots[SlotCount].Count := 0;
+    Slots[SlotCount].Health := 3;
+    Slots[SlotCount].Wait := Random($14) + $3C;
     Slots[SlotCount].Kind := $1F;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -892,7 +892,7 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := 3;
+    Slots[SlotCount].Limit := 3;
     Slots[SlotCount].Kind := $20;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -921,9 +921,9 @@ begin
     else
       Slots[SlotCount].Anim := $15;
     Slots[SlotCount].Speed := 2;
-    Slots[SlotCount].W0C := Random($14) + $1E;
-    Slots[SlotCount].W0E := 0;
-    Slots[SlotCount].W10 := 3;
+    Slots[SlotCount].Limit := Random($14) + $1E;
+    Slots[SlotCount].Count := 0;
+    Slots[SlotCount].Health := 3;
     Slots[SlotCount].Kind := $21;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -950,9 +950,9 @@ begin
     else
       Slots[SlotCount].Anim := $15;
     Slots[SlotCount].Speed := 2;
-    Slots[SlotCount].W0C := 0;
-    Slots[SlotCount].W0E := 0;
-    Slots[SlotCount].W10 := 3;
+    Slots[SlotCount].Limit := 0;
+    Slots[SlotCount].Count := 0;
+    Slots[SlotCount].Health := 3;
     Slots[SlotCount].Kind := $22;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -973,9 +973,9 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := 0;
-    Slots[SlotCount].W0E := 0;
-    Slots[SlotCount].W10 := 3;
+    Slots[SlotCount].Limit := 0;
+    Slots[SlotCount].Count := 0;
+    Slots[SlotCount].Health := 3;
     Slots[SlotCount].Kind := $23;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -996,9 +996,9 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := 0;
-    Slots[SlotCount].W0E := $A;
-    Slots[SlotCount].W10 := $A;
+    Slots[SlotCount].Limit := 0;
+    Slots[SlotCount].Count := $A;
+    Slots[SlotCount].Health := $A;
     Slots[SlotCount].Kind := $24;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1022,10 +1022,10 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 2;
-    Slots[SlotCount].W0C := Random($14) + $1E;
-    Slots[SlotCount].W0E := 0;
-    Slots[SlotCount].W10 := 3;
-    Slots[SlotCount].W12 := Random($32) + $64;
+    Slots[SlotCount].Limit := Random($14) + $1E;
+    Slots[SlotCount].Count := 0;
+    Slots[SlotCount].Health := 3;
+    Slots[SlotCount].Wait := Random($32) + $64;
     Slots[SlotCount].Kind := $26;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1054,10 +1054,10 @@ begin
     else
       Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 2;
-    Slots[SlotCount].W0C := $3C;
-    Slots[SlotCount].W0E := 0;
-    Slots[SlotCount].W10 := 3;
-    Slots[SlotCount].W12 := Random($14) + $3C;
+    Slots[SlotCount].Limit := $3C;
+    Slots[SlotCount].Count := 0;
+    Slots[SlotCount].Health := 3;
+    Slots[SlotCount].Wait := Random($14) + $3C;
     Slots[SlotCount].Kind := $27;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1076,10 +1076,10 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := 0;
-    Slots[SlotCount].W0E := 0;
-    Slots[SlotCount].W10 := 0;
-    Slots[SlotCount].W12 := 0;
+    Slots[SlotCount].Limit := 0;
+    Slots[SlotCount].Count := 0;
+    Slots[SlotCount].Health := 0;
+    Slots[SlotCount].Wait := 0;
     Slots[SlotCount].Kind := $29;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1103,8 +1103,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 2;
-    Slots[SlotCount].W0C := 2;
-    Slots[SlotCount].W0E := $B;
+    Slots[SlotCount].Limit := 2;
+    Slots[SlotCount].Count := $B;
     Slots[SlotCount].Kind := 6;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1125,8 +1125,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := Random($14) + $37;
-    Slots[SlotCount].W0E := 0;
+    Slots[SlotCount].Limit := Random($14) + $37;
+    Slots[SlotCount].Count := 0;
     Slots[SlotCount].Kind := $A;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1147,8 +1147,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := Random($14) + $37;
-    Slots[SlotCount].W0E := 0;
+    Slots[SlotCount].Limit := Random($14) + $37;
+    Slots[SlotCount].Count := 0;
     Slots[SlotCount].Kind := $B;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1169,8 +1169,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := Random($14) + $37;
-    Slots[SlotCount].W0E := 0;
+    Slots[SlotCount].Limit := Random($14) + $37;
+    Slots[SlotCount].Count := 0;
     Slots[SlotCount].Kind := $C;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1191,8 +1191,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := Random($14) + $37;
-    Slots[SlotCount].W0E := 0;
+    Slots[SlotCount].Limit := Random($14) + $37;
+    Slots[SlotCount].Count := 0;
     Slots[SlotCount].Kind := $D;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1217,8 +1217,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := $1E;
-    Slots[SlotCount].W0E := Random($1E);
+    Slots[SlotCount].Limit := $1E;
+    Slots[SlotCount].Count := Random($1E);
     Slots[SlotCount].Kind := $F;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1243,8 +1243,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := $1E;
-    Slots[SlotCount].W0E := Random($1E);
+    Slots[SlotCount].Limit := $1E;
+    Slots[SlotCount].Count := Random($1E);
     Slots[SlotCount].Kind := $10;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1263,8 +1263,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := $1E;
-    Slots[SlotCount].W0E := Random($1E);
+    Slots[SlotCount].Limit := $1E;
+    Slots[SlotCount].Count := Random($1E);
     Slots[SlotCount].Kind := $11;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1283,8 +1283,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := $1E;
-    Slots[SlotCount].W0E := Random($1E);
+    Slots[SlotCount].Limit := $1E;
+    Slots[SlotCount].Count := Random($1E);
     Slots[SlotCount].Kind := $12;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1303,8 +1303,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := Random($12) + 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := 0;
-    Slots[SlotCount].W0E := 5;
+    Slots[SlotCount].Limit := 0;
+    Slots[SlotCount].Count := 5;
     Slots[SlotCount].Kind := $2B;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1323,8 +1323,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := 0;
-    Slots[SlotCount].W0E := 2;
+    Slots[SlotCount].Limit := 0;
+    Slots[SlotCount].Count := 2;
     Slots[SlotCount].Kind := $2C;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1343,8 +1343,8 @@ begin
     Slots[SlotCount].DirY := 0;
     Slots[SlotCount].Anim := 1;
     Slots[SlotCount].Speed := 0;
-    Slots[SlotCount].W0C := 0;
-    Slots[SlotCount].W0E := 2;
+    Slots[SlotCount].Limit := 0;
+    Slots[SlotCount].Count := 2;
     Slots[SlotCount].Kind := $2C;
     Slots[SlotCount].Free := 0;
     Slots[SlotCount].Remove := 0;
@@ -1605,8 +1605,8 @@ begin
         Slots[SlotCount].DirY := 0;
         Slots[SlotCount].Anim := 1;
         Slots[SlotCount].Speed := 1;
-        Slots[SlotCount].W0C := 0;
-        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Limit := 0;
+        Slots[SlotCount].Count := 0;
         Slots[SlotCount].Kind := $14;
         Slots[SlotCount].Free := 0;
         Slots[SlotCount].Remove := 0;
@@ -1637,8 +1637,8 @@ begin
         Slots[SlotCount].DirY := 0;
         Slots[SlotCount].Anim := 1;
         Slots[SlotCount].Speed := 1;
-        Slots[SlotCount].W0C := 0;
-        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Limit := 0;
+        Slots[SlotCount].Count := 0;
         Slots[SlotCount].Kind := $15;
         Slots[SlotCount].Free := 0;
         Slots[SlotCount].Remove := 0;
@@ -1848,8 +1848,8 @@ begin
         Slots[SlotCount].DirY := 0;
         Slots[SlotCount].Anim := 1;
         Slots[SlotCount].Speed := 0;
-        Slots[SlotCount].W0C := 0;
-        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Limit := 0;
+        Slots[SlotCount].Count := 0;
         Slots[SlotCount].Kind := $1A;
         Slots[SlotCount].Free := 0;
         Slots[SlotCount].Remove := 0;
@@ -1999,8 +1999,8 @@ begin
         Slots[SlotCount].DirY := 0;
         Slots[SlotCount].Anim := 1;
         Slots[SlotCount].Speed := 0;
-        Slots[SlotCount].W0C := 0;
-        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Limit := 0;
+        Slots[SlotCount].Count := 0;
         Slots[SlotCount].Kind := $1B;
         Slots[SlotCount].Free := 0;
         Slots[SlotCount].Remove := 0;
@@ -2024,8 +2024,8 @@ begin
         Slots[SlotCount].DirY := 0;
         Slots[SlotCount].Anim := 1;
         Slots[SlotCount].Speed := 2;
-        Slots[SlotCount].W0C := 0;
-        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Limit := 0;
+        Slots[SlotCount].Count := 0;
         Slots[SlotCount].Kind := $1C;
         Slots[SlotCount].Free := 0;
         Slots[SlotCount].Remove := 0;
@@ -2054,7 +2054,7 @@ begin
       Slots[1].DirY := 0;
       Slots[1].Anim := 1;
       Slots[1].Speed := 2;
-      Slots[1].W0C := 0;
+      Slots[1].Limit := 0;
       Slots[1].Kind := $63;
       Slots[1].Free := 0;
       Slots[1].Remove := 0;
@@ -2108,10 +2108,10 @@ begin
     Slots[I].DirY := 0;
     Slots[I].Anim := 1;
     Slots[I].Speed := 1;
-    Slots[I].W0C := 0;
-    Slots[I].W0E := 0;
-    Slots[I].W10 := 0;
-    Slots[I].W12 := 0;
+    Slots[I].Limit := 0;
+    Slots[I].Count := 0;
+    Slots[I].Health := 0;
+    Slots[I].Wait := 0;
     Slots[I].Kind := 1;
     Slots[I].Free := 1;
     Slots[I].Remove := 1;
@@ -2127,7 +2127,7 @@ begin
     Shots[I].DirY := 0;
     Shots[I].Anim := 1;
     Shots[I].Speed := 8;
-    Shots[I].W0C := 0;
+    Shots[I].Limit := 0;
     Shots[I].Kind := 1;
     Shots[I].Free := 1;
     Shots[I].Remove := 0;

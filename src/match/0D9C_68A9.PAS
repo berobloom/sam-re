@@ -252,8 +252,8 @@ begin
         Slots[SlotCount].DirY := 0;
         Slots[SlotCount].Anim := 1;
         Slots[SlotCount].Speed := 1;
-        Slots[SlotCount].W0C := 0;
-        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Limit := 0;
+        Slots[SlotCount].Count := 0;
         Slots[SlotCount].Kind := $14;
         Slots[SlotCount].Free := 0;
         Slots[SlotCount].Remove := 0;
@@ -284,8 +284,8 @@ begin
         Slots[SlotCount].DirY := 0;
         Slots[SlotCount].Anim := 1;
         Slots[SlotCount].Speed := 1;
-        Slots[SlotCount].W0C := 0;
-        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Limit := 0;
+        Slots[SlotCount].Count := 0;
         Slots[SlotCount].Kind := $15;
         Slots[SlotCount].Free := 0;
         Slots[SlotCount].Remove := 0;
@@ -495,8 +495,8 @@ begin
         Slots[SlotCount].DirY := 0;
         Slots[SlotCount].Anim := 1;
         Slots[SlotCount].Speed := 0;
-        Slots[SlotCount].W0C := 0;
-        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Limit := 0;
+        Slots[SlotCount].Count := 0;
         Slots[SlotCount].Kind := $1A;
         Slots[SlotCount].Free := 0;
         Slots[SlotCount].Remove := 0;
@@ -646,8 +646,8 @@ begin
         Slots[SlotCount].DirY := 0;
         Slots[SlotCount].Anim := 1;
         Slots[SlotCount].Speed := 0;
-        Slots[SlotCount].W0C := 0;
-        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Limit := 0;
+        Slots[SlotCount].Count := 0;
         Slots[SlotCount].Kind := $1B;
         Slots[SlotCount].Free := 0;
         Slots[SlotCount].Remove := 0;
@@ -671,8 +671,8 @@ begin
         Slots[SlotCount].DirY := 0;
         Slots[SlotCount].Anim := 1;
         Slots[SlotCount].Speed := 2;
-        Slots[SlotCount].W0C := 0;
-        Slots[SlotCount].W0E := 0;
+        Slots[SlotCount].Limit := 0;
+        Slots[SlotCount].Count := 0;
         Slots[SlotCount].Kind := $1C;
         Slots[SlotCount].Free := 0;
         Slots[SlotCount].Remove := 0;
@@ -701,7 +701,7 @@ begin
       Slots[1].DirY := 0;
       Slots[1].Anim := 1;
       Slots[1].Speed := 2;
-      Slots[1].W0C := 0;
+      Slots[1].Limit := 0;
       Slots[1].Kind := $63;
       Slots[1].Free := 0;
       Slots[1].Remove := 0;

@@ -28,10 +28,10 @@ begin
     Slots[I].DirY := 0;
     Slots[I].Anim := 1;
     Slots[I].Speed := 1;
-    Slots[I].W0C := 0;
-    Slots[I].W0E := 0;
-    Slots[I].W10 := 0;
-    Slots[I].W12 := 0;
+    Slots[I].Limit := 0;
+    Slots[I].Count := 0;
+    Slots[I].Health := 0;
+    Slots[I].Wait := 0;
     Slots[I].Kind := 1;
     Slots[I].Free := 1;
     Slots[I].Remove := 1;
@@ -47,7 +47,7 @@ begin
     Shots[I].DirY := 0;
     Shots[I].Anim := 1;
     Shots[I].Speed := 8;
-    Shots[I].W0C := 0;
+    Shots[I].Limit := 0;
     Shots[I].Kind := 1;
     Shots[I].Free := 1;
     Shots[I].Remove := 0;

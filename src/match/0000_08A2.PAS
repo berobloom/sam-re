@@ -106,8 +106,8 @@ begin
         Shots[I].DirY := 0;
         Shots[I].Anim := 1;
         Shots[I].Speed := 8;
-        Shots[I].W0C := 0;
-        Shots[I].W0E := 0;
+        Shots[I].Limit := 0;
+        Shots[I].Count := 0;
         Shots[I].Kind := 7;
         Shots[I].Free := 0;
         Shots[I].Remove := 0;

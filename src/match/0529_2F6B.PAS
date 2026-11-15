@@ -39,7 +39,7 @@ begin
               Score := Score + $64;
               StatusCamX := -1;
               Slots[I].Kind := $1389;
-              Slots[I].W0E := $10;
+              Slots[I].Count := $10;
               Slots[I].Sprite := $A7;
               Slots[I].Anim := 1;
               Slots[I].Speed := 0;
@@ -56,7 +56,7 @@ begin
                 Score := Score + $3E8;
                 StatusCamX := -1;
                 Slots[I].Kind := $1389;
-                Slots[I].W0E := $10;
+                Slots[I].Count := $10;
                 Slots[I].Sprite := $AA;
                 Slots[I].Anim := 1;
                 Slots[I].Speed := 0;
@@ -74,8 +74,8 @@ begin
               Slots[I].Y := $10;
               Slots[I].PrevY := $10;
             end;
-            Dec(Slots[I].W0E);
-            if Slots[I].W0E <= 0 then
+            Dec(Slots[I].Count);
+            if Slots[I].Count <= 0 then
             begin
               Slots[I].Remove := 1;
               DrawBack(NewX, NewY);
@@ -152,8 +152,8 @@ begin
             begin
               PlaySound(8);
               Slots[I].MaskFrames := 3;
-              Dec(Slots[I].W10);
-              if Slots[I].W10 = 0 then
+              Dec(Slots[I].Health);
+              if Slots[I].Health = 0 then
               begin
                 PlaySound($13);
                 Slots[I].Remove := 1;
@@ -210,13 +210,13 @@ begin
             else
               if Slots[I].Anim > $3B then
                 Slots[I].Anim := $29;
-            if Slots[I].W0E > 0 then
-              Dec(Slots[I].W0E);
-            if (Slots[I].W0E = 0) and (Slots[I].Y shr 4 = (Slots[1].Y + 8) shr 4)
+            if Slots[I].Count > 0 then
+              Dec(Slots[I].Count);
+            if (Slots[I].Count = 0) and (Slots[I].Y shr 4 = (Slots[1].Y + 8) shr 4)
                 and ((Slots[I].X < Slots[1].X) and (Slots[I].DirX = 1) or (Slots[I].X > Slots[1].X)
                 and (Slots[I].DirX = -1)) then
             begin
-              Slots[I].W0E := $46;
+              Slots[I].Count := $46;
               SpawnObject(Slots[I].X, Slots[I].Y, Slots[I].DirX, 4, $339);
             end;
             Slots[I].X := NewX;
@@ -239,8 +239,8 @@ begin
                   Slots[I].Anim := $29;
                 end;
               Slots[I].MaskFrames := 3;
-              Dec(Slots[I].W10);
-              if Slots[I].W10 = 0 then
+              Dec(Slots[I].Health);
+              if Slots[I].Health = 0 then
               begin
                 PlaySound($13);
                 Score := Score + $3E8;
@@ -289,20 +289,20 @@ begin
                   Slots[I].DirX := -1;
                   Slots[I].Anim := 1;
                 end;
-            Inc(Slots[I].W0E);
-            if Slots[I].W0E >= Slots[I].W0C then
+            Inc(Slots[I].Count);
+            if Slots[I].Count >= Slots[I].Limit then
             begin
-              Slots[I].W0E := 0;
+              Slots[I].Count := 0;
               if (Slots[I].Y shr 4 = (Slots[1].Y + 8) shr 4) and ((Slots[I].X < Slots[1].X)
                   and (Slots[I].DirX = 1) or (Slots[I].X > Slots[1].X) and (Slots[I].DirX = -1)) then
                 SpawnObject(Slots[I].X, Slots[I].Y, Slots[I].DirX, 4, $33B);
             end;
-            if Slots[I].W12 > 0 then
-              Dec(Slots[I].W12);
-            if Slots[I].W12 = 1 then
-              Slots[I].W10 := $1E
+            if Slots[I].Wait > 0 then
+              Dec(Slots[I].Wait);
+            if Slots[I].Wait = 1 then
+              Slots[I].Health := $1E
             else
-              if Slots[I].W12 = 0 then
+              if Slots[I].Wait = 0 then
               begin
                 Inc(Slots[I].Anim);
                 if Slots[I].DirX = -1 then
@@ -313,9 +313,9 @@ begin
                 else
                   if Slots[I].Anim > $4F then
                     Slots[I].Anim := $4F;
-                Dec(Slots[I].W10);
-                if Slots[I].W10 = 0 then
-                  Slots[I].W12 := $50;
+                Dec(Slots[I].Health);
+                if Slots[I].Health = 0 then
+                  Slots[I].Wait := $50;
               end
               else
               begin
@@ -371,7 +371,7 @@ begin
                     Slots[I].DirX := -1;
                     Slots[I].Anim := 1;
                   end;
-                if Slots[I].W12 = 0 then
+                if Slots[I].Wait = 0 then
                 begin
                   PlaySound($13);
                   Score := Score + $3E8;
@@ -396,9 +396,9 @@ begin
               Slots[I].Anim := 1;
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
-              Dec(Slots[I].W0C);
+              Dec(Slots[I].Limit);
               Slots[I].MaskFrames := 3;
-              if Slots[I].W0C <= 0 then
+              if Slots[I].Limit <= 0 then
               begin
                 for Col1 := 0 to $F do
                   SetPalReg(Col1, $C);
@@ -408,7 +408,7 @@ begin
                 Score := Score + $1388;
                 StatusCamX := -1;
                 Slots[I].Kind := $1389;
-                Slots[I].W0E := $10;
+                Slots[I].Count := $10;
                 Slots[I].Sprite := $AC;
                 Slots[I].Anim := 1;
                 DrawTileB(Gfx[10]^.Tile[22], Slots[I].X, Slots[I].Y + $10);
@@ -440,23 +440,23 @@ begin
             else
               if Slots[I].Anim > $27 then
                 Slots[I].Anim := $15;
-            Inc(Slots[I].W0E);
-            if Slots[I].W0E = Slots[I].W0C then
+            Inc(Slots[I].Count);
+            if Slots[I].Count = Slots[I].Limit then
               if (Slots[I].X - $10 < Slots[1].X) and (Slots[I].X + $10 > Slots[1].X)
                   and (Slots[I].Y < Slots[1].Y) then
               begin
-                Slots[I].W0E := 0;
+                Slots[I].Count := 0;
                 SpawnObject(NewX, Slots[I].Y + 8, 1, 8, $C7);
               end
               else
-                Dec(Slots[I].W0E);
+                Dec(Slots[I].Count);
             Slots[I].X := NewX;
             HitPlayer(Slots[I].X, Slots[I].Y);
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
               Slots[I].MaskFrames := 3;
-              Dec(Slots[I].W10);
-              if Slots[I].W10 <= 0 then
+              Dec(Slots[I].Health);
+              if Slots[I].Health <= 0 then
               begin
                 PlaySound($13);
                 Score := Score + $1F4;
@@ -465,7 +465,7 @@ begin
                 DrawBack(Slots[I].X - $10, Slots[I].Y);
                 DrawBack(Slots[I].X + $10, Slots[I].Y);
                 Slots[I].Kind := $1389;
-                Slots[I].W0E := $10;
+                Slots[I].Count := $10;
                 Slots[I].Sprite := $A9;
                 Slots[I].Anim := 1;
                 Slots[I].X := (Slots[I].X + 8) and $FFF0;
@@ -519,8 +519,8 @@ begin
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
               Slots[I].MaskFrames := 3;
-              Dec(Slots[I].W10);
-              if Slots[I].W10 <= 0 then
+              Dec(Slots[I].Health);
+              if Slots[I].Health <= 0 then
               begin
                 PlaySound($13);
                 Score := Score + $3E8;
@@ -529,7 +529,7 @@ begin
                 DrawBack(Slots[I].X - $10, Slots[I].Y);
                 DrawBack(Slots[I].X + $10, Slots[I].Y);
                 Slots[I].Kind := $1389;
-                Slots[I].W0E := $10;
+                Slots[I].Count := $10;
                 Slots[I].Sprite := $AA;
                 Slots[I].Anim := 1;
                 Slots[I].X := (Slots[I].X + 8) and $FFF0;
@@ -552,14 +552,14 @@ begin
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
               Slots[I].MaskFrames := 3;
-              Dec(Slots[I].W10);
-              if Slots[I].W10 <= 0 then
+              Dec(Slots[I].Health);
+              if Slots[I].Health <= 0 then
               begin
                 PlaySound($13);
                 Score := Score + $3E8;
                 StatusCamX := -1;
                 Slots[I].Kind := $1389;
-                Slots[I].W0E := $10;
+                Slots[I].Count := $10;
                 Slots[I].Sprite := $AA;
                 Slots[I].Anim := 1;
                 Slots[I].X := (Slots[I].X + 8) and $FFF0;
@@ -574,15 +574,15 @@ begin
           $24:
           begin
             Slots[I].X := NewX;
-            Inc(Slots[I].W0E);
-            if Slots[I].W0E >= Slots[I].W10 then
+            Inc(Slots[I].Count);
+            if Slots[I].Count >= Slots[I].Health then
             begin
-              Slots[I].W0E := Slots[I].W10;
+              Slots[I].Count := Slots[I].Health;
               if (Slots[1].X + 8 >= Slots[I].X - 4) and (Slots[1].X + 8 <= Slots[I].X + 4)
                   and (Slots[I].Y >= Slots[1].Y) and (VGunOff = 0) then
               begin
                 SpawnObject(Slots[I].X, Slots[I].Y + 8, -1, 8, $72);
-                Slots[I].W0E := 0;
+                Slots[I].Count := 0;
               end;
             end;
           end;
@@ -664,17 +664,17 @@ begin
             Inc(Slots[I].Anim);
             if Slots[I].Anim > $13 then
               Slots[I].Anim := 1;
-            if Slots[I].W12 > 0 then
-              Dec(Slots[I].W12);
-            if Slots[I].W12 = 0 then
+            if Slots[I].Wait > 0 then
+              Dec(Slots[I].Wait);
+            if Slots[I].Wait = 0 then
             begin
-              if Slots[I].W0E = 0 then
+              if Slots[I].Count = 0 then
                 SpawnObject(Slots[I].X, Slots[I].Y + $10, 1, 0, $89);
-              Inc(Slots[I].W0E);
-              if Slots[I].W0E = Slots[I].W0C then
+              Inc(Slots[I].Count);
+              if Slots[I].Count = Slots[I].Limit then
               begin
-                Slots[I].W0E := 0;
-                Slots[I].W12 := $6E;
+                Slots[I].Count := 0;
+                Slots[I].Wait := $6E;
               end;
             end
             else
@@ -709,20 +709,20 @@ begin
                   Slots[I].DirX := -1;
                   Slots[I].Anim := 1;
                 end;
-            Inc(Slots[I].W0E);
-            if Slots[I].W0E >= Slots[I].W0C then
+            Inc(Slots[I].Count);
+            if Slots[I].Count >= Slots[I].Limit then
             begin
-              Slots[I].W0E := 0;
+              Slots[I].Count := 0;
               if (Slots[I].Y shr 4 = (Slots[1].Y + 8) shr 4) and ((Slots[I].X < Slots[1].X)
                   and (Slots[I].DirX = 1) or (Slots[I].X > Slots[1].X) and (Slots[I].DirX = -1)) then
                 SpawnObject(Slots[I].X, Slots[I].Y, Slots[I].DirX, 4, $33B);
             end;
-            if Slots[I].W12 > 0 then
-              Dec(Slots[I].W12);
-            if Slots[I].W12 = 1 then
-              Slots[I].W10 := $1E
+            if Slots[I].Wait > 0 then
+              Dec(Slots[I].Wait);
+            if Slots[I].Wait = 1 then
+              Slots[I].Health := $1E
             else
-              if Slots[I].W12 = 0 then
+              if Slots[I].Wait = 0 then
               begin
                 Inc(Slots[I].Anim);
                 if Slots[I].DirX = -1 then
@@ -733,9 +733,9 @@ begin
                 else
                   if Slots[I].Anim > $DB then
                     Slots[I].Anim := $DB;
-                Dec(Slots[I].W10);
-                if Slots[I].W10 = 0 then
-                  Slots[I].W12 := $50;
+                Dec(Slots[I].Health);
+                if Slots[I].Health = 0 then
+                  Slots[I].Wait := $50;
               end
               else
               begin
@@ -791,7 +791,7 @@ begin
                     Slots[I].DirX := -1;
                     Slots[I].Anim := 1;
                   end;
-                if Slots[I].W12 = 0 then
+                if Slots[I].Wait = 0 then
                 begin
                   PlaySound($13);
                   Score := Score + $3E8;
@@ -814,8 +814,8 @@ begin
             Inc(Slots[I].Anim);
             if Slots[I].Anim > $13 then
               Slots[I].Anim := 1;
-            Dec(Slots[I].W0E);
-            if Slots[I].W0E = 0 then
+            Dec(Slots[I].Count);
+            if Slots[I].Count = 0 then
             begin
               Slots[I].Remove := 1;
               DrawBack(NewX, NewY);
@@ -903,7 +903,7 @@ begin
                 Score := Score + $1388;
                 StatusCamX := -1;
                 Slots[I].Kind := $1389;
-                Slots[I].W0E := $10;
+                Slots[I].Count := $10;
                 Slots[I].Sprite := $AC;
                 Slots[I].Anim := 1;
                 Slots[I].Speed := 0;
@@ -913,13 +913,13 @@ begin
             end;
           $2B:
           begin
-            Inc(Slots[I].W0C);
-            if Slots[I].W0C = Slots[I].W0E then
+            Inc(Slots[I].Limit);
+            if Slots[I].Limit = Slots[I].Count then
             begin
               Inc(Slots[I].Anim);
               if Slots[I].Anim > $13 then
                 Slots[I].Anim := Random(5) + 1;
-              Slots[I].W0C := 0;
+              Slots[I].Limit := 0;
             end;
           end;
           $2C:
@@ -953,7 +953,7 @@ begin
         PlaySound(7);
         Shots[I].Sprite := $272;
         Shots[I].Speed := 0;
-        Shots[I].W0E := 7;
+        Shots[I].Count := 7;
       end;
       Shots[I].X := NewX;
     end;
