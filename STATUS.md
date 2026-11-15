@@ -13,7 +13,7 @@ keep a session diary here.
   25E6 (text windows: MakeAttr, Replicate, ClearArea, Box, Window,
   WriteCenter, WriteVert over an asm FastWrite), 2643 (Genus PCX Toolkit:
   init + 8.9 KB asm with 106 segment fixups + its typed constants), 1802
-  (menus, text windows, window font, save/load, status line; 50 routines incl.
+  (menus, text windows, window font, save/load, status line; 52 routines incl.
   the nested ones of RedefineKeys). The data segment is identical. 83254 of
   185405 routine bytes (44.90%).
 - Data: per-unit ranges in the recipe; a unit's hand-written variables go in
