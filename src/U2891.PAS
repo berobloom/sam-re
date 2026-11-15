@@ -109,8 +109,8 @@ var
   B6EE5, B6EE6, B6EE7, B6EE8, B6EE9, B6EEA, B6EEB, B6EEC, B6EED, B6EEE, B6EEF, B6EF0, B6EF1: Byte; { @6EE5 }
   P_6EF3: array[1..1] of Byte;
   B6EF3: Byte; { @6EF3 }
-  P_70E0: array[1..492] of Byte;
-  KeyUp, KeyDown, KeyLeft, KeyRight, KeyJump, KeyFire: Integer; { @70E0 }
+  NameUp, NameDown, NameFire, NameRight, NameJump, NameLeft: String[80]; { @6EF4; key names (redefine menu) }
+  KeyUp, KeyDown, KeyLeft, KeyRight, KeyFire, KeyJump: Integer; { @70E0; SAM1RE menus.md: 70E8 fire }
   W70EC: Integer; { @70EC }
   W70EE: Integer; { @70EE }
 var P_2891_END: array[1..16] of Byte;
@@ -145,8 +145,8 @@ begin
   KeyDown := $50;
   KeyLeft := $4B;
   KeyRight := $4D;
-  KeyJump := $38;
-  KeyFire := $1D;
+  KeyFire := $38;
+  KeyJump := $1D;
   for I := 1 to 10 do
   begin
     case I of

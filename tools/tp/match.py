@@ -76,8 +76,13 @@ def main(argv):
     for u in rec['units']:
         seg = int(u['seg'], 16)
         obj_asm = u.get('obj_start') and os.path.exists(os.path.join(ROOT, 'src', 'match', 'OBJ%s.ASM' % u['seg']))
+        md = os.path.join(ROOT, 'src', 'match')
+        nested = {x for fn in os.listdir(md) if fn.startswith(u['seg'] + '_') and fn.endswith('.PAS')
+                  for m in re.findall(r'\{ nested: ([0-9A-F ]+) \}', open(os.path.join(md, fn)).read())
+                  for x in m.split()}                   # procedures declared inside a matched one
         for f in u['functions']:
             frag = os.path.exists(os.path.join(ROOT, 'src', 'match', '%s_%s.PAS' % (u['seg'], f['addr'][5:])))
+            frag = frag or f['addr'][5:] in nested
             frag = frag or bool(obj_asm and int(f['addr'][5:], 16) >= int(u['obj_start'], 16))
             if f['status'] != 'matched' and not frag:
                 continue

@@ -260,6 +260,15 @@ so unknown variables between known ones need no declaration yet.
 - File I/O without `call 2CD1:020E` after each Reset/Read/Close was compiled
   with `{$I-}`: wrap the routine in `{$I-}`...`{$I+}` (1802:3832 LoadGraphics).
   A typed-file `Read(F, X)` is `call 2CD1:108C; add sp,4`.
+- A caller that does `push bp` before the call passes a static link: the
+  callee is a nested procedure (it reads the parent's locals as
+  `mov di,[bp+6]; mov ax,ss:[di-N]`). TP emits nested procedures, each with its
+  literals, before the parent's body, in declaration order. Match them inside
+  the parent's file with `{ nested: OFF OFF }` (no cuts there; match.py checks
+  them) and indent them, so the generator's header and `begin` detection see
+  only the parent (1802:88AF RedefineKeys with 850B, 8781). A nested procedure
+  that reads nothing of its parent also matches as a top-level one with one
+  unused word parameter, which is how 8781 was first matched.
 
 ## 7. Names, after the match, with their source
 

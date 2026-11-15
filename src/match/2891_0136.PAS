@@ -20,8 +20,8 @@ begin
   KeyDown := $50;
   KeyLeft := $4B;
   KeyRight := $4D;
-  KeyJump := $38;
-  KeyFire := $1D;
+  KeyFire := $38;
+  KeyJump := $1D;
   for I := 1 to 10 do
   begin
     case I of

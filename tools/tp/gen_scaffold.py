@@ -58,6 +58,7 @@ def regions(u, rec):
         cuts = [c for c in cuts if c < init]
     for off, frm in lits.items():                       # a routine's string literals precede its code
         cuts = sorted((set(cuts) - {off}) | {frm})
+    cuts = sorted(set(cuts) - nested_starts(seg))       # nested routines are part of their parent's region
     d = os.path.join(SRC, 'match')                      # `{ to: XXXX }`: a fragment ends there, the next
     for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:   # (unmatched) routine's literals follow
         if f.startswith(seg + '_') and f.endswith('.PAS'):
@@ -175,6 +176,19 @@ def literal_starts(seg):
             m = re.search(r'\{ from: ([0-9A-F]{4}) \}', open(os.path.join(d, f)).read())
             if m:
                 out[h(f[5:9])] = h(m.group(1))
+    return out
+
+
+def nested_starts(seg):
+    """routine offsets named by `{ nested: XXXX XXXX }` in a fragment: procedures declared inside it (TP emits
+    them, with their literals, before the parent's body), so they are not cuts of their own"""
+    out = set()
+    d = os.path.join(SRC, 'match')
+    for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+        if f.startswith(seg + '_') and f.endswith('.PAS'):
+            m = re.search(r'\{ nested: ([0-9A-F ]+) \}', open(os.path.join(d, f)).read())
+            if m:
+                out |= {h(x) for x in m.group(1).split()}
     return out
 
 
@@ -334,9 +348,13 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         if g and g['far']:
             L.append('{$F+}')
         L.append(g['head'] if g else 'procedure %s%s;' % (r[1], '(x: KRec)' if r[1] == valpar else ''))
-        if g and g['lit'] > 1:                      # a string literal of the same size before the code, as the
-            L += ['var', '  Q_: String;', 'begin',     # original (a 1-char constant is a Char unless compared
-                  "  if Q_ = '%s' then;" % ('x' * (g['lit'] - 1))]           # with a string)
+        if g and g['lit'] > 1:                      # string literals of the same total size before the code, as
+            L += ['var', '  Q_: String;', 'begin']  # the original (a 1-char constant is a Char unless compared
+            n, ch = g['lit'], 0                     # with a string); distinct ones of <= 100 bytes, so no line
+            while n > 0:                            # passes 127 characters and TP merges none
+                k = min(n, 100) - (1 if n - min(n, 100) == 1 else 0)
+                L.append("  if Q_ = '%s' then;" % (chr(ord('a') + ch) * (k - 1)))
+                n, ch = n - k, ch + 1
         else:
             L.append('begin')
         L += body(r[1], calls if r[1] == keeper else [], dnames if r[1] == keeper else [])
