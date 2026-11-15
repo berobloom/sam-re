@@ -116,8 +116,9 @@ var
   W6D86: Integer; { @6D86 }
   P_6D8C: array[1..4] of Byte;
   B6D8C: Byte; { @6D8C }
-  JoyCenterX, JoyCenterY: Word; { @6D8E }
-  P_6D98: array[1..6] of Byte;
+  JoyCenterX, JoyCenterY: Integer; { @6D8E; signed compares in main 0000:08A2 }
+  JoyX, JoyY: Integer; { @6D92 }
+  JoyMovedX, JoyMovedY: Boolean; { @6D96 }
   Gfx: array[1..16] of PGfx; { @6D98 }
   GfxFile: file of TGfx; { @6DD8 }
   GfxSmall: array[1..3] of PGfxSmall; { @6E58 }

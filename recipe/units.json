@@ -47,12 +47,36 @@
    "obj_start": "51CC",
    "functions": [
     {
-     "addr": "0000:08A2",
-     "size": 1477,
-     "reached": 835,
+     "addr": "0000:0000",
+     "size": 2210,
+     "reached": 2210,
      "name": null,
      "src": null,
      "status": "unmatched"
+    },
+    {
+     "addr": "0000:08A2",
+     "size": 835,
+     "reached": 835,
+     "name": null,
+     "src": null,
+     "status": "matched"
+    },
+    {
+     "addr": "0000:0BE5",
+     "size": 590,
+     "reached": 590,
+     "name": null,
+     "src": null,
+     "status": "unmatched"
+    },
+    {
+     "addr": "0000:0E33",
+     "size": 52,
+     "reached": 52,
+     "name": null,
+     "src": null,
+     "status": "matched"
     },
     {
      "addr": "0000:0E67",
@@ -2253,8 +2277,6 @@
   }
  ],
  "frame_only": [
-  "0000:0BE5",
-  "0000:0E33",
   "0000:11FA",
   "25E6:0000"
  ],
