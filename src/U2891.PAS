@@ -58,17 +58,17 @@ var
   W683A: Integer; { @683A }
   B683C: Byte; { @683C }
   W683E: Integer; { @683E; counts the player's landings (0529:66B3), GUESS }
-  P_6842: array[1..2] of Byte;
+  W6840: Integer; { @6840; the number in a level's header record (0D9C:A1AE) }
   Level: Integer; { @6842 }
   W6844, W6846: Integer; { @6844 }
   P_684A: array[1..2] of Byte;
   W684A: Integer; { @684A }
   W684C, W684E, W6850: Integer; { @684C; loop variables of the text windows }
   W6852: Integer; { @6852 }
-  P_6856: array[1..2] of Byte;
+  W6854: Integer; { @6854 }
   W6856: Integer; { @6856 }
   W6858: Integer; { @6858 }
-  P_685C: array[1..2] of Byte;
+  W685A: Integer; { @685A }
   B685C: Byte; { @685C }
   CamX: Integer; { @685E }
   CamY: Integer; { @6860 }

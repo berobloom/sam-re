@@ -1,5 +1,6 @@
 { 0D9C data, DS:02BC..21FC; names: SAM1RE (../SAM level-load.md: base DS:01EC, 200 bytes a column, 8 a cell) }
 type
+  TRow = array[1..42] of Char;     { one record of SAM103.GFX: a map row, 40 chars used, encrypted }
   TCell = record                   { SAM1RE level-load.md }
     Back, Mid, Front: Integer;     { tile values }
     Solid, FlagB: Byte;            { +6 flagA (solid), +7 flagB }
