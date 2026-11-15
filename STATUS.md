@@ -7,7 +7,8 @@ keep a session diary here.
 
 - Executable: `SAM1.EXE` (MZ, LZEXE 0.91, **Turbo Pascal 5.0**, CONFIRMED);
   `findings/executables.md`.
-- **The matching decompilation is complete.** `src/` (written by
+- **The matching decompilation is complete** (`SOURCE.md`: what the source
+  is and where the game lives). `src/` (written by
   `tools/tp/gen_scaffold.py` from `src/match/`) compiles with TP 5.0 to a
   `SAM1.EXE` whose load image equals the unpacked original in all 188768
   bytes, and `tools/tp/pack.py` (LZEXE 0.91 after setting the header's
