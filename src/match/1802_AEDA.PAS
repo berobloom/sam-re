@@ -1,0 +1,86 @@
+{ src: GUESS 1802:AEDA (two ordering windows: by mail or phone, then by FAX) }
+{ from: AC68 }
+{ to: B2E1 }
+{$F+}
+procedure OrderMailFax;
+var
+  I, K: Integer;
+begin
+  ClearText;
+  I := 0;
+  Inc(I);
+  TextLines[I] := 'ORDERING THE SECRET AGENT SERIES!';
+  Inc(I);
+  TextLines[I] := '';
+  Inc(I);
+  TextLines[I] := '    Please specify disk size:';
+  Inc(I);
+  TextLines[I] := '         5.25"  or  3.5"';
+  Inc(I);
+  TextLines[I] := '';
+  Inc(I);
+  TextLines[I] := '   To order send $34, check or';
+  Inc(I);
+  TextLines[I] := '   money order (USA funds) to:';
+  Inc(I);
+  TextLines[I] := '';
+  Inc(I);
+  TextLines[I] := '         Apogee Software';
+  Inc(I);
+  TextLines[I] := '         P.O. Box 476386';
+  Inc(I);
+  TextLines[I] := '     Garland, TX 75047  (USA)';
+  Inc(I);
+  TextLines[I] := '';
+  Inc(I);
+  TextLines[I] := '     Or CALL NOW toll free:';
+  Inc(I);
+  TextLines[I] := '         1-800-GAME123';
+  Inc(I);
+  TextLines[I] := '     (Visa and MasterCard)';
+  Inc(I);
+  TextLines[I] := '';
+  Inc(I);
+  TextLines[I] := '    Continued...Press Any Key';
+  Inc(I);
+  TextLines[I] := 'END OF WINDOW';
+  MemW[0:$41C] := MemW[0:$41A];
+  K := Ord(TextWindow(True));
+  B6EEB := 1;
+  NoOp;
+  ClearText;
+  I := 0;
+  Inc(I);
+  TextLines[I] := ' USE YOUR FAX MACHINE TO ORDER!';
+  Inc(I);
+  TextLines[I] := '';
+  Inc(I);
+  TextLines[I] := 'You can now use your FAX machine';
+  Inc(I);
+  TextLines[I] := ' to order your favorite Apogee';
+  Inc(I);
+  TextLines[I] := '   games quickly and easily.';
+  Inc(I);
+  TextLines[I] := '';
+  Inc(I);
+  TextLines[I] := ' Simply print out the ORDER.FRM';
+  Inc(I);
+  TextLines[I] := '  file, fill it out and FAX it';
+  Inc(I);
+  TextLines[I] := '  to us for prompt processing.';
+  Inc(I);
+  TextLines[I] := '';
+  Inc(I);
+  TextLines[I] := '   FAX Orders: (214) 278-4670';
+  Inc(I);
+  TextLines[I] := '';
+  Inc(I);
+  TextLines[I] := '          Press Any Key';
+  Inc(I);
+  TextLines[I] := 'END OF WINDOW';
+  MemW[0:$41C] := MemW[0:$41A];
+  K := Ord(TextWindow(True));
+  B6EEB := 1;
+  NoOp;
+end;
+{$F-}
