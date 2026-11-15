@@ -12,8 +12,10 @@ keep a session diary here.
   29C3 (Jungck's graphics: Pascal init + 12 KB asm block as NASM source),
   25E6 (text windows: MakeAttr, Replicate, ClearArea, Box, Window,
   WriteCenter, WriteVert over an asm FastWrite), 2643 (Genus PCX Toolkit:
-  init + 8.9 KB asm with 106 segment fixups + its typed constants). The data
-  segment is identical. 26162 of 185405 routine bytes (14.11%).
+  init + 8.9 KB asm with 106 segment fixups + its typed constants), 1802
+  (menus, text windows, window font, save/load, status line; 50 routines incl.
+  the nested ones of RedefineKeys). The data segment is identical. 83254 of
+  185405 routine bytes (44.90%).
 - Data: per-unit ranges in the recipe; a unit's hand-written variables go in
   `src/match/<SEG>.VAR` (287F's is the first).
 - Compiler: TP 5.0 / 5.5 / 6.0 compile headless (`tools/tp/tpc.sh`); 5.0 is
@@ -30,6 +32,5 @@ keep a session diary here.
 
 ## Next
 
-Units 1802 (menus/windows), 0D9C (map/loader), 0529 (actors/AI) and main, growing 2891.VAR as their routines name more
-globals. OBJ29C3.ASM is mechanical (749 db lines where descent found no code);
+Units 0D9C (map/loader), 0529 (actors/AI) and main, growing 2891.VAR as their routines name more globals. OBJ29C3.ASM is mechanical (749 db lines where descent found no code);
 naming its routines comes later.
