@@ -3,6 +3,7 @@
   25 after (N-1)*48. The first record's three chars are the number W6840, the next is row 24 (the sheet
   row), then rows 0..23 ('*' rows repeat the row). Then the page sweep, FadeIn(20) and sound $D) }
 { from: A1A3 }
+{ interface }
 { keep: LoadLevel(0); }
 {$I-}
 {$F+}

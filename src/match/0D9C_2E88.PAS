@@ -3,7 +3,7 @@
   M N O P show done or undone by SiteDone[W685A + 2], and 'l' by B6868) }
 { from: 2E20 }
 { to: 3A59 }
-{ keep: WorldCell(0, 0, NameInput); }
+{ keep: - }
 {$F+}
 procedure WorldCell(X, Y: Integer; S: String);
 var

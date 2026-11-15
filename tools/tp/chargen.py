@@ -43,68 +43,91 @@ def lit(img, seg, off):
 
 
 def hexn(n):
+    if n >= 0x8000:                     # a 16-bit immediate into an Integer: TP takes no $FFFF there
+        return str(n - 0x10000)
     return '$%X' % n if n > 9 else str(n)
 
 
-def args(seq):
-    """SetCell's pushes -> argument texts"""
-    out, ax = [], None
-    for t in seq:
-        if t == 'push word ptr [bp + 0xc]':
-            out.append('X')
-        elif t == 'push word ptr [bp + 0xa]':
-            out.append('Y')
-        elif t.startswith('push word ptr [0x'):
-            out.append(NAMES[int(t[t.index('[') + 1:-1], 16)])
-        elif t == 'xor ax, ax':
-            ax = '0'
-        elif t == 'mov ax, word ptr [bp + 0xc]':
-            ax = 'X'
-        elif t == 'mov ax, word ptr [bp + 0xa]':
-            ax = 'Y'
-        elif t == 'dec ax':
-            ax = '%s - 1' % ax
-        elif t == 'inc ax':
-            ax = '%s + 1' % ax
-        elif t.startswith('mov ax, word ptr [0x'):
-            ax = NAMES[int(t[t.index('[') + 1:-1], 16)]
-        elif t.startswith('mov ax, ') or t.startswith('mov al, 0x') or re.match(r'mov al, \d', t):
-            ax = hexn(int(t.split(',')[1], 0))
-        elif t == 'mov al, byte ptr [bp - 0x105]':
-            ax = 'FO'
-        elif t.startswith('add ax, '):
-            ax = '%s + %s' % (ax, hexn(int(t.split(',')[1], 0)))
-        elif t.startswith('sub ax, '):
-            ax = '%s - %s' % (ax, hexn(int(t.split(',')[1], 0)))
-        elif t == 'push ax':
-            out.append(ax)
-        elif t in ('push cs', 'call 0x2c6e'):
-            pass
-        else:
-            raise ValueError(t)
+PROFILES = {   # routine -> (X, Y, FO, S) operands as tdis prints them
+    '2E88': ('word ptr [bp + 0xc]', 'word ptr [bp + 0xa]', 'byte ptr [bp - 0x105]', '[bp - 0x100]'),
+    '68A9': ('word ptr [bp - 0x2c]', 'word ptr [bp + 0xa]', 'byte ptr [bp - 0x131]', '[bp - 0x12c]'),
+}
+PX, PY, PFO, PS = PROFILES['2E88']
+XN = 'X'
+
+
+FIELDS = {0: 'W00', 2: 'X', 4: 'Y', 6: 'W06', 8: 'W08', 0xA: 'W0A', 0xC: 'W0C', 0xE: 'W0E', 0x10: 'W10',
+          0x12: 'W12', 0x14: 'W14', 0x16: 'W16', 0x18: 'W18', 0x1A: 'W1A', 0x1C: 'W1C', 0x1E: 'Free', 0x1F: 'B1F'}
+CALLS = {'call 0x2c6e': 'SetCell', 'call 0x3a91': 'SpawnActor', 'call 0x2e88': 'WorldCell',
+         'lcall 0x29c3, 0x19f9 R': 'DrawTileB'}
+NEG = {'jne': '=', 'je': '<>', 'jle': '>', 'jl': '>=', 'jg': '<=', 'jge': '<', 'jbe': '>', 'jae': '<', 'ja': '<=',
+       'jb': '>='}
+
+
+def names():
+    """DS address -> name, from the `{ @XXXX }` pins of src/match/*.VAR"""
+    out = {}
+    d = os.path.join(ROOT, 'src', 'match')
+    for f in os.listdir(d):
+        if not f.endswith('.VAR'):
+            continue
+        for l in open(os.path.join(d, f), encoding='latin1'):
+            m = re.match(r'\s*([\w, ]+):\s*([^;]+);.*\{ @([0-9A-F]{4})', l)
+            if not m:
+                continue
+            ns = [x.strip() for x in m.group(1).split(',')]
+            size = 1 if m.group(2).strip() in ('Byte', 'Boolean', 'Char') else 2
+            for k, n in enumerate(ns):
+                out[int(m.group(3), 16) + k * size] = n
     return out
 
 
-NAMES = {0x6840: 'W6840', 0x685A: 'W685A'}
+NAMES = {}
+
+
+def opnd(o):
+    if o == PX:
+        return XN
+    if o == PY:
+        return 'Y'
+    if o == PFO:
+        return 'FO'
+    m = re.match(r'(?:word|byte) ptr \[0x([0-9a-f]+)\]$', o)
+    if m:
+        return NAMES[int(m.group(1), 16)]
+    if re.match(r'(0x[0-9a-f]+|\d+)$', o):
+        return hexn(int(o, 0))
+    raise ValueError(o)
+
+
+def paren(e):
+    return '(%s)' % e if ' shl ' in e or ' shr ' in e else e
 
 
 def stmts(body):
-    """a statement list: SetCell calls, Inc(W685A), and `if COND then .. [else ..]` on the two gates"""
-    out, seq, i = [], [], 0
+    """straight-line code with ifs -> a statement list"""
+    out, stack, i = [], [], 0
+    ax = src = di = idx = None
+    cx = None
     while i < len(body):
         a, t = body[i]
-        if t == 'cmp byte ptr [0x6868], 0' or (t == 'mov ax, word ptr [0x685a]' and i + 3 < len(body)
-                                              and body[i + 3][1].startswith('cmp byte ptr [di + 0x69df]')):
-            assert not seq, seq
-            if t.startswith('cmp'):
-                cond, k = 'B6868 = 0', i + 1
+        cond, k = None, None
+        if t == 'mov ax, word ptr [0x685a]' and i + 3 < len(body) and body[i + 3][1].startswith('cmp byte ptr [di + 0x69df]'):
+            cond, k = 'SiteDone[W685A + 2] %s 0' % NEG[body[i + 4][1].split()[0]], i + 4
+        elif t.startswith('cmp ') or t == 'or ax, ax':
+            if t == 'or ax, ax':
+                l, r = ax, '0'
             else:
-                cond, k = 'SiteDone[W685A + 2] <> 0', i + 4
+                l, r = [x.strip() for x in t[4:].split(',')]
+                m = re.match(r'(?:word|byte) ptr \[di \+ 0x([0-9a-f]+)\]', l)
+                l = '%s.%s' % (di, FIELDS[int(m.group(1), 16) - 0x34F2]) if m else opnd(l)
+                r = opnd(r)
+            j = body[i + 1][1].split()[0]
+            cond, k = '%s %s %s' % (l, NEG[j], r), i + 1
+        if cond:
             els = tgt(body[k][1])
             then = [x for x in body[k + 1:] if x[0] < els]
-            j = i
-            while j < len(body) and body[j][0] < els:
-                j += 1
+            j = k + 1 + len(then)
             if then and then[-1][1].startswith('jmp '):
                 join = tgt(then[-1][1])
                 then = then[:-1]
@@ -115,16 +138,66 @@ def stmts(body):
                 out.append(('if', cond, stmts(then), None))
             i = j
             continue
-        if t == 'inc word ptr [0x685a]':
-            out.append('Inc(W685A)')
-            i += 1
-            continue
-        seq.append(t)
-        if t == 'call 0x2c6e':
-            out.append('SetCell(%s)' % ', '.join(args(seq)))
-            seq = []
+        m = re.match(r'mov ax, (word ptr \[.*\]|0x[0-9a-f]+|\d+)$', t) or re.match(r'mov al, (byte ptr \[.*\]|0x[0-9a-f]+|\d+)$', t)
+        if t.startswith('push ') and t not in ('push ax', 'push es', 'push di', 'push cs', 'push ss'):
+            stack.append(opnd(t[5:]))
+        elif t == 'push ax':
+            stack.append(ax)
+        elif t == 'push di':
+            stack.append(src)
+        elif t in ('push es', 'push cs', 'push ss'):
+            pass
+        elif t == 'lea di, ' + PS:
+            src = 'S'
+        elif t == 'xor ax, ax':
+            ax = '0'
+        elif m:
+            ax = opnd(m.group(1))
+        elif t.startswith('add ax, '):
+            ax = '%s + %s' % (paren(ax), opnd(t.split(', ')[1]))
+        elif t.startswith('sub ax, '):
+            ax = '%s - %s' % (paren(ax), opnd(t.split(', ')[1]))
+        elif t == 'dec ax':
+            ax = '%s - 1' % paren(ax)
+        elif t == 'inc ax':
+            ax = '%s + 1' % paren(ax)
+        elif t.startswith('mov cx, ') or (t.startswith('mov cl, ') and body[i + 1][1] == 'shl ax, cl'):
+            cx = int(t.split(', ')[1], 0)
+        elif t == 'shl ax, cl':
+            ax = '%s shl %d' % (ax, cx)
+        elif t == 'mov dx, 0xa0' or t == 'mul dx':
+            idx = ax
+        elif t.startswith('les di, ptr [0x'):
+            g = (int(t[t.index('[') + 1:-1], 16) - 0x6D98) // 4 + 1
+            src = 'Gfx[%d]^.Tile[%%s]' % g
+        elif t == 'add di, ax':
+            src = src % idx
+        elif t.startswith('add di, '):
+            src = src % ((int(t.split(', ')[1], 0) - 3) // 160 + 1)
+        elif t == 'mov di, word ptr [0x6854]':
+            di = 'Slots[W6854]'
+        elif t in ('mov cl, 5', 'shl di, cl'):
+            pass
+        elif t.startswith('mov word ptr [di + ') or t.startswith('mov byte ptr [di + '):
+            d, v = t.split(', ')
+            f = FIELDS[int(d[d.index('+') + 2:-1], 16) - 0x34F2]
+            out.append('%s.%s := %s' % (di, f, ax if v in ('ax', 'al') else opnd(v)))
+        elif t.startswith('mov word ptr [0x') or t.startswith('mov byte ptr [0x'):
+            d, v = t.split(', ')
+            out.append('%s := %s' % (opnd(d), ax if v in ('ax', 'al') else opnd(v)))
+        elif t.startswith('inc word ptr [0x') or t.startswith('inc byte ptr [0x'):
+            out.append('Inc(%s)' % opnd(t[4:]))
+        elif t in CALLS:
+            out.append('%s(%s)' % (CALLS[t], ', '.join(stack)))
+            stack = []
+        elif t == 'lcall 0x2cd1, 0x980 R':
+            ax = 'Random(%s)' % stack.pop()
+        elif t.startswith('jmp ') and i == len(body) - 1:
+            pass
+        else:
+            raise ValueError((hex(a), t))
         i += 1
-    assert not [t for t in seq if not t.startswith('jmp')], seq
+    assert not stack, stack
     return out
 
 
@@ -150,12 +223,24 @@ def gen(L, img, seg, start, end):
     idx = {a: i for i, (a, _) in enumerate(L)}
     i = idx[start]
     out = []
+    def head(i):
+        return L[i][1] == 'lea di, ' + PS and L[i + 6][1] == 'lcall 0x2cd1, 0x724 R'
     while L[i][0] < end:
-        assert L[i][1] == 'lea di, [bp - 0x100]', (hex(L[i][0]), L[i][1])
+        if not head(i):                     # plain statements between the arms
+            body = []
+            while L[i][0] < end and not head(i):
+                body.append(L[i])
+                i += 1
+            out.append(''.join('  %s;\n' % x for x in [emit([st], '  ').strip() for st in stmts(body)]))
+            continue
         c = lit(img, seg, int(L[i + 3][1].split(',')[1], 16))
         assert L[i + 6][1] == 'lcall 0x2cd1, 0x724 R'
-        nx = tgt(L[i + 7][1])
-        i += 8
+        if L[i + 7][1].startswith('je ') and L[i + 8][1].startswith('jmp '):   # long form
+            nx = tgt(L[i + 8][1])
+            i += 9
+        else:
+            nx = tgt(L[i + 7][1])
+            i += 8
         body = []
         while L[i][0] < nx:
             body.append(L[i])
@@ -165,7 +250,14 @@ def gen(L, img, seg, start, end):
 
 
 def main(argv):
+    global PX, PY, PFO, PS, XN
     L = load(argv[1])
+    for a in argv:
+        if a.startswith('--profile='):
+            PX, PY, PFO, PS = PROFILES[a.split('=')[1]]
+            XN = 'I' if a.endswith('68A9') else 'X'
+    argv = [a for a in argv if not a.startswith('--')]
+    NAMES.update(names())
     p = Prog(os.path.join(ROOT, '.work', 'tp', 'SAM1_unp.exe'))
     sys.stdout.write(gen(L, p.img, int(argv[2], 16), int(argv[3], 16), int(argv[4], 16)))
 

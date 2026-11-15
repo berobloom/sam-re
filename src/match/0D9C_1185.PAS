@@ -2,7 +2,7 @@
   the sheet's Back values 2, 5, 6, 7 stand for the level's own tiles W6840..W6840+3 and 8 for $29B while
   it draws (mapped back after), Back without mask, Mid and Front with mask, the banks as DrawFront's. No
   bounds test) }
-{ keep: DrawSheet(0, 0); }
+{ keep: - }
 {$F+}
 procedure DrawSheet(X, Y: Integer);
 var
