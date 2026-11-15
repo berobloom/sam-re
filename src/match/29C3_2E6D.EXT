@@ -1,0 +1,4 @@
+{ src: SAM1RE 29C3:2E6D (../SAM level-load.md: copies 16x16 pattern Slot of the row-24 sheet at video row 800
+  to cell X, pixel row Y; retf 6) }
+{ interface }
+{$F+} procedure CopySheet(X, Y, Slot: Integer); external; {$F-}

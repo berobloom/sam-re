@@ -1,0 +1,4 @@
+{ src: GUESS 29C3:2A9F (draws a 16x16 tile from Src at cell X, pixel row Y without its mask: the back layer;
+  retf 8) }
+{ interface }
+{$F+} procedure DrawTileO(var Src; X, Y: Integer); external; {$F-}

@@ -19,7 +19,9 @@ procedure GetImage(var Buf; X1, Y1, X2, Y2: Integer);
 procedure PutImage(var Buf; X, Y: Integer);
 procedure DrawTileB(var Src; X, Y: Integer);
 procedure DrawCellX(var Src; X, Y: Integer);
+procedure DrawTileO(var Src; X, Y: Integer);
 procedure DrawCell(var Src; X, Y: Integer);
+procedure CopySheet(X, Y, Slot: Integer);
 procedure Proc2ECF(A, B, C, D: Integer);
 procedure CopyPage;
 implementation
@@ -41,7 +43,9 @@ procedure DrawTileB; external;
 procedure DrawCellX; external;
 {$F+} procedure GetRomFonts; external; {$F-}
 {$F+} procedure Proc2981(X: Integer); external; {$F-}
+procedure DrawTileO; external;
 procedure DrawCell; external;
+procedure CopySheet; external;
 procedure Proc2ECF; external;
 procedure CopyPage; external;
 begin
