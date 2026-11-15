@@ -1,0 +1,3 @@
+{ src: GUESS 29C3:19F9 (a DrawTile variant: Src, cell X, pixel row Y; 0529:03F0 draws a spawned actor with it) }
+{ interface }
+{$F+} procedure DrawTileB(var Src; X, Y: Integer); external; {$F-}

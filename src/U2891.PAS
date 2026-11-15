@@ -21,7 +21,7 @@ type
   PGfxSmall = ^TGfxSmall;
   TSlot = record                   { 32 bytes; slot n at DS:3512 + (n-1)*32 }
     W00, X, Y, W06, W08, W0A: Integer;  { +02/+04: position (SAM1RE) }
-    B0C: array[$0C..$1D] of Byte;
+    W0C, W0E, W10, W12, W14, W16, W18, W1A, W1C: Integer;  { +14: T+150 at spawn (0529:03F0) }
     Free: Byte;                    { +1E }
     B1F: Byte;
   end;

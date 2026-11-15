@@ -17,6 +17,7 @@ procedure SetColor(C: Integer);
 procedure ClearRows(Base, Count, Row, Rows: Integer);
 procedure GetImage(var Buf; X1, Y1, X2, Y2: Integer);
 procedure PutImage(var Buf; X, Y: Integer);
+procedure DrawTileB(var Src; X, Y: Integer);
 procedure DrawCellX(var Src; X, Y: Integer);
 procedure DrawCell(var Src; X, Y: Integer);
 procedure Proc2ECF(A, B, C, D: Integer);
@@ -36,6 +37,7 @@ procedure SetColor; external;
 procedure ClearRows; external;
 procedure GetImage; external;
 procedure PutImage; external;
+procedure DrawTileB; external;
 procedure DrawCellX; external;
 {$F+} procedure GetRomFonts; external; {$F-}
 {$F+} procedure Proc2981(X: Integer); external; {$F-}
