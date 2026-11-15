@@ -264,7 +264,7 @@ def signature(seg, off):
            for m in re.findall(r'\{ to: ([0-9A-F]{4}) \}', open(os.path.join(d, f), encoding='latin1').read())}
     if not os.path.exists(path) and off in tos:         # the region starts at the routine's literals
         sigs = sorted(h(f[5:9]) for f in os.listdir(d) if f.startswith(seg + '_') and f.endswith('.SIG'))
-        nxt = [o for o in sigs if off < o < off + 0x100]
+        nxt = [o for o in sigs if off < o < off + 0x800]     # literals can run to 2 KB
         if nxt:
             path = os.path.join(d, '%s_%04X.SIG' % (seg, nxt[0]))
     if not os.path.exists(path):

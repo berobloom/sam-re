@@ -1,0 +1,50 @@
+{ src: GUESS 0529:6A0E (the player's jump step: falls unless jumping or B6EE8; a jump starts on the jump key
+  (B6EF3) or the joystick's jump button, when the two cells above the head are clear: pose, sound 1;
+  JumpUpTop then climbs to 10 through JumpUp, the camera following up to 0, a blocked step ends it) }
+{ to: 6B8E }
+{ keep: Jump; }
+{$F+}
+procedure Jump;
+begin
+  if (B6EE7 = 0) and (B6EE8 = 0) then
+    Fall;
+  if (B69DA = 0) and (B6EE7 = 0) and (B6EE6 = 0) and ((B6EF3 <> 0) or (JumpButton and JoyOn))
+    and (Map[(Slots[1].X + 3) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0)
+    and (Map[(Slots[1].X + 12) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0) then
+  begin
+    if (Slots[1].W14 = 1) or (Slots[1].W14 = 9) or (Slots[1].W14 = $B) or (Slots[1].W14 = $D) then
+      Slots[1].W14 := $D
+    else
+      Slots[1].W14 := $E;
+    PlaySound(1);
+    B6EE7 := 1;
+    B6EE8 := 0;
+    JumpUpTop := 0;
+  end;
+  if B6EE7 <> 0 then
+  begin
+    Inc(JumpUpTop);
+    if JumpUpTop = 10 then
+    begin
+      B6EE7 := 0;
+      JumpUpTop := 9;
+    end;
+    if JumpUpTop < 17 then
+      if CanMove(0, -JumpUp[JumpUpTop]) then
+      begin
+        if (CamY > 0) and (CamY + $50 > Slots[1].Y) then
+        begin
+          Dec(CamY, JumpUp[JumpUpTop]);
+          if CamY < 0 then
+            CamY := 0;
+        end;
+        Dec(Slots[1].Y, JumpUp[JumpUpTop]);
+      end
+      else
+      begin
+        JumpUpTop := 9;
+        B6EE7 := 0;
+      end;
+  end;
+end;
+{$F-}
