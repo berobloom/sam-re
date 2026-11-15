@@ -320,6 +320,14 @@ class Dec:
         self.ax = self.dx = self.bx = self.di = self.es = self.cx = None
         self.stack = []
 
+    def save(self):
+        return (self.ax, self.dx, self.bx, self.di, self.es, self.cx, list(self.stack), getattr(self, 'cxe', None),
+                getattr(self, 'dxe', None))
+
+    def restore(self, st):
+        self.ax, self.dx, self.bx, self.di, self.es, self.cx, stack, self.cxe, self.dxe = st
+        self.stack = list(stack)
+
     def addr(self, i):
         return self.L[i][0] if i < len(self.L) else 0x10000
 
@@ -365,6 +373,8 @@ class Dec:
             return E(hexn(int(o, 0) & 0xFFFF), 3, ('basic', 'integer'))
         if o in ('ax', 'al'):
             return self.ax
+        if o in ('dx', 'dl'):
+            return self.dxe
         return self.mem(o)
 
     def lit(self, off):
@@ -387,9 +397,9 @@ class Dec:
     def cond_at(self, i):
         """a test at i -> (left E, right E, index of its jcc) or None; evaluates the code before the test"""
         t = self.L[i][1]
-        if t == 'cmp dx, bx':                       # LongInt: hi jg/jl, then lo unsigned
-            assert self.L[i + 3][1] == 'cmp ax, cx', self.L[i + 3]
-            return self.ax, self.cxe, i + 4
+        if t == 'cmp dx, bx':                       # LongInt: the hi jumps, then the lo compare decides
+            k = next(k for k in range(i + 1, i + 6) if self.L[k][1] == 'cmp ax, cx')
+            return self.ax, self.cxe, k + 1
         if t.startswith('cmp '):
             l, r = [x.strip() for x in t[4:].split(',', 1)]
             return self.opnd(l), self.opnd(r), i + 1
@@ -467,7 +477,7 @@ class Dec:
             t = self.L[i][1]
             if self.cond_at_ok(t) and i + 1 < len(self.L) and iscj(self.L[i + 1][1]):
                 return i
-            if not self.expr_step(t):
+            if not self.step(i):
                 break
             i += 1
         self.ax, self.dx, self.bx, self.di, self.es, self.cx, self.stack = save
@@ -534,6 +544,9 @@ class Dec:
         if t == 'mov cx, ax':
             self.cxe = self.ax
             return True
+        if t == 'mov dx, ax':
+            self.dxe = self.ax
+            return True
         if t == 'mov bx, dx':
             return True
         if m and not m.group(2).startswith(('ds', 'es')):
@@ -560,6 +573,9 @@ class Dec:
             else:
                 r = self.opnd(v)
             self.ax = binop(ax, op, r)
+            return True
+        if t == 'neg ax':
+            self.ax = E('-' + ax.at(2), 1, ax.t)
             return True
         if t == 'inc ax':
             self.ax = binop(ax, '+', E('1'))
@@ -719,16 +735,16 @@ class Dec:
     def for_at(self, i, end):
         """for V := lo to|downto hi do S: `V := lo; jmp L1; L0: inc|dec V; L1: S; cmp V, hi; jne L0`"""
         k = i
-        save = (self.ax, self.di)
-        while k < len(self.L) and self.expr_step(self.L[k][1]):
+        save = self.save()
+        while k < len(self.L) and self.step(k):
             k += 1
         m = re.match(r'mov (word|byte) ptr (\[.*\]), (.*)$', self.L[k][1]) if k + 2 < len(self.L) else None
         if not m or not self.L[k + 1][1].startswith('jmp ') or tgt(self.L[k + 1][1]) != self.addr(k + 3):
-            self.ax, self.di = save
+            self.restore(save)
             return None
         mi = re.match(r'(inc|dec) (word|byte) ptr (\[.*\])$', self.L[k + 2][1])
         if not mi or mi.group(3) != m.group(2):
-            self.ax, self.di = save
+            self.restore(save)
             return None
         v = self.mem('%s ptr %s' % (m.group(1), m.group(2)))
         lo = self.ax if m.group(3) in ('ax', 'al') else self.opnd(m.group(3))
@@ -859,7 +875,7 @@ class Dec:
         """straight-line code up to the next statement end"""
         while i < len(self.L) and self.addr(i) < end:
             a, t = self.L[i]
-            if self.expr_step(t):
+            if self.step(i):
                 i += 1
                 continue
             m = re.match(r'mov (word|byte) ptr (\[.*\]), (.*)$', t)
@@ -870,34 +886,56 @@ class Dec:
                 dst = self.mem('%s ptr %s' % (m.group(1), m.group(2)))
                 val = self.ax if v in ('ax', 'al') else self.opnd(v)
                 return self.assign(dst, val), i + 1
+            m = re.match(r'(add|sub) (word|byte) ptr (\[.*\]), (.*)$', t)
+            if m:
+                dst = self.mem('%s ptr %s' % (m.group(2), m.group(3)))
+                v = self.ax if m.group(4) in ('ax', 'al') else self.opnd(m.group(4))
+                return '%s(%s, %s)' % ({'add': 'Inc', 'sub': 'Dec'}[m.group(1)], dst.s, v.s), i + 1
             m = re.match(r'(inc|dec) (word|byte) ptr (\[.*\])$', t)
             if m:
                 dst = self.mem('%s ptr %s' % (m.group(2), m.group(3)))
                 return '%s(%s)' % (m.group(1).capitalize(), dst.s), i + 1
-            if t == 'push ax':
-                self.stack.append(self.ax)
-            elif t == 'push di':
-                self.stack.append(self.di_val())
-            elif t in ('push es', 'push ds', 'push ss'):
-                pass
-            elif t == 'push cs':
-                if i + 1 < len(self.L) and self.L[i + 1][1].startswith('call '):
-                    pass
-                elif i + 1 < len(self.L) and self.L[i + 1][1] == 'push di':
-                    self.di = ('lit', self.lit(self.di[1]))
-            elif t.startswith('push '):
-                self.stack.append(self.opnd(t[5:]))
-            elif re.match(r'mov di, (0x[0-9a-f]+)$', t):
-                self.di = ('addr', int(t.split(', ')[1], 16))
-            elif re.match(r'lea di, \[bp - (0x[0-9a-f]+|\d+)\]$', t):
-                k = 'bp-' + str(int(t.split('- ')[1][:-1], 0))
-                self.di = ('frame', self.frame[k][0])
-            elif t.startswith('lcall ') or t.startswith('call '):
+            if t.startswith('lcall ') or t.startswith('call '):
                 return self.call(i)
-            else:
-                raise ValueError('%04X %s' % (a, t))
-            i += 1
+            raise ValueError('%04X %s' % (a, t))
         raise ValueError('no statement end before %04X' % self.addr(i))
+
+    def step(self, i):
+        """one instruction of expression code (registers, pushes, function calls) -> consumed?"""
+        t = self.L[i][1]
+        if self.expr_step(t):
+            return True
+        if t == 'push ax':
+            self.stack.append(self.ax)
+        elif t == 'push dx':
+            self.stack.append(None)                 # the hi word of a LongInt temporary or argument
+        elif t == 'pop cx':
+            self.cxe = self.stack.pop()
+        elif t == 'pop bx':
+            assert self.stack.pop() is None
+        elif t == 'push di':
+            self.stack.append(self.di_val())
+        elif t in ('push es', 'push ds', 'push ss'):
+            pass
+        elif t == 'push cs':
+            if i + 1 < len(self.L) and self.L[i + 1][1] == 'push di':
+                self.di = ('lit', self.lit(self.di[1]))
+        elif t.startswith('push '):
+            self.stack.append(self.opnd(t[5:]))
+        elif re.match(r'mov di, (0x[0-9a-f]+)$', t):
+            self.di = ('addr', int(t.split(', ')[1], 16))
+        elif re.match(r'lea di, \[bp - (0x[0-9a-f]+|\d+)\]$', t):
+            k = 'bp-' + str(int(t.split('- ')[1][:-1], 0))
+            self.di = ('frame', self.frame[k][0])
+        elif t.startswith('lcall ') or t.startswith('call '):
+            text, res = self.callexpr(i)
+            if res is None:
+                return False
+            self.ax = E(text, 3, res)
+            self.stack = []
+        else:
+            return False
+        return True
 
     def di_val(self):
         d = self.di
@@ -924,20 +962,22 @@ class Dec:
             val = E(hexn(int(val.s) & 0xFFFF, False))
         return '%s := %s' % (dst.s, val.s)
 
-    def call(self, i):
+    def target(self, i):
         t = self.L[i][1]
         if t.startswith('lcall '):
-            seg, off = [int(x, 0) for x in re.match(r'lcall (0x[0-9a-f]+), (0x[0-9a-f]+|\d+)', t).groups()]
-        else:
-            seg, off = self.seg, tgt(t)
+            return tuple(int(x, 0) for x in re.match(r'lcall (0x[0-9a-f]+), (0x[0-9a-f]+|\d+)', t).groups())
+        return self.seg, tgt(t)
+
+    def callexpr(self, i):
+        """the call at i with the pushed arguments -> (text, result type or None)"""
+        seg, off = self.target(i)
         if (seg, off) == (0x2CD1, 0x64E):           # string assign: src, dst, max
-            src, dst = self.stack[0], self.stack[1]
-            return '%s := %s' % (dst.s, src.s), i + 1
+            return None, None
         sig = LIB.get((seg, off)) or SIGS.get((seg, off))
         if sig is None:
             raise KeyError('no signature for %04X:%04X' % (seg, off))
         name, ps, res = sig
-        args = self.stack
+        args = [x for x in self.stack if x is not None]
         if len(args) != len(ps):
             raise ValueError('%s: %d args for %d params at %04X' % (name, len(args), len(ps), self.addr(i)))
         out = []
@@ -945,18 +985,15 @@ class Dec:
             if pt[0] != 'untyped' and tname(pt) == 'boolean' and e.s in ('0', '1'):
                 e = E(['False', 'True'][int(e.s)])
             out.append(e.s)
-        text = name + ('(%s)' % ', '.join(out) if out else '')
+        return name + ('(%s)' % ', '.join(out) if out else ''), res
+
+    def call(self, i):
+        seg, off = self.target(i)
+        if (seg, off) == (0x2CD1, 0x64E):
+            src, dst = self.stack[0], self.stack[1]
+            return '%s := %s' % (dst.s, src.s), i + 1
+        text, res = self.callexpr(i)
         self.stack = []
-        if res is not None:                         # a function: its result feeds what follows
-            self.ax = E(text, 3, res)
-            i += 1
-            while i < len(self.L):
-                t = self.L[i][1]
-                if t.startswith(('mov word ptr', 'mov byte ptr', 'push ax', 'cmp', 'or a', 'lcall', 'call')) \
-                        or not self.expr_step(t):
-                    break
-                i += 1
-            return self.simple(i, 0x10000)
         return text, i + 1
 
 
@@ -969,7 +1006,7 @@ def emit(st, ind):
         k = x[0]
         if k == 'if':
             _, c, th, el = x
-            r = ind + 'if %s then\n' % c.s + block(th, ind + '  ')
+            r = ind + 'if %s then\n' % c.s + block(th, ind + '  ', el is not None and dangles(th))
             if el is not None:
                 r += '\n' + ind + 'else\n' + block(el, ind + '  ')
             return r
@@ -992,13 +1029,40 @@ def emit(st, ind):
             return ind + 'while %s do\n' % c.s + block(body, ind + '  ')
         raise ValueError(x)
 
-    def block(lst, ind):
-        if len(lst) == 1:
+    def dangles(lst):
+        """does a single statement end in an if without else (which would take a following else)?"""
+        if len(lst) != 1 or isinstance(lst[0], str):
+            return False
+        x = lst[0]
+        if x[0] == 'if':
+            return x[3] is None or dangles(x[3])
+        if x[0] in ('for', 'while'):
+            return dangles(x[-1] if x[0] == 'for' else x[2])
+        return False
+
+    def block(lst, ind, force=False):
+        if len(lst) == 1 and not force:
             return one(lst[0], ind)
         if not lst:
             return ind + 'begin end'
         return ind[:-2] + 'begin\n' + ';\n'.join(one(x, ind) for x in lst) + ';\n' + ind[:-2] + 'end'
     return ''.join(one(s, ind) + ';\n' for s in st)
+
+
+def wrap(text, width=110):
+    """break lines TP would reject (over 126 characters) after an and/or/comma"""
+    out = []
+    for l in text.split('\n'):
+        ind = len(l) - len(l.lstrip()) + 4
+        while len(l) > width:
+            cut = max(l.rfind(' and ', 0, width), l.rfind(' or ', 0, width), l.rfind(', ', 0, width))
+            if cut <= ind:
+                break
+            cut += 1 if l[cut:cut + 2] != ', ' else 2
+            out.append(l[:cut].rstrip())
+            l = ' ' * ind + l[cut:].lstrip()
+        out.append(l)
+    return '\n'.join(out)
 
 
 def main(argv):
@@ -1017,7 +1081,7 @@ def main(argv):
     L = load(argv[1])
     d = Dec(L, p.img, int(argv[2], 16), frame, epi)
     st, _ = d.block(d.idx[int(argv[3], 16)], int(argv[4], 16))
-    sys.stdout.write(emit(st, '  '))
+    sys.stdout.write(wrap(emit(st, '  ')))
 
 
 if __name__ == '__main__':
