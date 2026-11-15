@@ -38,7 +38,9 @@ keep a session diary here.
 
 ## Next
 
-- Names are done but for the 9 write-only globals. Open: the asm blocks'
-  internal labels (`L<offset>`), and checking the LIKELY slot fields
-  (Limit/Count/Health/Wait) per actor kind. `match.py` must stay green
+- Names are done but for the 9 write-only globals; the asm blocks' internal
+  routines are named (`<SEG>.LABELS`), their jump targets stay `L<offset>`.
+  Open: checking the LIKELY slot fields (Limit/Count/Health/Wait) kind by
+  kind; the 286F block entry (`OBJ286F`, reads four game-port axes, no
+  Pascal caller) keeps the generator's name. `match.py` must stay green
   after each rename.
