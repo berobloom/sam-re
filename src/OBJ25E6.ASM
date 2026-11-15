@@ -71,13 +71,13 @@ L0501:
     db 0xAC, 0x8A, 0xE0, 0xFA, 0xEC, 0xA8, 0x08, 0x75, 0x09, 0xD0, 0xD8, 0x72, 0xF7, 0xEC, 0xD0, 0xD8
     db 0x73, 0xFB, 0x8A, 0xC4, 0xAA, 0xFB, 0x47, 0xE2, 0xE7, 0xEB, 0x05, 0x90, 0xA4, 0x47, 0xE2, 0xFC
     db 0x1F, 0x8B, 0xE5, 0x5D, 0xCA, 0x08, 0x00
-L054F:
+GetBiosMode:
     mov ah, 0xf                             ; 054F
     int 0x10                                ; 0551
     mov byte [0x2204], al                   ; 0553
     ret                                     ; 0556
 DETECTADAPTER:
-    call L054F                              ; 0557
+    call GetBiosMode                        ; 0557
     mov byte [0x2205], 4                    ; 055A
     mov cx, 0xffff                          ; 055F
     mov ax, 0x1c00                          ; 0562
@@ -118,6 +118,6 @@ L05B0:
     mov byte [0x2205], 0                    ; 05BC
     jmp short L05AC                         ; 05C1
 GETVIDEOMODE:
-    call L054F                              ; 05C3
+    call GetBiosMode                        ; 05C3
     retf                                    ; 05C6
     db 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00

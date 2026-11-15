@@ -9,19 +9,19 @@ OBJ286F:
     mov dx, 0x201                           ; 0083
     les di, [bp + 0x12]                     ; 0086
     mov ah, 1                               ; 0089
-    call L00A9                              ; 008B
+    call TimeAxis                           ; 008B
     les di, [bp + 0xe]                      ; 008E
     mov ah, 2                               ; 0091
-    call L00A9                              ; 0093
+    call TimeAxis                           ; 0093
     les di, [bp + 0xa]                      ; 0096
     mov ah, 4                               ; 0099
-    call L00A9                              ; 009B
+    call TimeAxis                           ; 009B
     les di, [bp + 6]                        ; 009E
     mov ah, 8                               ; 00A1
-    call L00A9                              ; 00A3
+    call TimeAxis                           ; 00A3
     jmp short L00C5                         ; 00A6
     db 0x90
-L00A9:
+TimeAxis:
     mov cx, 0xffff                          ; 00A9
 L00AC:
     in al, dx                               ; 00AC

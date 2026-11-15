@@ -1,0 +1,1 @@
+054F GetBiosMode  # EXE 25E6:054F: int 10h AH=0Fh, the mode into BiosMode (DS:2204); DetectAdapter and GetVideoMode call it

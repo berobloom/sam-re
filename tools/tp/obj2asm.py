@@ -11,6 +11,7 @@ decoded instruction is written in NASM syntax with branch targets as labels; NAS
 listing) and every instruction whose bytes differ, or that NASM rejects, becomes `db` with the instruction as a
 comment, until the whole block is identical. A relocated word (MZ relocation) becomes `dw CODE` (the unit's own code
 segment) or `dw DATA` (the data segment): an instruction holding one is written as db/dw.
+Internal routines take their names from src/match/<SEG>.LABELS (`OFF Name  # source`).
 Writes src/match/OBJ<SEG>.ASM (CRLF); gen_scaffold.py copies it into src/ (it is required for every unit with a {$L} block).
 """
 import json
@@ -138,6 +139,15 @@ def main(argv):
                                      if lo <= int(f['addr'][5:], 16) < hi and f.get('reached')}
     code = descend(t.img, base, lo, hi, entries)
     labels = dict(names)
+    # internal routines (no Pascal caller): `OFF Name  # source` lines in SEG.LABELS name their labels; not global
+    lf = os.path.join(d, seg + '.LABELS')
+    for l in open(lf, encoding='latin1').read().split('\n') if os.path.exists(lf) else []:
+        w = l.split('#')[0].split()
+        if w:
+            if int(w[0], 16) not in code:
+                print('%s.LABELS: %s is not an instruction of the block' % (seg, w[0]))
+                return 1
+            labels[int(w[0], 16)] = w[1]
     md = Cs(CS_ARCH_X86, CS_MODE_16)
     md.detail = True
     for off, ins in code.items():

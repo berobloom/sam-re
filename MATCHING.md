@@ -231,7 +231,9 @@ recipe status. `{ from: XXXX }`: the routine's string literals start at XXXX
 SEG:OFF` shows target and build side by side from the first difference.
 
 Other files in `src/match/`: `<SEG>_<OFF>.EXT` an asm entry of the unit's
-`{$L}` block (`{ interface }` exports it); `<SEG>.USES` the unit's uses
+`{$L}` block (`{ interface }` exports it); `<SEG>.LABELS` names for the
+block's internal routines (`OFF Name  # source`, read by `obj2asm.py`, not
+exported); `<SEG>.USES` the unit's uses
 clause; `<SEG>.VAR` the unit's types and variables in place of its byte
 block. In a .VAR, `{ @XXXX }` after a declaration pins its DS address: the
 fit puts a pad before it (`P_XXXX`, sizes in `src/FILL.JSON` under `data`),

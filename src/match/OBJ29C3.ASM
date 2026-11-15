@@ -212,7 +212,7 @@ L02B4:
     out dx, ax                              ; 02D6
     pop bp                                  ; 02D7
     retf 2                                  ; 02D8
-L02DB:
+WaitRetrace:
     push es                                 ; 02DB
     db 0x33, 0xC0   ; xor ax, ax
     mov es, ax                              ; 02DE
@@ -240,7 +240,7 @@ SETSPLITVGA:
     push bp                                 ; 02FA
     db 0x8B, 0xEC   ; mov bp, sp
     push cs                                 ; 02FD
-    call L02DB                              ; 02FE
+    call WaitRetrace                        ; 02FE
     push es                                 ; 0301
     db 0x33, 0xC0   ; xor ax, ax
     mov es, ax                              ; 0304

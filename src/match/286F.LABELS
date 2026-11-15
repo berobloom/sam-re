@@ -1,0 +1,1 @@
+00A9 TimeAxis  # EXE 286F:00A9: waits for game-port bit AH to clear, fires the one-shots, counts until it clears again; the count into ES:DI
