@@ -1,10 +1,11 @@
 unit U0529;
 {$S-,D+,L+}
 interface
+uses Crt, U29C3, U2891, U287F, U286F, GENUS, U25E6, U1802;
 
 procedure S0529_2F6B;
+function OnScreen(Margin, N: Integer): Boolean;
 implementation
-procedure S0529_0000; forward;
 procedure S0529_008D; forward;
 procedure S0529_011A; forward;
 procedure S0529_012D; forward;
@@ -19,13 +20,21 @@ procedure S0529_68F5; forward;
 procedure S0529_6A0E; forward;
 procedure S0529_6D0E; forward;
 procedure S0529_86DF; forward;
-procedure S0529_0000;
+{ src: GUESS 0529:0000 (slot N within the view (320 x 184 from CamX, CamY) widened by Margin on each side) }
+{ interface }
+{ keep: if OnScreen(0, 1) then; }
+function OnScreen(Margin, N: Integer): Boolean;
 begin
-Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000)
+  if Slots[N].X < CamX - Margin then
+    OnScreen := False
+  else if Slots[N].X > CamX + $140 + Margin then
+    OnScreen := False
+  else if Slots[N].Y < CamY - Margin then
+    OnScreen := False
+  else if Slots[N].Y > CamY + $B8 + Margin then
+    OnScreen := False
+  else
+    OnScreen := True;
 end;
 procedure S0529_008D;
 begin
@@ -485,7 +494,6 @@ Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0
 end;
 procedure S0529_2F6B;
 begin
-S0529_0000;
 S0529_008D;
 S0529_011A;
 S0529_012D;
@@ -995,7 +1003,7 @@ Inline(>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
 >$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/
->$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000)
+>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/>$0000/$00)
 end;
 procedure S0529_65D9;
 begin
