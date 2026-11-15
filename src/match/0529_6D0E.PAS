@@ -13,11 +13,11 @@ begin
     begin
       case Map[X shr 4 + 1, Y shr 4 + 1].Front of
         $1A5:
-          B6A0F := 1;
+          KeyA := 1;
         $1A7:
-          B6A10 := 1;
+          KeyB := 1;
         $1A9:
-          B6A11 := 1;
+          KeyC := 1;
       end;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
@@ -28,22 +28,22 @@ begin
       I := 0;
       case Map[X shr 4 + 1, Y shr 4 + 1].Front of
         $1A6:
-          if B6A0F = 1 then
+          if KeyA = 1 then
           begin
             I := 1;
-            B6A0F := 0;
+            KeyA := 0;
           end;
         $1A8:
-          if B6A10 = 1 then
+          if KeyB = 1 then
           begin
             I := 1;
-            B6A10 := 0;
+            KeyB := 0;
           end;
         $1AA:
-          if B6A11 = 1 then
+          if KeyC = 1 then
           begin
             I := 1;
-            B6A11 := 0;
+            KeyC := 0;
           end;
       end;
       if I = 1 then
@@ -229,7 +229,7 @@ begin
         PlaySound($1C);
       if Invulnerable = 0 then
         KeysOff := 1;
-      W69DC := $33;
+      MarkerTimer := $33;
       MarkerX := Slots[1].X;
       MarkerY := Slots[1].Y;
       case Map[X shr 4 + 1, Y shr 4 + 1].Front of
@@ -239,16 +239,16 @@ begin
           Map[X shr 4 + 1, Y shr 4 + 1].Front := $10C;
         end;
         $10C:
-          if W69DC > $F then
+          if MarkerTimer > $F then
             Inc(Map[X shr 4 + 1, Y shr 4 + 1].Front);
         $10D:
-          if W69DC > $1E then
+          if MarkerTimer > $1E then
             Inc(Map[X shr 4 + 1, Y shr 4 + 1].Front);
       end;
-      if W69DC > $32 then
+      if MarkerTimer > $32 then
       begin
         MapSite := Map[X shr 4 + 1, Y shr 4 + 1].Back;
-        W69DC := 0;
+        MarkerTimer := 0;
         FadeOut($14);
         Level := MapSite;
         SaveState;
@@ -298,7 +298,7 @@ begin
         repeat
           Inc(I);
         until (Slots[I].Free = 1) or (I = $19);
-        Slots[I].W00 := 0;
+        Slots[I].MaskFrames := 0;
         Slots[I].Sprite := $27B;
         Slots[I].X := PX;
         Slots[I].Y := PY;
@@ -313,12 +313,12 @@ begin
         Slots[I].Kind := $16;
         Slots[I].Free := 0;
         Slots[I].Remove := 0;
-        B6A14 := 1;
+        DoorMsgShown := 1;
       end
       else
-        if B6A14 = 0 then
+        if DoorMsgShown = 0 then
         begin
-          B6A14 := 1;
+          DoorMsgShown := 1;
           ClearText;
           TextLines[1] := 'You have no way to open';
           TextLines[2] := 'this door right now.   ';
@@ -334,7 +334,7 @@ begin
       if ExitArmed <> 0 then
       begin
         if HasPix <> 0 then
-          B6EEC := 1;
+          QuitDos := 1;
         ExitLock := 1;
         SiteDone[Level] := 1;
         if Lives = 3 then
@@ -419,7 +419,7 @@ begin
         Inc(I);
       until (Slots[I].Free = 1) or (I = $19);
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
-      Slots[I].W00 := 0;
+      Slots[I].MaskFrames := 0;
       Slots[I].Sprite := $271;
       Slots[I].X := X and $FFF0;
       Slots[I].Y := Y and $FFF0;
@@ -558,14 +558,14 @@ begin
       StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
-      B685C := 2;
-      W69CE := $1B0;
+      Tile142Flag := 2;
+      Tile142Val := $1B0;
     end;
     $31:
     begin
       Score := Score + $64;
       StatusCamX := -1;
-      Inc(W69C6);
+      Inc(Tile31Count);
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
     end;
@@ -602,7 +602,7 @@ begin
       StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
-      Inc(W69C4);
+      Inc(Tile269Count);
     end;
   end;
 end;

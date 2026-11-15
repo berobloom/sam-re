@@ -1,4 +1,4 @@
-{ src: SAM1RE 1802:9FAB (../SAM: the alternate video setting prompt; Y sets W70EC, which picks
+{ src: SAM1RE 1802:9FAB (../SAM: the alternate video setting prompt; Y sets AltVideo, which picks
   SetViewStartAlt) }
 { from: 9DFA }
 { to: A13A }

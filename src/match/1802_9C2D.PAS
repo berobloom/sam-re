@@ -1,4 +1,4 @@
-{ src: GUESS 1802:9C2D (quit menu by scan code: D $20 -> B6EEC, T $14 -> B6EED, I $17 -> B6EEE) }
+{ src: GUESS 1802:9C2D (quit menu by scan code: D $20 -> QuitDos, T $14 -> QuitTitle, I $17 -> QuitMap) }
 { from: 9BF2 }
 { to: 9D44 }
 {$F+}
@@ -19,20 +19,20 @@ begin
   if WinKey = $20 then
   begin
     CheckHighScore;
-    B6EEC := 1;
+    QuitDos := 1;
     HasPix := 0;
     PlaySound($12);
   end
   else if WinKey = $14 then
   begin
     CheckHighScore;
-    B6EED := 1;
+    QuitTitle := 1;
     HasPix := 0;
     PlaySound($12);
   end
   else if WinKey = $17 then
   begin
-    B6EEE := 1;
+    QuitMap := 1;
     HasPix := 0;
   end;
   EscHeld := 0;

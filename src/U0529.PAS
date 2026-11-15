@@ -50,14 +50,15 @@ begin
   else
     ShotOnScreen := True;
 end;
-{ src: SAM1RE 0529:011A (../SAM input.md: B6A19 is the GOD mode toggle; without it the player dies: B6EEE) }
+{ src: SAM1RE 0529:011A (../SAM input.md: Invulnerable is the GOD mode toggle; without it the player dies: QuitMap) }
 { interface }
 procedure KillPlayer;
 begin
   if Invulnerable = 0 then
-    B6EEE := 1;
+    QuitMap := 1;
 end;
-{ src: GUESS 0529:012D (counts W6844 up and derives W6846 from it: a ramp to W69CA + 4, halved when B69D6 is set) }
+{ src: GUESS 0529:012D (counts WalkHeld up and derives WalkSpeed from it: a ramp to SpeedBonus + 4,
+  halved when SlowWalk is set) }
 {$F+}
 procedure Ramp;
 begin
@@ -77,8 +78,8 @@ begin
     end;
 end;
 {$F-}
-{ src: GUESS 0529:01C4 (a hit on the player when X, Y overlaps slot 1 (10 x 16): unless B6A1B or GOD mode, a
-  life goes (B6A67 a short guard, sound 7), or with the last life sound $16 and the death arc starts) }
+{ src: GUESS 0529:01C4 (a hit on the player when X, Y overlaps slot 1 (10 x 16): unless HitLock or GOD mode, a
+  life goes (HitRecover a short guard, sound 7), or with the last life sound $16 and the death arc starts) }
 {$F+}
 procedure HitPlayer(X, Y: Integer);
 begin
@@ -87,17 +88,17 @@ begin
     and (HitLock = 0) and (Invulnerable = 0) then
     if Lives > 1 then
     begin
-      if B6A67 = 0 then
+      if HitRecover = 0 then
       begin
-        B6A67 := 1;
-        B6A68 := 30;
+        HitRecover := 1;
+        HitTimer := 30;
         Dec(Lives);
         StatusCamX := -1;
-        Slots[1].W00 := 5;
+        Slots[1].MaskFrames := 5;
         PlaySound(7);
       end;
     end
-    else if B6A67 = 0 then
+    else if HitRecover = 0 then
     begin
       PlaySound($16);
       HitLock := 1;
@@ -146,7 +147,7 @@ begin
     Inc(I);
     if Slots[I].Free = 1 then
     begin
-      Slots[I].W00 := 0;
+      Slots[I].MaskFrames := 0;
       Slots[I].X := X;
       Slots[I].Y := Y;
       Slots[I].PrevX := X;
@@ -192,7 +193,7 @@ begin
       else
         Slots[I].Anim := 1;
       Slots[I].DirY := 0;
-      Slots[I].W00 := 0;
+      Slots[I].MaskFrames := 0;
       if T <> $89 then
         Slots[I].X := X and $FFF8
       else
@@ -357,7 +358,7 @@ begin
       begin
         PlaySound(8);
         Dec(Slots[I].Kind);
-        Slots[I].W00 := 3;
+        Slots[I].MaskFrames := 3;
         Slots[I].Sprite := $15F;
         Slots[I].Speed := 1;
         Slots[I].W0C := Random($32) + $32;
@@ -416,7 +417,7 @@ begin
         PlaySound(8);
         Dec(Slots[I].Kind);
         Slots[I].Sprite := $167;
-        Slots[I].W00 := 3;
+        Slots[I].MaskFrames := 3;
         Slots[I].Speed := 2;
         if Slots[I].X < Slots[1].X then
           Slots[I].DirX := 1
@@ -483,7 +484,7 @@ begin
         PlaySound(8);
         Dec(Slots[I].Kind);
         Slots[I].Sprite := $16F;
-        Slots[I].W00 := 3;
+        Slots[I].MaskFrames := 3;
         Slots[I].Speed := 3;
         if Slots[I].X < Slots[1].X then
           Slots[I].DirX := 1
@@ -548,7 +549,7 @@ begin
         PlaySound(8);
         Dec(Slots[I].Kind);
         Slots[I].Sprite := $177;
-        Slots[I].W00 := 3;
+        Slots[I].MaskFrames := 3;
         if Slots[I].X < Slots[1].X then
           Slots[I].DirX := 1
         else
@@ -588,7 +589,7 @@ begin
         begin
           PlaySound(8);
           Dec(Slots[I].W0C);
-          Slots[I].W00 := 3;
+          Slots[I].MaskFrames := 3;
           if Slots[I].W0C <= 0 then
           begin
             Slots[I].Sprite := $271;
@@ -618,17 +619,17 @@ begin
         if (Col1 < 8) and (Col1 > -8) and (Row2 < 8) and (Row2 > -8) and (Invulnerable = 0) and (HitLock = 0) then
           if Lives > 1 then
           begin
-            if B6A67 = 0 then
+            if HitRecover = 0 then
             begin
-              B6A67 := 1;
-              B6A68 := $1E;
+              HitRecover := 1;
+              HitTimer := $1E;
               Dec(Lives);
               StatusCamX := -1;
-              Slots[1].W00 := 5;
+              Slots[1].MaskFrames := 5;
             end;
           end
           else
-            if B6A67 = 0 then
+            if HitRecover = 0 then
             begin
               HitLock := 1;
               ArcLen := $23;
@@ -969,7 +970,7 @@ begin
         DrawBack(Slots[I].X + $10, Slots[I].Y + 8);
         Slots[I].Y := Slots[I].Y + 8;
         Slots[I].W10 := -1;
-        B6EE8 := 0;
+        Riding := 0;
       end
       else
       begin
@@ -1001,7 +1002,7 @@ begin
             Slots[1].Y := Slots[I].Y - $10;
             Jumping := 0;
             Falling := 0;
-            B6EE8 := 1;
+            Riding := 1;
             if Slots[1].Sprite = $D then
               Slots[1].Sprite := 9
             else
@@ -1021,7 +1022,7 @@ begin
         Slots[1].Y := Slots[I].Y - $10;
         Jumping := 0;
         Falling := 0;
-        B6EE8 := 1;
+        Riding := 1;
         if Slots[1].Sprite = $D then
           Slots[1].Sprite := 9
         else
@@ -1207,7 +1208,7 @@ begin
             if ShotHit(Slots[I].X, Slots[I].Y) or ShotHit(Slots[I].X + $10, Slots[I].Y) then
             begin
               PlaySound(8);
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               Dec(Slots[I].W10);
               if Slots[I].W10 = 0 then
               begin
@@ -1294,7 +1295,7 @@ begin
                   Slots[I].DirX := -1;
                   Slots[I].Anim := $29;
                 end;
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               Dec(Slots[I].W10);
               if Slots[I].W10 = 0 then
               begin
@@ -1453,7 +1454,7 @@ begin
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
               Dec(Slots[I].W0C);
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               if Slots[I].W0C <= 0 then
               begin
                 for Col1 := 0 to $F do
@@ -1510,7 +1511,7 @@ begin
             HitPlayer(Slots[I].X, Slots[I].Y);
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               Dec(Slots[I].W10);
               if Slots[I].W10 <= 0 then
               begin
@@ -1574,7 +1575,7 @@ begin
             HitPlayer(Slots[I].X, Slots[I].Y);
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               Dec(Slots[I].W10);
               if Slots[I].W10 <= 0 then
               begin
@@ -1607,7 +1608,7 @@ begin
             HitPlayer(Slots[I].X, Slots[I].Y);
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               Dec(Slots[I].W10);
               if Slots[I].W10 <= 0 then
               begin
@@ -2016,7 +2017,7 @@ begin
 end;
 {$F-}
 { src: GUESS 0529:65D9 (may the player move by DX, DY? the cells under the corners of slot 1's 16x16 box,
-  inset 3 pixels left and right, must all be clear (Solid = 0); when blocked and Level > 1, W6844 := 0) }
+  inset 3 pixels left and right, must all be clear (Solid = 0); when blocked and Level > 1, WalkHeld := 0) }
 {$F+}
 function CanMove(DX, DY: Integer): Boolean;
 var
@@ -2099,8 +2100,8 @@ begin
   end;
 end;
 {$F-}
-{ src: GUESS 0529:68F5 (moves the player by the held directions: right/left (B6EF1/B6EF0) W6846 pixels after
-  Ramp, down/up (B6EEA/B6EE9) 4 pixels, each only when CanMove allows it; the camera follows, clamped to
+{ src: GUESS 0529:68F5 (moves the player by the held directions: right/left (RightHeld/LeftHeld) WalkSpeed pixels after
+  Ramp, down/up (DownHeld/UpHeld) 4 pixels, each only when CanMove allows it; the camera follows, clamped to
   0..$140 and 0..$B8; W06/W08 keep the old position) }
 { interface }
 {$F+}
@@ -2156,15 +2157,15 @@ begin
     end;
 end;
 {$F-}
-{ src: GUESS 0529:6A0E (the player's jump step: falls unless jumping or B6EE8; a jump starts on the jump key
-  (B6EF3) or the joystick's jump button, when the two cells above the head are clear: pose, sound 1;
+{ src: GUESS 0529:6A0E (the player's jump step: falls unless jumping or Riding; a jump starts on the jump key
+  (JumpHeld) or the joystick's jump button, when the two cells above the head are clear: pose, sound 1;
   JumpUpTop then climbs to 10 through JumpUp, the camera following up to 0, a blocked step ends it) }
 { to: 6B8E }
 { interface }
 {$F+}
 procedure Jump;
 begin
-  if (Jumping = 0) and (B6EE8 = 0) then
+  if (Jumping = 0) and (Riding = 0) then
     Fall;
   if (KeysOff = 0) and (Jumping = 0) and (Falling = 0) and ((JumpHeld <> 0) or (JumpButton and JoyOn))
     and (Map[(Slots[1].X + 3) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0)
@@ -2176,7 +2177,7 @@ begin
       Slots[1].Sprite := $E;
     PlaySound(1);
     Jumping := 1;
-    B6EE8 := 0;
+    Riding := 0;
     JumpUpTop := 0;
   end;
   if Jumping <> 0 then
@@ -2221,11 +2222,11 @@ begin
     begin
       case Map[X shr 4 + 1, Y shr 4 + 1].Front of
         $1A5:
-          B6A0F := 1;
+          KeyA := 1;
         $1A7:
-          B6A10 := 1;
+          KeyB := 1;
         $1A9:
-          B6A11 := 1;
+          KeyC := 1;
       end;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
@@ -2236,22 +2237,22 @@ begin
       I := 0;
       case Map[X shr 4 + 1, Y shr 4 + 1].Front of
         $1A6:
-          if B6A0F = 1 then
+          if KeyA = 1 then
           begin
             I := 1;
-            B6A0F := 0;
+            KeyA := 0;
           end;
         $1A8:
-          if B6A10 = 1 then
+          if KeyB = 1 then
           begin
             I := 1;
-            B6A10 := 0;
+            KeyB := 0;
           end;
         $1AA:
-          if B6A11 = 1 then
+          if KeyC = 1 then
           begin
             I := 1;
-            B6A11 := 0;
+            KeyC := 0;
           end;
       end;
       if I = 1 then
@@ -2437,7 +2438,7 @@ begin
         PlaySound($1C);
       if Invulnerable = 0 then
         KeysOff := 1;
-      W69DC := $33;
+      MarkerTimer := $33;
       MarkerX := Slots[1].X;
       MarkerY := Slots[1].Y;
       case Map[X shr 4 + 1, Y shr 4 + 1].Front of
@@ -2447,16 +2448,16 @@ begin
           Map[X shr 4 + 1, Y shr 4 + 1].Front := $10C;
         end;
         $10C:
-          if W69DC > $F then
+          if MarkerTimer > $F then
             Inc(Map[X shr 4 + 1, Y shr 4 + 1].Front);
         $10D:
-          if W69DC > $1E then
+          if MarkerTimer > $1E then
             Inc(Map[X shr 4 + 1, Y shr 4 + 1].Front);
       end;
-      if W69DC > $32 then
+      if MarkerTimer > $32 then
       begin
         MapSite := Map[X shr 4 + 1, Y shr 4 + 1].Back;
-        W69DC := 0;
+        MarkerTimer := 0;
         FadeOut($14);
         Level := MapSite;
         SaveState;
@@ -2506,7 +2507,7 @@ begin
         repeat
           Inc(I);
         until (Slots[I].Free = 1) or (I = $19);
-        Slots[I].W00 := 0;
+        Slots[I].MaskFrames := 0;
         Slots[I].Sprite := $27B;
         Slots[I].X := PX;
         Slots[I].Y := PY;
@@ -2521,12 +2522,12 @@ begin
         Slots[I].Kind := $16;
         Slots[I].Free := 0;
         Slots[I].Remove := 0;
-        B6A14 := 1;
+        DoorMsgShown := 1;
       end
       else
-        if B6A14 = 0 then
+        if DoorMsgShown = 0 then
         begin
-          B6A14 := 1;
+          DoorMsgShown := 1;
           ClearText;
           TextLines[1] := 'You have no way to open';
           TextLines[2] := 'this door right now.   ';
@@ -2542,7 +2543,7 @@ begin
       if ExitArmed <> 0 then
       begin
         if HasPix <> 0 then
-          B6EEC := 1;
+          QuitDos := 1;
         ExitLock := 1;
         SiteDone[Level] := 1;
         if Lives = 3 then
@@ -2627,7 +2628,7 @@ begin
         Inc(I);
       until (Slots[I].Free = 1) or (I = $19);
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
-      Slots[I].W00 := 0;
+      Slots[I].MaskFrames := 0;
       Slots[I].Sprite := $271;
       Slots[I].X := X and $FFF0;
       Slots[I].Y := Y and $FFF0;
@@ -2766,14 +2767,14 @@ begin
       StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
-      B685C := 2;
-      W69CE := $1B0;
+      Tile142Flag := 2;
+      Tile142Val := $1B0;
     end;
     $31:
     begin
       Score := Score + $64;
       StatusCamX := -1;
-      Inc(W69C6);
+      Inc(Tile31Count);
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
     end;
@@ -2810,7 +2811,7 @@ begin
       StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
-      Inc(W69C4);
+      Inc(Tile269Count);
     end;
   end;
 end;

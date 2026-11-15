@@ -1,4 +1,5 @@
-{ src: GUESS 0529:012D (counts W6844 up and derives W6846 from it: a ramp to W69CA + 4, halved when B69D6 is set) }
+{ src: GUESS 0529:012D (counts WalkHeld up and derives WalkSpeed from it: a ramp to SpeedBonus + 4,
+  halved when SlowWalk is set) }
 {$F+}
 procedure Ramp;
 begin

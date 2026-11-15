@@ -1,4 +1,4 @@
-{ src: SAM1RE 1802:0027 (shows the page: view start at CamX, W6866 + CamY) }
+{ src: SAM1RE 1802:0027 (shows the page: view start at CamX, PageY + CamY) }
 { interface }
 procedure ShowPage;
 begin

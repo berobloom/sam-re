@@ -64,8 +64,8 @@ begin
     $31, $39, $1C:
       begin
         MainMenu := 'B';
-        B6EED := 0;
-        W69C4 := 1;
+        QuitTitle := 0;
+        Tile269Count := 1;
       end;
     $17:
       begin
@@ -100,7 +100,7 @@ begin
     $13:
       begin
         MainMenu := 'R';
-        W69C4 := 1;
+        Tile269Count := 1;
         SaveSlot := RestoreMenu;
         if SaveSlot = $1C then
         begin
@@ -108,7 +108,7 @@ begin
           MainMenu := ' ';
         end
         else
-          B6EED := 0;
+          QuitTitle := 0;
       end;
     $1F:
       begin
@@ -123,7 +123,7 @@ begin
     $10:
       begin
         AskQuit;
-        if B6EEC <> 0 then
+        if QuitDos <> 0 then
           MainMenu := 'Q'
         else
           MainMenu := ' ';

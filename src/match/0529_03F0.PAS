@@ -13,7 +13,7 @@ begin
     Inc(I);
     if Slots[I].Free = 1 then
     begin
-      Slots[I].W00 := 0;
+      Slots[I].MaskFrames := 0;
       Slots[I].X := X;
       Slots[I].Y := Y;
       Slots[I].PrevX := X;

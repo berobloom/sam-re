@@ -1,7 +1,7 @@
-{ src: SAM1RE 0529:011A (../SAM input.md: B6A19 is the GOD mode toggle; without it the player dies: B6EEE) }
+{ src: SAM1RE 0529:011A (../SAM input.md: Invulnerable is the GOD mode toggle; without it the player dies: QuitMap) }
 { interface }
 procedure KillPlayer;
 begin
   if Invulnerable = 0 then
-    B6EEE := 1;
+    QuitMap := 1;
 end;

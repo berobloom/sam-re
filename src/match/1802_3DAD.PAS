@@ -13,7 +13,7 @@ begin
   State.X := (Slots[1].X + 8) and $FFF0;
   State.Y := (Slots[1].Y + 8) and $FFF0;
   State.Score := Score;
-  State.W08 := W69C4;
+  State.W08 := Tile269Count;
   State.Ammo := Ammo;
   State.Gun := Gun;
   for I := 1 to 20 do
@@ -26,7 +26,7 @@ begin
   State.B2A := SlowWalk;
   State.W2B := SlowTimer;
   State.W2D := W69D8;
-  State.W2F := W69DC;
+  State.W2F := MarkerTimer;
   State.MapSite := MapSite;
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];

@@ -1,12 +1,12 @@
-{ src: GUESS 0529:6A0E (the player's jump step: falls unless jumping or B6EE8; a jump starts on the jump key
-  (B6EF3) or the joystick's jump button, when the two cells above the head are clear: pose, sound 1;
+{ src: GUESS 0529:6A0E (the player's jump step: falls unless jumping or Riding; a jump starts on the jump key
+  (JumpHeld) or the joystick's jump button, when the two cells above the head are clear: pose, sound 1;
   JumpUpTop then climbs to 10 through JumpUp, the camera following up to 0, a blocked step ends it) }
 { to: 6B8E }
 { interface }
 {$F+}
 procedure Jump;
 begin
-  if (Jumping = 0) and (B6EE8 = 0) then
+  if (Jumping = 0) and (Riding = 0) then
     Fall;
   if (KeysOff = 0) and (Jumping = 0) and (Falling = 0) and ((JumpHeld <> 0) or (JumpButton and JoyOn))
     and (Map[(Slots[1].X + 3) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0)
@@ -18,7 +18,7 @@ begin
       Slots[1].Sprite := $E;
     PlaySound(1);
     Jumping := 1;
-    B6EE8 := 0;
+    Riding := 0;
     JumpUpTop := 0;
   end;
   if Jumping <> 0 then

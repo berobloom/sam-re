@@ -1,5 +1,5 @@
 { src: SAM1RE 1802:3489 (../SAM menus: the title: sam1.crd and sam1.ttl, the view scrolls down and up between
-  them; W684A set (by the key handler) opens the menu; ends on B, R or Q with sound 12) }
+  them; ScanCode set (by the key handler) opens the menu; ends on B, R or Q with sound 12) }
 { from: 3477 }
 { to: 3694 }
 { interface }

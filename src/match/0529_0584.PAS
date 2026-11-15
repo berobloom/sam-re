@@ -21,7 +21,7 @@ begin
       else
         Slots[I].Anim := 1;
       Slots[I].DirY := 0;
-      Slots[I].W00 := 0;
+      Slots[I].MaskFrames := 0;
       if T <> $89 then
         Slots[I].X := X and $FFF8
       else

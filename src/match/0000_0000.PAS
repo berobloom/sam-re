@@ -1,8 +1,8 @@
-{ src: GUESS 0000:0000 (the int 9 handler: reads the scan code into W684A (left/right swapped while B69D3 = 1,
-  the "confused" body), and unless B69DA turns the defined keys into the walk/jump/fire flags and poses (up and
-  down on the world map only; fire with no ammo plays sound $14); Esc, Tab and F1..F10 set B683C. Held-key
-  cheats: U+V+K Ammo + 25 once (B6A02); Z+G+I B6A12/B6A1A; P+J+X toggles B6A19 (B69FD); O+N+D with B (or P)
-  B69F9. Then it chains to the old int 9; the inline tail after the chain is dead (an EOI whose
+{ src: GUESS 0000:0000 (the int 9 handler: reads the scan code into ScanCode (left/right swapped while Confused = 1,
+  the "confused" body), and unless KeysOff turns the defined keys into the walk/jump/fire flags and poses (up and
+  down on the world map only; fire with no ammo plays sound $14); Esc, Tab and F1..F10 set MenuReq. Held-key
+  cheats: U+V+K Ammo + 25 once (AmmoCheat); Z+G+I Floppy/DoorKey; P+J+X toggles Invulnerable (PjxDone); O+N+D with B (or P)
+  WarpCheat. Then it chains to the old int 9; the inline tail after the chain is dead (an EOI whose
   `mov al,$20` reads $80/$20) }
 procedure KeyISR; interrupt;
 var
@@ -24,7 +24,7 @@ begin
     begin
       LeftHeld := 1;
       RightHeld := 0;
-      B6EE8 := 0;
+      Riding := 0;
       Slots[1].Sprite := 5;
       if Jumping <> 0 then
         Slots[1].Sprite := $E;
@@ -48,7 +48,7 @@ begin
     begin
       RightHeld := 1;
       LeftHeld := 0;
-      B6EE8 := 0;
+      Riding := 0;
       Slots[1].Sprite := 1;
       if Jumping <> 0 then
         Slots[1].Sprite := $D;

@@ -51,13 +51,13 @@
     LoadGraphics;
     SetGraphMode(0);
     ShowLogo;
-    while B6EEC = 0 do
+    while QuitDos = 0 do
     begin
       SetGraphMode(0);
       TitleLoop;
-      if B6EEC = 0 then
+      if QuitDos = 0 then
         NewGame;
-      if (B6EEC = 0) and (B6EED = 0) then
+      if (QuitDos = 0) and (QuitTitle = 0) then
       begin
         PageStride := SetStride($50);
         SetBorder(4);
@@ -84,7 +84,7 @@
           SetSplitVGA($180)
         else
           SetSplit($BE);
-        while (B6EEC = 0) and (B6EED = 0) do
+        while (QuitDos = 0) and (QuitTitle = 0) do
         begin
           if StatusCamX <> CamX then
             DrawStatus;
@@ -179,7 +179,7 @@
                 Jump;
               MemW[0:$41C] := MemW[0:$41A];
               TouchPlayer;
-              B6EE8 := 0;
+              Riding := 0;
             end
             else
               if HitLock <> 0 then
@@ -289,7 +289,7 @@
             begin
               Dec(WarpTimer);
               if WarpTimer = 0 then
-                B69FE := 1
+                WarpNow := 1
               else
                 if WarpTimer = -19 then
                 begin
@@ -297,9 +297,9 @@
                   WarpArmed := 0;
                 end;
             end;
-            if B69FE <> 0 then
+            if WarpNow <> 0 then
             begin
-              B69FE := 0;
+              WarpNow := 0;
               Slots[1].X := WarpX;
               Slots[1].Y := WarpY;
               CamX := Slots[1].X - $A0;
@@ -326,24 +326,24 @@
             end
             else
               Slots[1].Anim := 1;
-            if B6A67 <> 0 then
+            if HitRecover <> 0 then
             begin
-              Dec(B6A68);
-              case B6A68 of
+              Dec(HitTimer);
+              case HitTimer of
                 0:
-                  B6A67 := 0;
+                  HitRecover := 0;
                 $A:
-                  Slots[1].W00 := 5;
+                  Slots[1].MaskFrames := 5;
                 $14:
-                  Slots[1].W00 := 5;
+                  Slots[1].MaskFrames := 5;
                 $1E:
-                  Slots[1].W00 := 5;
+                  Slots[1].MaskFrames := 5;
               end;
             end;
-            if Slots[1].W00 > 0 then
+            if Slots[1].MaskFrames > 0 then
             begin
               DrawSprite(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
-              Dec(Slots[1].W00);
+              Dec(Slots[1].MaskFrames);
             end
             else
               if Slots[1].X and 7 = 0 then
@@ -364,7 +364,7 @@
             for SlotIdx := 2 to $19 do
               if (Slots[SlotIdx].Free = 0) and (Slots[SlotIdx].Remove = 0) and (OnScreen($20, SlotIdx)
                   or (Slots[SlotIdx].Kind = $1C) or (Slots[SlotIdx].Kind = $15) or (Slots[RowIdx].Kind = $E)) then
-                if Slots[SlotIdx].W00 > 0 then
+                if Slots[SlotIdx].MaskFrames > 0 then
                 begin
                   case Slots[SlotIdx].Sprite of
                     1..$32:
@@ -477,7 +477,7 @@
                           Slots[SlotIdx].X + $10, Slots[SlotIdx].Y + PageY);
                     end;
                   end;
-                  Dec(Slots[SlotIdx].W00);
+                  Dec(Slots[SlotIdx].MaskFrames);
                 end
                 else
                   if Slots[SlotIdx].X and 7 = 0 then
@@ -804,7 +804,7 @@
               EscKey := EscapeMenu;
               MenuReq := 0;
             end;
-            if B6EEE <> 0 then
+            if QuitMap <> 0 then
             begin
               FadeOut($14);
               if Ammo < $F then

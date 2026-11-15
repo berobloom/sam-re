@@ -53,22 +53,22 @@ implementation
 {$F+} procedure ForeignOrders; forward; {$F-}
 {$F+} procedure ApogeeBBS; forward; {$F-}
 {$F+} procedure AboutApogee; forward; {$F-}
-{ src: SAM1RE 1802:0000 (../SAM: the page flip: W6864 page 0/1, W6866 its y offset 16 or 416) }
+{ src: SAM1RE 1802:0000 (../SAM: the page flip: DrawPage page 0/1, PageY its y offset 16 or 416) }
 { interface }
 procedure FlipPage;
 begin
-  if W6864 = 0 then
+  if DrawPage = 0 then
   begin
-    W6864 := 1;
+    DrawPage := 1;
     PageY := $1A0;
   end
   else
   begin
-    W6864 := 0;
+    DrawPage := 0;
     PageY := $10;
   end;
 end;
-{ src: SAM1RE 1802:0027 (shows the page: view start at CamX, W6866 + CamY) }
+{ src: SAM1RE 1802:0027 (shows the page: view start at CamX, PageY + CamY) }
 { interface }
 procedure ShowPage;
 begin
@@ -159,11 +159,11 @@ begin
       DrawCell(GfxSmall[1]^.Cell[14], 20, 1);
     if DoorKey <> 0 then
       DrawCell(GfxSmall[1]^.Cell[21], 25, 1);
-    if B6A10 <> 0 then
+    if KeyB <> 0 then
       DrawCell(GfxSmall[1]^.Cell[18], 27, 1);
-    if B6A11 <> 0 then
+    if KeyC <> 0 then
       DrawCell(GfxSmall[1]^.Cell[19], 28, 1);
-    if B6A0F <> 0 then
+    if KeyA <> 0 then
       DrawCell(GfxSmall[1]^.Cell[20], 29, 1);
     if Floppy <> 0 then
       DrawCell(GfxSmall[1]^.Cell[22], 30, 1);
@@ -186,11 +186,11 @@ begin
       DrawCellX(GfxSmall[1]^.Cell[14], Sh + $A0, 1);
     if DoorKey <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[21], Sh + $C8, 1);
-    if B6A10 <> 0 then
+    if KeyB <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[18], Sh + $D8, 1);
-    if B6A11 <> 0 then
+    if KeyC <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[19], Sh + $E0, 1);
-    if B6A0F <> 0 then
+    if KeyA <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[20], Sh + $E8, 1);
     if Floppy <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[22], Sh + $F0, 1);
@@ -312,7 +312,7 @@ end;
 {$F-}
 { src: SAM1RE 1802:1585 (../SAM menus.md: the text window: TextLines up to 'END OF WINDOW' in a framed box
   centred on the camera, the screen under it saved and put back; '^' marks the blinking caret; a spark runs
-  along the frame now and then. Wait: any key closes it, else only the scan codes in B6820. Returns the
+  along the frame now and then. Wait: any key closes it, else only the scan codes in KeyFilter. Returns the
   key's scan code (extended keys: the code less $80; $AA and $C5 read as $174)) }
 { from: 1535 }
 { to: 1D7E }
@@ -355,9 +355,9 @@ begin
   GetImage(P681C^, X1, (Y1 shl 3) + ScanPage, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + ScanPage);
   X2 := X1 + MaxW + 4;
   Y2 := Y1 + NLines + 1;
-  for W6850 := 1 to Y2 - Y1 do
+  for WinRow := 1 to Y2 - Y1 do
     for RowIdx := X1 + 1 to X2 - 1 do
-      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + WinRow) shl 3) + ScanPage);
   DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
     DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);
@@ -523,9 +523,9 @@ begin
   GetImage(P681C^, X1, (Y1 shl 3) + ScanPage, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + ScanPage);
   X2 := X1 + MaxW + 4;
   Y2 := Y1 + NLines + 1;
-  for W6850 := 1 to Y2 - Y1 do
+  for WinRow := 1 to Y2 - Y1 do
     for RowIdx := X1 + 1 to X2 - 1 do
-      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + WinRow) shl 3) + ScanPage);
   DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
     DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);
@@ -690,9 +690,9 @@ begin
   GetImage(P681C^, X1, (Y1 shl 3) + ScanPage, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + ScanPage);
   X2 := X1 + MaxW + 4;
   Y2 := Y1 + NLines + 1;
-  for W6850 := 1 to Y2 - Y1 do
+  for WinRow := 1 to Y2 - Y1 do
     for RowIdx := X1 + 1 to X2 - 1 do
-      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + WinRow) shl 3) + ScanPage);
   DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
     DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);
@@ -789,9 +789,9 @@ begin
       Inc(Top, 17);
       if Total - 16 < Top then
         Top := Total - 16;
-      for W6850 := 1 to Y2 - Y1 - 1 do
+      for WinRow := 1 to Y2 - Y1 - 1 do
         for RowIdx := X1 + 1 to X2 - 1 do
-          DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+          DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + WinRow) shl 3) + ScanPage);
       DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
       for RowIdx := X1 + 1 to X2 - 1 do
         DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);
@@ -818,9 +818,9 @@ begin
       Dec(Top, 17);
       if Top < 0 then
         Top := 0;
-      for W6850 := 1 to Y2 - Y1 - 1 do
+      for WinRow := 1 to Y2 - Y1 - 1 do
         for RowIdx := X1 + 1 to X2 - 1 do
-          DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+          DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + WinRow) shl 3) + ScanPage);
       DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
       for RowIdx := X1 + 1 to X2 - 1 do
         DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);
@@ -869,7 +869,7 @@ begin
 end;
 {$F-}
 { src: SAM1RE 1802:33D0 (../SAM menus: the sam1.apo logo with sound $15, then a key or about 5 s on the
-  W6852 tick counter). Only R of the four locals is used. }
+  Ticks tick counter). Only R of the four locals is used. }
 { from: 33C7 }
 { to: 3477 }
 { interface }
@@ -896,7 +896,7 @@ begin
   FadeOut(0);
 end;
 { src: SAM1RE 1802:3489 (../SAM menus: the title: sam1.crd and sam1.ttl, the view scrolls down and up between
-  them; W684A set (by the key handler) opens the menu; ends on B, R or Q with sound 12) }
+  them; ScanCode set (by the key handler) opens the menu; ends on B, R or Q with sound 12) }
 { from: 3477 }
 { to: 3694 }
 { interface }
@@ -1105,7 +1105,7 @@ begin
   State.X := Slots[1].X;
   State.Y := Slots[1].Y;
   State.Score := Score;
-  State.W08 := W69C4;
+  State.W08 := Tile269Count;
   State.Ammo := Ammo;
   State.Gun := Gun;
   for I := 1 to 20 do
@@ -1118,7 +1118,7 @@ begin
   State.B2A := SlowWalk;
   State.W2B := SlowTimer;
   State.W2D := W69D8;
-  State.W2F := W69DC;
+  State.W2F := MarkerTimer;
   State.MapSite := MapSite;
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];
@@ -1134,7 +1134,7 @@ begin
   Slots[1].X := State.X;
   Slots[1].Y := State.Y;
   Score := State.Score;
-  W69C4 := State.W08;
+  Tile269Count := State.W08;
   Ammo := State.Ammo;
   Gun := State.Gun;
   for I := 1 to 20 do
@@ -1147,7 +1147,7 @@ begin
   SlowWalk := State.B2A;
   SlowTimer := State.W2B;
   W69D8 := State.W2D;
-  W69DC := State.W2F;
+  MarkerTimer := State.W2F;
   MapSite := State.MapSite;
   for I := 1 to 20 do
     SiteDone[I] := State.SiteDone[I];
@@ -1168,7 +1168,7 @@ begin
   State.X := (Slots[1].X + 8) and $FFF0;
   State.Y := (Slots[1].Y + 8) and $FFF0;
   State.Score := Score;
-  State.W08 := W69C4;
+  State.W08 := Tile269Count;
   State.Ammo := Ammo;
   State.Gun := Gun;
   for I := 1 to 20 do
@@ -1181,7 +1181,7 @@ begin
   State.B2A := SlowWalk;
   State.W2B := SlowTimer;
   State.W2D := W69D8;
-  State.W2F := W69DC;
+  State.W2F := MarkerTimer;
   State.MapSite := MapSite;
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];
@@ -1220,7 +1220,7 @@ begin
     Slots[1].X := State.X;
     Slots[1].Y := State.Y;
     Score := State.Score;
-    W69C4 := State.W08;
+    Tile269Count := State.W08;
     Ammo := State.Ammo;
     Gun := State.Gun;
     for I := 1 to 20 do
@@ -1233,7 +1233,7 @@ begin
     SlowWalk := State.B2A;
     SlowTimer := State.W2B;
     W69D8 := State.W2D;
-    W69DC := State.W2F;
+    MarkerTimer := State.W2F;
     MapSite := State.MapSite;
     for I := 1 to 20 do
       SiteDone[I] := State.SiteDone[I];
@@ -2431,8 +2431,8 @@ begin
     $31, $39, $1C:
       begin
         MainMenu := 'B';
-        B6EED := 0;
-        W69C4 := 1;
+        QuitTitle := 0;
+        Tile269Count := 1;
       end;
     $17:
       begin
@@ -2467,7 +2467,7 @@ begin
     $13:
       begin
         MainMenu := 'R';
-        W69C4 := 1;
+        Tile269Count := 1;
         SaveSlot := RestoreMenu;
         if SaveSlot = $1C then
         begin
@@ -2475,7 +2475,7 @@ begin
           MainMenu := ' ';
         end
         else
-          B6EED := 0;
+          QuitTitle := 0;
       end;
     $1F:
       begin
@@ -2490,7 +2490,7 @@ begin
     $10:
       begin
         AskQuit;
-        if B6EEC <> 0 then
+        if QuitDos <> 0 then
           MainMenu := 'Q'
         else
           MainMenu := ' ';
@@ -2575,7 +2575,7 @@ begin
         EscapeMenu := 'R';
         K := RestoreMenu;
         if K <> $1C then
-          B6EEE := 1;
+          QuitMap := 1;
       end;
     $1F:
       begin
@@ -2599,7 +2599,7 @@ begin
     $10:
       begin
         QuitMenu;
-        if B6EEC <> 0 then
+        if QuitDos <> 0 then
           EscapeMenu := 'Q'
         else
           EscapeMenu := ' ';
@@ -2646,8 +2646,8 @@ begin
   EscHeld := 0;
   MenuReq := 0;
 end;
-{ src: GUESS 1802:9B63 (quit prompt: B6820 = [1, $15, $31] lists the accepted scan codes Y and N;
-  Y sets B6EEC) }
+{ src: GUESS 1802:9B63 (quit prompt: KeyFilter = [1, $15, $31] lists the accepted scan codes Y and N;
+  Y sets QuitDos) }
 { from: 9B41 }
 { to: 9BF2 }
 {$F+}
@@ -2661,7 +2661,7 @@ begin
   KeyFilter[3] := $31;
   WinKey := Ord(TextWindow(True));
   if WinKey = $15 then
-    B6EEC := 1;
+    QuitDos := 1;
   EscHeld := 0;
   MenuReq := 0;
   UpHeld := 0;
@@ -2672,7 +2672,7 @@ begin
   ScanCode := 0;
 end;
 {$F-}
-{ src: GUESS 1802:9C2D (quit menu by scan code: D $20 -> B6EEC, T $14 -> B6EED, I $17 -> B6EEE) }
+{ src: GUESS 1802:9C2D (quit menu by scan code: D $20 -> QuitDos, T $14 -> QuitTitle, I $17 -> QuitMap) }
 { from: 9BF2 }
 { to: 9D44 }
 {$F+}
@@ -2693,20 +2693,20 @@ begin
   if WinKey = $20 then
   begin
     CheckHighScore;
-    B6EEC := 1;
+    QuitDos := 1;
     HasPix := 0;
     PlaySound($12);
   end
   else if WinKey = $14 then
   begin
     CheckHighScore;
-    B6EED := 1;
+    QuitTitle := 1;
     HasPix := 0;
     PlaySound($12);
   end
   else if WinKey = $17 then
   begin
-    B6EEE := 1;
+    QuitMap := 1;
     HasPix := 0;
   end;
   EscHeld := 0;
@@ -2746,7 +2746,7 @@ begin
   ScanCode := 0;
 end;
 {$F-}
-{ src: SAM1RE 1802:9FAB (../SAM: the alternate video setting prompt; Y sets W70EC, which picks
+{ src: SAM1RE 1802:9FAB (../SAM: the alternate video setting prompt; Y sets AltVideo, which picks
   SetViewStartAlt) }
 { from: 9DFA }
 { to: A13A }
@@ -2790,7 +2790,7 @@ begin
   ScanCode := 0;
 end;
 {$F-}
-{ src: GUESS 1802:A15C (joystick prompt: Y -> JoyOn := JoyPresent, W70EE := 1; N -> both off) }
+{ src: GUESS 1802:A15C (joystick prompt: Y -> JoyOn := JoyPresent, UseJoystick := 1; N -> both off) }
 { from: A13A }
 { to: A207 }
 {$F+}
@@ -3044,7 +3044,7 @@ begin
   NoOp;
 end;
 {$F-}
-{ src: GUESS 1802:B45A (the first ordering window; sets B6EEB, unlike the other windows) }
+{ src: GUESS 1802:B45A (the first ordering window; sets EscHeld, unlike the other windows) }
 { from: B2E1 }
 { to: B69D }
 {$F+}
@@ -3639,9 +3639,9 @@ begin
   until KeyPressed;
   MemW[0:$41C] := MemW[0:$41A];
   CheckHighScore;
-  B6EED := 1;
+  QuitTitle := 1;
   HasPix := 0;
-  B6EEC := 0;
+  QuitDos := 0;
 end;
 begin
 { init }

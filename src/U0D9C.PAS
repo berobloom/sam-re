@@ -22,7 +22,7 @@ implementation
 {$F+} procedure ParseRow(Y: Integer; Row: TRow); forward; {$F-}
 { src: SAM1RE 0D9C:0000 (../SAM objects.md, level-load.md: the back cell repaint at pixel X, Y: the cell's
   Back (1..8 a pattern of the row-24 sheet, else a tile drawn without mask), then its Mid and Front tiles
-  with mask, on the page W6866; the banks as DrawFront's. Columns 0..$27 only, no upper row bound) }
+  with mask, on the page PageY; the banks as DrawFront's. Columns 0..$27 only, no upper row bound) }
 { interface }
 procedure DrawBack(X, Y: Integer);
 var
@@ -201,7 +201,7 @@ begin
   end;
 end;
 { src: SAM1RE 0D9C:1185 (../SAM level-load.md: the row-24 sheet cell repaint at pixel X, Y, load time only:
-  the sheet's Back values 2, 5, 6, 7 stand for the level's own tiles W6840..W6840+3 and 8 for $29B while
+  the sheet's Back values 2, 5, 6, 7 stand for the level's own tiles BackTile..BackTile+3 and 8 for $29B while
   it draws (mapped back after), Back without mask, Mid and Front with mask, the banks as DrawFront's. No
   bounds test) }
 {$F+}
@@ -374,7 +374,7 @@ end;
 {$F-}
 { src: SAM1RE 0D9C:2530 (../SAM objects.md: the front cell repaint at pixel X, Y: the cell's Front tile from
   its bank (1..$32 bank 1, then 50 a bank: $64.. 2, $97.. 10, $C9.. 11, $FB.. 15, $12D.. 13, $15F.. 16,
-  $191.. 4, $1C3.. 5, $259.. 6, $28B.. 7, $2BD.. 8, $2EF.. 9) on the page W6866; $B3, $1F3, $265, $25B and
+  $191.. 4, $1C3.. 5, $259.. 6, $28B.. 7, $2BD.. 8, $2EF.. 9) on the page PageY; $B3, $1F3, $265, $25B and
   $270 differ by page (two-frame animation). Columns 0..$27 only, no upper row bound) }
 { interface }
 procedure DrawFront(X, Y: Integer);
@@ -443,7 +443,7 @@ begin
     end;
 end;
 { src: SAM1RE 0D9C:2C6E (../SAM level-load.md: SetCell, the cell X, Y (0-based) of Map gets its five fields
-  and is repainted on both pages ($10 and $1A0, W6866); FrontOnly sets the front tile only. No bounds test) }
+  and is repainted on both pages ($10 and $1A0, PageY); FrontOnly sets the front tile only. No bounds test) }
 { to: 2E20 }
 {$F+}
 procedure SetCell(X, Y, Back, Mid, Front: Integer; Solid, FlagB: Byte; FrontOnly: Boolean);
@@ -480,9 +480,9 @@ begin
   end;
 end;
 {$F-}
-{ src: SAM1RE 0D9C:2E88 (../SAM level-load.md: the world-map cell of row char S at cell X, Y. B6868 := exactly
+{ src: SAM1RE 0D9C:2E88 (../SAM level-load.md: the world-map cell of row char S at cell X, Y. AllDone := exactly
   15 of the 16 site counters done; on the world map (Level 1) each char gives its SetCell; the site markers
-  M N O P show done or undone by SiteDone[W685A + 2], and 'l' by B6868) }
+  M N O P show done or undone by SiteDone[SiteCounter + 2], and 'l' by AllDone) }
 { from: 2E20 }
 { to: 3A59 }
 {$F+}
@@ -638,7 +638,7 @@ begin
 end;
 {$F-}
 { src: SAM1RE 0D9C:3A91 (../SAM level-load.md, objects.md: the actor spawner of row char S at cell X, Y (levels
-  > 1): each actor char clears its cell to tile 2 and takes the next slot W6854, drawn on both pages, with
+  > 1): each actor char clears its cell to tile 2 and takes the next slot SlotCount, drawn on both pages, with
   its kind (W14), facing (W16, often Random) and timers) }
 { from: 3A59 }
 {$F+}
@@ -652,7 +652,7 @@ begin
     DrawTileB(Gfx[14]^.Tile[13], X shl 4, (Y shl 4) + $1A0);
     DrawTileB(Gfx[14]^.Tile[9], (X + 1) shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[14]^.Tile[9], (X + 1) shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $353;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -681,7 +681,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[16]^.Tile[1], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[16]^.Tile[1], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $15F;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -709,7 +709,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[16]^.Tile[9], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[16]^.Tile[9], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $167;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -736,7 +736,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[16]^.Tile[17], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[16]^.Tile[17], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $16F;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -763,7 +763,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[16]^.Tile[25], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[16]^.Tile[25], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $177;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -791,7 +791,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[16]^.Tile[33], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[16]^.Tile[33], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $17F;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -821,7 +821,7 @@ begin
     DrawTileB(Gfx[12]^.Tile[1], X shl 4, ((Y shl 4) + $1A0) - $10);
     DrawTileB(Gfx[12]^.Tile[5], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[12]^.Tile[5], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $321;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -852,7 +852,7 @@ begin
     DrawTileB(Gfx[12]^.Tile[17], X shl 4, ((Y shl 4) + $1A0) - $10);
     DrawTileB(Gfx[12]^.Tile[21], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[12]^.Tile[21], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $331;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -882,7 +882,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[10]^.Tile[1], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[10]^.Tile[1], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $97;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -905,7 +905,7 @@ begin
     DrawTileB(Gfx[12]^.Tile[41], X shl 4, ((Y shl 4) + $1A0) - $10);
     DrawTileB(Gfx[12]^.Tile[41], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[12]^.Tile[41], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $345;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -934,7 +934,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[2]^.Tile[17], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[2]^.Tile[17], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $75;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -963,7 +963,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[2]^.Tile[9], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[2]^.Tile[9], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $6D;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -986,7 +986,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[2]^.Tile[13], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[2]^.Tile[13], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $71;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1009,7 +1009,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[2]^.Tile[33], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[2]^.Tile[33], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $85;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1038,7 +1038,7 @@ begin
     DrawTileB(Gfx[2]^.Tile[1], X shl 4, ((Y shl 4) + $1A0) - $10);
     DrawTileB(Gfx[2]^.Tile[5], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[2]^.Tile[5], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $65;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1066,7 +1066,7 @@ begin
   begin
     SetCell(X, Y, 2, 0, 0, 0, 0, FO);
     Inc(SlotCount);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $1B3;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1090,7 +1090,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[6]^.Tile[9], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[6]^.Tile[9], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $261;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1115,7 +1115,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[5]^.Tile[14], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[5]^.Tile[14], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $1D0;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1137,7 +1137,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[5]^.Tile[15], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[5]^.Tile[15], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $1D1;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1159,7 +1159,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[5]^.Tile[37], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[5]^.Tile[37], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $1E7;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1181,7 +1181,7 @@ begin
     Inc(SlotCount);
     DrawTileB(Gfx[5]^.Tile[41], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[5]^.Tile[41], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $1EB;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1207,7 +1207,7 @@ begin
     DrawTileB(Gfx[4]^.Tile[28], X shl 4, ((Y - 2) shl 4) + $1A0);
     DrawTileB(Gfx[4]^.Tile[27], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[4]^.Tile[27], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $1B3;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := (Y - 1) shl 4;
@@ -1233,7 +1233,7 @@ begin
     DrawTileB(Gfx[4]^.Tile[33], (X - 2) shl 4, (Y shl 4) + $1A0);
     DrawTileB(Gfx[4]^.Tile[34], X shl 4, (Y shl 4) + $10);
     DrawTileB(Gfx[4]^.Tile[34], X shl 4, (Y shl 4) + $1A0);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $1B3;
     Slots[SlotCount].X := (X - 1) shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1253,7 +1253,7 @@ begin
   begin
     SetCell(X, Y, 2, 0, 0, 0, 0, FO);
     Inc(SlotCount);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $1B3;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1273,7 +1273,7 @@ begin
   begin
     SetCell(X, Y, 2, 0, 0, 0, 0, FO);
     Inc(SlotCount);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $1B3;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1293,7 +1293,7 @@ begin
   begin
     SetCell(X, Y, 2, 0, $12E, 0, 0, FO);
     Inc(SlotCount);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $131;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := (Y - 1) shl 4;
@@ -1313,7 +1313,7 @@ begin
   begin
     SetCell(X, Y, 2, 0, 0, 0, 0, FO);
     Inc(SlotCount);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $135;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1333,7 +1333,7 @@ begin
   begin
     SetCell(X, Y, 2, 0, 0, 0, 0, FO);
     Inc(SlotCount);
-    Slots[SlotCount].W00 := 0;
+    Slots[SlotCount].MaskFrames := 0;
     Slots[SlotCount].Sprite := $103;
     Slots[SlotCount].X := X shl 4;
     Slots[SlotCount].Y := Y shl 4;
@@ -1354,7 +1354,7 @@ end;
 { src: SAM1RE 0D9C:68A9 (../SAM level-load.md: the row parser. Row Y of the map from Row's 40 chars: a row
   that starts with '*' keeps its cells (FO), else they are cleared first. For each column: a space is the
   background tile 2; on levels > 1 the char chain sets cells (SetCell) and spawns actors inline (slot
-  W6854) or through SpawnActor; then WorldCell, and 'Y' is the player's start: slot 1 there (on the world
+  SlotCount) or through SpawnActor; then WorldCell, and 'Y' is the player's start: slot 1 there (on the world
   map at the stored State position), the camera centred on it and clamped) }
 { from: 66F9 }
 {$F+}
@@ -1592,7 +1592,7 @@ begin
         Inc(SlotCount);
         DrawTileB(Gfx[4]^.Tile[45], I shl 4, (Y shl 4) + $10);
         DrawTileB(Gfx[4]^.Tile[45], I shl 4, (Y shl 4) + $1A0);
-        Slots[SlotCount].W00 := 0;
+        Slots[SlotCount].MaskFrames := 0;
         Slots[SlotCount].Sprite := $1BD;
         Slots[SlotCount].X := I shl 4;
         Slots[SlotCount].Y := Y shl 4;
@@ -1621,7 +1621,7 @@ begin
         Inc(SlotCount);
         DrawTileB(Gfx[5]^.Tile[45], I shl 4, (Y shl 4) + $10);
         DrawTileB(Gfx[5]^.Tile[45], I shl 4, (Y shl 4) + $1A0);
-        Slots[SlotCount].W00 := 0;
+        Slots[SlotCount].MaskFrames := 0;
         Slots[SlotCount].X := I shl 4;
         Slots[SlotCount].Y := Y shl 4;
         Slots[SlotCount].PrevX := I shl 4;
@@ -1838,7 +1838,7 @@ begin
         Inc(SlotCount);
         DrawTileB(Gfx[16]^.Tile[1], I shl 4, (Y shl 4) + $10);
         DrawTileB(Gfx[16]^.Tile[1], I shl 4, (Y shl 4) + $1A0);
-        Slots[SlotCount].W00 := 0;
+        Slots[SlotCount].MaskFrames := 0;
         Slots[SlotCount].Sprite := $2CD;
         Slots[SlotCount].X := I shl 4;
         Slots[SlotCount].Y := Y shl 4;
@@ -1989,7 +1989,7 @@ begin
         Inc(SlotCount);
         DrawTileB(Gfx[7]^.Tile[25], I shl 4, (Y shl 4) + $10);
         DrawTileB(Gfx[7]^.Tile[25], I shl 4, (Y shl 4) + $1A0);
-        Slots[SlotCount].W00 := 0;
+        Slots[SlotCount].MaskFrames := 0;
         Slots[SlotCount].Sprite := $2A3;
         Slots[SlotCount].X := I shl 4;
         Slots[SlotCount].Y := Y shl 4;
@@ -2011,7 +2011,7 @@ begin
         Inc(SlotCount);
         DrawTileB(Gfx[7]^.Tile[26], I shl 4, (Y shl 4) + $10);
         DrawTileB(Gfx[7]^.Tile[26], I shl 4, (Y shl 4) + $1A0);
-        Slots[SlotCount].W00 := 0;
+        Slots[SlotCount].MaskFrames := 0;
         Slots[SlotCount].Sprite := $2A4;
         Slots[SlotCount].X := I shl 4;
         Slots[SlotCount].Y := Y shl 4;
@@ -2044,7 +2044,7 @@ begin
       end;
       DrawTileB(Gfx[3]^.Tile[1], I shl 4, (Y shl 4) + $10);
       DrawTileB(Gfx[3]^.Tile[1], I shl 4, (Y shl 4) + $1A0);
-      Slots[1].W00 := 0;
+      Slots[1].MaskFrames := 0;
       Slots[1].Sprite := 9;
       Slots[1].X := I shl 4;
       Slots[1].Y := Y shl 4;
@@ -2080,7 +2080,7 @@ end;
 {$F-}
 { src: SAM1RE 0D9C:A1AE (../SAM level-load.md: the level loader. Resets slots 2..25 and the ten shots, then
   reads SAM103.GFX, 42-byte encrypted records: the world map (N = 1) is the first 25, level N (2..17) the
-  25 after (N-1)*48. The first record's three chars are the number W6840, the next is row 24 (the sheet
+  25 after (N-1)*48. The first record's three chars are the number BackTile, the next is row 24 (the sheet
   row), then rows 0..23 ('*' rows repeat the row). Then the page sweep, FadeIn(20) and sound $D) }
 { from: A1A3 }
 { interface }
@@ -2098,7 +2098,7 @@ begin
   StatusCamX := -1;
   for I := 2 to 25 do
   begin
-    Slots[I].W00 := 0;
+    Slots[I].MaskFrames := 0;
     Slots[I].Sprite := 9;
     Slots[I].X := -41;
     Slots[I].Y := 0;

@@ -1,5 +1,5 @@
 { src: GUESS 0000:08A2 (the joystick: the stick against its centre +-$32 walks left/right (and up/down on the
-  world map, Level 1) with poses; the fire button, with ammo, outside the world map and unless B6A1B, puts a
+  world map, Level 1) with poses; the fire button, with ammo, outside the world map and unless HitLock, puts a
   shot in the first free Shots slot (up to Gun) going the facing's way: sound 2, Ammo less one) }
 {$F+}
 procedure ReadJoystick;
@@ -21,7 +21,7 @@ begin
   begin
     LeftHeld := 1;
     RightHeld := 0;
-    B6EE8 := 0;
+    Riding := 0;
     JoyMovedX := True;
     if (Jumping = 0) and (Falling = 0) then
       Slots[1].Sprite := 5
@@ -32,7 +32,7 @@ begin
   begin
     RightHeld := 1;
     LeftHeld := 0;
-    B6EE8 := 0;
+    Riding := 0;
     JoyMovedX := True;
     if (Jumping = 0) and (Falling = 0) then
       Slots[1].Sprite := 1

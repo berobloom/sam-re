@@ -29,15 +29,15 @@ keep a session diary here.
   `tools/tp/pasgen.py`, a pattern decompiler for TP 5.0 code.
 - Names: SAM1RE notes (../SAM) and GUESS, each with its source in the
   `.VAR` comment; `tools/tp/rename.py` renames (code only, refuses a clash).
-  27 globals are still `W<addr>`/`B<addr>`: mostly no reader in the image or
-  no SAM1RE meaning (`69C4`/`69C6`/`69CE`/`685C`/`6856`, `6A0E..6A11`,
-  `6EE8`, `6EEC..6EEF`); slot fields `W00`, `W0C`..`W12`.
+  9 globals keep `W<addr>`/`B<addr>` names because the code only clears them
+  (`3832..3836`, `6856`, `6A0E`, `6EEF`, `6EF2`) or only saves them (`69D8`),
+  as their `.VAR` notes say; slot fields `W0C`..`W12` are open.
 - Compiler: TP 5.0 / 5.5 / 6.0 compile headless (`tools/tp/tpc.sh`); 5.0 is
   SAM's (`tools/tp/pin_version.sh`).
 - Harness: DOSBox-X + MCP built (`./setup.sh` says ready); not used here.
 
 ## Next
 
-- Names: every routine and asm entry point is named; the last 27 globals
-  need an experiment or a closer read (none in ../SAM); `match.py` must stay
-  green after each rename. The asm blocks' internal labels are `L<offset>`.
+- Names: the slot fields `W0C`..`W12` (per-kind actor state, ActorAI); the
+  asm blocks' internal labels are `L<offset>`. `match.py` must stay green
+  after each rename.

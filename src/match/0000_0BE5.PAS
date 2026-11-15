@@ -1,5 +1,5 @@
-{ src: GUESS 0000:0BE5 (the int $1C handler: W6852 counts ticks; every 20th tick the timers W69CC, W69D4 and
-  W69D0 run down (each end forces a status repaint, W6858 := -1); then the sound playing (287F) steps one
+{ src: GUESS 0000:0BE5 (the int $1C handler: Ticks counts ticks; every 20th tick the timers SpeedTimer, SlowTimer and
+  ConfuseTimer run down (each end forces a status repaint, StatusCamX := -1); then the sound playing (287F) steps one
   note: Sound(note), NoSound every Period notes, and at the -1 end Playing stops) }
 procedure TimerISR; interrupt;
 begin

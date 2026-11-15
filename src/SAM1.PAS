@@ -23,11 +23,11 @@ procedure OBJ0000; external;
 {$F+} procedure ReadCMOSClock; external; {$F-}
 {$F+} procedure FastTimer; external; {$F-}
 {$F+} procedure NormalTimer; external; {$F-}
-{ src: GUESS 0000:0000 (the int 9 handler: reads the scan code into W684A (left/right swapped while B69D3 = 1,
-  the "confused" body), and unless B69DA turns the defined keys into the walk/jump/fire flags and poses (up and
-  down on the world map only; fire with no ammo plays sound $14); Esc, Tab and F1..F10 set B683C. Held-key
-  cheats: U+V+K Ammo + 25 once (B6A02); Z+G+I B6A12/B6A1A; P+J+X toggles B6A19 (B69FD); O+N+D with B (or P)
-  B69F9. Then it chains to the old int 9; the inline tail after the chain is dead (an EOI whose
+{ src: GUESS 0000:0000 (the int 9 handler: reads the scan code into ScanCode (left/right swapped while Confused = 1,
+  the "confused" body), and unless KeysOff turns the defined keys into the walk/jump/fire flags and poses (up and
+  down on the world map only; fire with no ammo plays sound $14); Esc, Tab and F1..F10 set MenuReq. Held-key
+  cheats: U+V+K Ammo + 25 once (AmmoCheat); Z+G+I Floppy/DoorKey; P+J+X toggles Invulnerable (PjxDone); O+N+D with B (or P)
+  WarpCheat. Then it chains to the old int 9; the inline tail after the chain is dead (an EOI whose
   `mov al,$20` reads $80/$20) }
 procedure KeyISR;
 var
@@ -49,7 +49,7 @@ begin
     begin
       LeftHeld := 1;
       RightHeld := 0;
-      B6EE8 := 0;
+      Riding := 0;
       Slots[1].Sprite := 5;
       if Jumping <> 0 then
         Slots[1].Sprite := $E;
@@ -73,7 +73,7 @@ begin
     begin
       RightHeld := 1;
       LeftHeld := 0;
-      B6EE8 := 0;
+      Riding := 0;
       Slots[1].Sprite := 1;
       if Jumping <> 0 then
         Slots[1].Sprite := $D;
@@ -379,7 +379,7 @@ begin
   Inline($E4/$61/$8A/$E0/$0C/$80/$E6/$61/$86/$E0/$E6/$61/$80/$20/$E6/$20);
 end;
 { src: GUESS 0000:08A2 (the joystick: the stick against its centre +-$32 walks left/right (and up/down on the
-  world map, Level 1) with poses; the fire button, with ammo, outside the world map and unless B6A1B, puts a
+  world map, Level 1) with poses; the fire button, with ammo, outside the world map and unless HitLock, puts a
   shot in the first free Shots slot (up to Gun) going the facing's way: sound 2, Ammo less one) }
 {$F+}
 procedure ReadJoystick;
@@ -401,7 +401,7 @@ begin
   begin
     LeftHeld := 1;
     RightHeld := 0;
-    B6EE8 := 0;
+    Riding := 0;
     JoyMovedX := True;
     if (Jumping = 0) and (Falling = 0) then
       Slots[1].Sprite := 5
@@ -412,7 +412,7 @@ begin
   begin
     RightHeld := 1;
     LeftHeld := 0;
-    B6EE8 := 0;
+    Riding := 0;
     JoyMovedX := True;
     if (Jumping = 0) and (Falling = 0) then
       Slots[1].Sprite := 1
@@ -504,8 +504,8 @@ begin
   end;
 end;
 {$F-}
-{ src: GUESS 0000:0BE5 (the int $1C handler: W6852 counts ticks; every 20th tick the timers W69CC, W69D4 and
-  W69D0 run down (each end forces a status repaint, W6858 := -1); then the sound playing (287F) steps one
+{ src: GUESS 0000:0BE5 (the int $1C handler: Ticks counts ticks; every 20th tick the timers SpeedTimer, SlowTimer and
+  ConfuseTimer run down (each end forces a status repaint, StatusCamX := -1); then the sound playing (287F) steps one
   note: Sound(note), NoSound every Period notes, and at the -1 end Playing stops) }
 procedure TimerISR;
 begin
@@ -770,13 +770,13 @@ begin
     LoadGraphics;
     SetGraphMode(0);
     ShowLogo;
-    while B6EEC = 0 do
+    while QuitDos = 0 do
     begin
       SetGraphMode(0);
       TitleLoop;
-      if B6EEC = 0 then
+      if QuitDos = 0 then
         NewGame;
-      if (B6EEC = 0) and (B6EED = 0) then
+      if (QuitDos = 0) and (QuitTitle = 0) then
       begin
         PageStride := SetStride($50);
         SetBorder(4);
@@ -803,7 +803,7 @@ begin
           SetSplitVGA($180)
         else
           SetSplit($BE);
-        while (B6EEC = 0) and (B6EED = 0) do
+        while (QuitDos = 0) and (QuitTitle = 0) do
         begin
           if StatusCamX <> CamX then
             DrawStatus;
@@ -898,7 +898,7 @@ begin
                 Jump;
               MemW[0:$41C] := MemW[0:$41A];
               TouchPlayer;
-              B6EE8 := 0;
+              Riding := 0;
             end
             else
               if HitLock <> 0 then
@@ -1008,7 +1008,7 @@ begin
             begin
               Dec(WarpTimer);
               if WarpTimer = 0 then
-                B69FE := 1
+                WarpNow := 1
               else
                 if WarpTimer = -19 then
                 begin
@@ -1016,9 +1016,9 @@ begin
                   WarpArmed := 0;
                 end;
             end;
-            if B69FE <> 0 then
+            if WarpNow <> 0 then
             begin
-              B69FE := 0;
+              WarpNow := 0;
               Slots[1].X := WarpX;
               Slots[1].Y := WarpY;
               CamX := Slots[1].X - $A0;
@@ -1045,24 +1045,24 @@ begin
             end
             else
               Slots[1].Anim := 1;
-            if B6A67 <> 0 then
+            if HitRecover <> 0 then
             begin
-              Dec(B6A68);
-              case B6A68 of
+              Dec(HitTimer);
+              case HitTimer of
                 0:
-                  B6A67 := 0;
+                  HitRecover := 0;
                 $A:
-                  Slots[1].W00 := 5;
+                  Slots[1].MaskFrames := 5;
                 $14:
-                  Slots[1].W00 := 5;
+                  Slots[1].MaskFrames := 5;
                 $1E:
-                  Slots[1].W00 := 5;
+                  Slots[1].MaskFrames := 5;
               end;
             end;
-            if Slots[1].W00 > 0 then
+            if Slots[1].MaskFrames > 0 then
             begin
               DrawSprite(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
-              Dec(Slots[1].W00);
+              Dec(Slots[1].MaskFrames);
             end
             else
               if Slots[1].X and 7 = 0 then
@@ -1083,7 +1083,7 @@ begin
             for SlotIdx := 2 to $19 do
               if (Slots[SlotIdx].Free = 0) and (Slots[SlotIdx].Remove = 0) and (OnScreen($20, SlotIdx)
                   or (Slots[SlotIdx].Kind = $1C) or (Slots[SlotIdx].Kind = $15) or (Slots[RowIdx].Kind = $E)) then
-                if Slots[SlotIdx].W00 > 0 then
+                if Slots[SlotIdx].MaskFrames > 0 then
                 begin
                   case Slots[SlotIdx].Sprite of
                     1..$32:
@@ -1196,7 +1196,7 @@ begin
                           Slots[SlotIdx].X + $10, Slots[SlotIdx].Y + PageY);
                     end;
                   end;
-                  Dec(Slots[SlotIdx].W00);
+                  Dec(Slots[SlotIdx].MaskFrames);
                 end
                 else
                   if Slots[SlotIdx].X and 7 = 0 then
@@ -1523,7 +1523,7 @@ begin
               EscKey := EscapeMenu;
               MenuReq := 0;
             end;
-            if B6EEE <> 0 then
+            if QuitMap <> 0 then
             begin
               FadeOut($14);
               if Ammo < $F then

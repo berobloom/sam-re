@@ -70,7 +70,7 @@ begin
         EscapeMenu := 'R';
         K := RestoreMenu;
         if K <> $1C then
-          B6EEE := 1;
+          QuitMap := 1;
       end;
     $1F:
       begin
@@ -94,7 +94,7 @@ begin
     $10:
       begin
         QuitMenu;
-        if B6EEC <> 0 then
+        if QuitDos <> 0 then
           EscapeMenu := 'Q'
         else
           EscapeMenu := ' ';

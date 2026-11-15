@@ -1,5 +1,5 @@
 { src: SAM1RE 1802:33D0 (../SAM menus: the sam1.apo logo with sound $15, then a key or about 5 s on the
-  W6852 tick counter). Only R of the four locals is used. }
+  Ticks tick counter). Only R of the four locals is used. }
 { from: 33C7 }
 { to: 3477 }
 { interface }

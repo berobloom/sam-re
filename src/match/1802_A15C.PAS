@@ -1,4 +1,4 @@
-{ src: GUESS 1802:A15C (joystick prompt: Y -> JoyOn := JoyPresent, W70EE := 1; N -> both off) }
+{ src: GUESS 1802:A15C (joystick prompt: Y -> JoyOn := JoyPresent, UseJoystick := 1; N -> both off) }
 { from: A13A }
 { to: A207 }
 {$F+}

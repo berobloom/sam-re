@@ -26,8 +26,9 @@ type
     KUp, KDown, KLeft, KRight, KJump, KFire, K70EC, K70EE: Integer;
   end;
   TSlot = record                   { 32 bytes; slot n at DS:3512 + (n-1)*32 }
-    W00, X, Y, PrevX, PrevY, Anim: Integer;  { src: SAM1RE objects.md: +02/+04 position, +06/+08 last
-      frame's (the repaint), +0A animation counter (image = Sprite + Anim div 5) }
+    MaskFrames, X, Y, PrevX, PrevY, Anim: Integer;  { src: SAM1RE objects.md: +02/+04 position, +06/+08 last
+      frame's (the repaint), +0A animation counter (image = Sprite + Anim div 5); +00 frames still drawn
+      with the masked DrawSprite, 3 or 5 after a hit (main 0000:11C3, 0529:0837) }
     W0C, W0E, W10, W12, Sprite, DirX, DirY, Speed, Kind: Integer;  { src: SAM1RE objects.md: +14 sprite base
       (T+150 at spawn, 0529:03F0), +16/+18 x/y direction -1/0/1, +1A speed, +1C behaviour kind }
     Free: Byte;                    { +1E }
@@ -52,7 +53,7 @@ var
   JumpUpTop: Byte; { @3510 }
   JumpDownTop: Byte; { @3511 }
   Slots: array[1..25] of TSlot; { @3512 }
-  W3832, W3834, W3836: Integer; { @3832 }
+  W3832, W3834, W3836: Integer; { @3832; W3832: only cleared (main); W3834: only cleared (main); W3836: only cleared (main) }
   TextLines: array[1..299] of String[40]; { @3838 }
   P681C: Pointer; { @681C; TextWindow's save-under buffer (30000 bytes) }
   KeyFilter: array[1..20] of Byte; { @6820; keys TextWindow accepts (SAM1RE text-windows.md) }
@@ -67,40 +68,40 @@ var
     WalkSpeed: no reader (SAM1RE physics.md);
     PageStride: := $50 at level entry (SAM1RE level-load.md) }
   ScanCode: Integer; { @684A; key ISR scan code, break = make + $80 (SAM1RE input.md) }
-  SlotIdx, RowIdx, W6850: Integer; { @684C; loop variables of the text windows }
+  SlotIdx, RowIdx, WinRow: Integer; { @684C; loop variables of the text windows }
   Ticks: Integer; { @6852; timer ISR ticks, frame gate > 7 (SAM1RE input.md) }
   SlotCount: Integer; { @6854 }
-  W6856: Integer; { @6856 }
+  W6856: Integer; { @6856; only cleared }
   StatusCamX: Integer; { @6858 }
   SiteCounter: Integer; { @685A; world-map site counter (SAM1RE level-load.md) }
-  B685C: Byte; { @685C }
+  Tile142Flag: Byte; { @685C; := 1 at init, 2 by tile $142; no reader }
   CamX: Integer; { @685E }
   CamY: Integer; { @6860 }
   ScanPage: Integer; { @6862; the page the CRTC scans (SAM1RE level-load.md) }
-  W6864: Integer; { @6864 }
+  DrawPage: Integer; { @6864; the page being drawn, 0/1 (FlipPage 1802:0000) }
   PageY: Integer; { @6866 }
   AllDone: Byte; { @6868; 1 when exactly 15 of the 16 sites are done (0D9C:2E88; SAM1RE level-load.md) }
   Bullets: array[1..20] of Byte; { @686A }
   Ammo: Integer; { @687E }
   Shots: array[1..10] of TSlot; { @6880; a second slot table (0529:008D tests it like Slots), GUESS name }
   Score: LongInt; { @69C0 }
-  W69C4: Integer; { @69C4 }
-  W69C6: Integer; { @69C6 }
+  Tile269Count: Integer; { @69C4; tile $269 adds one; kept in the save state only }
+  Tile31Count: Integer; { @69C6; tile $31 adds one; no reader }
   Gun: Integer; { @69C8 }
   SpeedBonus: Integer; { @69CA; walk speed bonus, tile N (SAM1RE physics.md) }
   SpeedTimer: Integer; { @69CC; speed power-up, $D8, -1 per 20 ticks (SAM1RE physics.md) }
-  W69CE: Integer; { @69CE }
+  Tile142Val: Integer; { @69CE; := $1B0 by tile $142; no reader }
   ConfuseTimer: Integer; { @69D0; confusion, $D8, -2 (SAM1RE physics.md) }
   UnconfuseMsg: Byte; { @69D2; 1: print YOU FEEL LESS CONFUSED (SAM1RE physics.md) }
   Confused: Byte; { @69D3; walk keys mirrored (SAM1RE input.md) }
   SlowTimer: Integer; { @69D4; slow-walk power-up, $D8, -2 (SAM1RE physics.md) }
   SlowWalk: Byte; { @69D6; tile H (SAM1RE physics.md) }
-  W69D8: Integer; { @69D8 }
+  W69D8: Integer; { @69D8; kept in the save state only }
   KeysOff: Byte; { @69DA; <> 0: game keys skipped (SAM1RE input.md) }
-  W69DC: Integer; { @69DC }
+  MarkerTimer: Integer; { @69DC; := $33 at a site marker; > $F / $1E / $32 stage the entry (0529:6D0E) }
   MapSite: Integer; { @69DE }
   SiteDone: array[1..20] of Byte; { @69E0 }
-  ExitArmed, ChordO, ChordN, ChordD, ChordPB, WarpCheat, ChordP, ChordJ, ChordX, PjxDone, B69FE, ChordU: Byte; { @69F4;
+  ExitArmed, ChordO, ChordN, ChordD, ChordPB, WarpCheat, ChordP, ChordJ, ChordX, PjxDone, WarpNow, ChordU: Byte; { @69F4;
     ChordO: cheat chord O N D + P/B (SAM1RE input.md);
     ChordN: cheat chord (SAM1RE input.md);
     ChordD: cheat chord (SAM1RE input.md);
@@ -110,6 +111,7 @@ var
     ChordJ: cheat chord (SAM1RE input.md);
     ChordX: cheat chord (SAM1RE input.md);
     PjxDone: P J X latch (SAM1RE input.md);
+    WarpNow: warp timer hit 0: move the player to WarpX/WarpY (main);
     ChordU: cheat chord U V K, ammo +25 (SAM1RE input.md) }
   ChordV, ChordK, AmmoCheat, ChordZ, ChordG, ChordI, WarpArmed: Byte; { @6A00;
     ChordV: cheat chord (SAM1RE input.md);
@@ -123,9 +125,13 @@ var
     WarpTimer: warp countdown, := $13 (SAM1RE level-load.md);
     WarpX: warp destination (SAM1RE level-load.md);
     WarpY: warp destination (SAM1RE level-load.md) }
-  B6A0E, B6A0F, B6A10, B6A11, Floppy, LaserDown, B6A14, VGunOff: Byte; { @6A0E;
+  B6A0E, KeyA, KeyB, KeyC, Floppy, LaserDown, DoorMsgShown, VGunOff: Byte; { @6A0E;
+    B6A0E: only cleared;
+    KeyA: tile $1A5 sets it, $1A6 uses it up and opens (0529:6D0E), status cell 20;
+    KeyB, KeyC: tiles $1A7/$1A8 and $1A9/$1AA the same; status cells 18, 19;
     Floppy: the floppy (SAM1RE level-load.md);
-    LaserDown: laser field off (SAM1RE level-load.md) }
+    LaserDown: laser field off (SAM1RE level-load.md);
+    DoorMsgShown: 'no way to open this door' shown once per level (0529:6D0E) }
   Bonus1, Bonus2, Bonus3, Invulnerable, DoorKey, HitLock: Byte; { @6A16;
     Bonus1: ordered bonus chain (SAM1RE level-load.md);
     Bonus2: ordered bonus chain (SAM1RE level-load.md);
@@ -138,8 +144,8 @@ var
   ExitLock: Byte; { @6A64; exit/cutscene lock (SAM1RE physics.md) }
   RespawnDelay: Byte; { @6A65 }
   Lives: Byte; { @6A66 }
-  B6A67: Byte; { @6A67 }
-  B6A68: Byte; { @6A68 }
+  HitRecover: Byte; { @6A67; 1 after a hit took a life; no further hit until HitTimer runs out (0529:01C4) }
+  HitTimer: Byte; { @6A68; 30 frames; at 30/20/10 the player is drawn masked (main) }
   NameInput: String; { @6A6A }
   HiName: array[1..10] of String[40]; { @6B6A }
   HiScore: array[1..10] of LongInt; { @6D04 }
@@ -159,16 +165,18 @@ var
   GfxSmall: array[1..3] of PGfxSmall; { @6E58 }
   GfxSmallFile: file of TGfxSmall; { @6E64 }
   EscKey: Char; { @6EE4; EscapeMenu's result (main 0000:5078) }
-  Shot, Falling, Jumping, B6EE8, UpHeld, DownHeld, EscHeld, B6EEC, B6EED, B6EEE, B6EEF, LeftHeld, RightHeld: Byte; { @6EE5;
+  Shot, Falling, Jumping, Riding, UpHeld, DownHeld, EscHeld: Byte; { @6EE5;
     Shot: shot fired (SAM1RE physics.md);
-    Falling: (SAM1RE physics.md);
-    Jumping: (SAM1RE physics.md);
-    UpHeld: (SAM1RE input.md);
-    DownHeld: (SAM1RE input.md);
-    EscHeld: (SAM1RE input.md);
-    LeftHeld: (SAM1RE input.md);
-    RightHeld: (SAM1RE input.md) }
-  B6EF2, JumpHeld: Byte; { @6EF2; JumpHeld: (SAM1RE input.md) }
+    Falling, Jumping: (SAM1RE physics.md);
+    Riding: the player stands on a moving actor: no gravity (0529:0837, 0529:6A0E);
+    UpHeld, DownHeld, EscHeld: (SAM1RE input.md) }
+  QuitDos, QuitTitle, QuitMap, B6EEF, LeftHeld, RightHeld: Byte; { @6EEC;
+    QuitDos: quit menu D)os, AskQuit Y, the exit tile; ends the title loop (main);
+    QuitTitle: quit menu T)itle, the ending; ends the game loop (main);
+    QuitMap: quit menu I)sland Map, or death without Invulnerable (0529:011A);
+    B6EEF: only cleared;
+    LeftHeld, RightHeld: (SAM1RE input.md) }
+  B6EF2, JumpHeld: Byte; { @6EF2; B6EF2: only cleared (1802:1585, 1802:2653); JumpHeld: (SAM1RE input.md) }
   NameUp, NameDown, NameFire, NameRight, NameJump, NameLeft: String[80]; { @6EF4; key names (redefine menu) }
   KeyUp, KeyDown, KeyLeft, KeyRight, KeyFire, KeyJump: Integer; { @70E0; SAM1RE menus.md: 70E8 fire }
   AltVideo: Integer; { @70EC; Alternate video setting Y/N (SAM1RE menus.md) }
@@ -232,31 +240,31 @@ begin
   UpHeld := 0;
   DownHeld := 0;
   EscHeld := 0;
-  B6EEC := 0;
-  B6EED := 0;
-  B6EEE := 0;
+  QuitDos := 0;
+  QuitTitle := 0;
+  QuitMap := 0;
   B6EEF := 0;
-  B6EE8 := 0;
+  Riding := 0;
   Jumping := 0;
   JumpHeld := 0;
   Falling := 0;
   Level := 1;
   W6856 := 0;
   PageY := $10;
-  W6864 := 0;
+  DrawPage := 0;
   ScanPage := 0;
   WalkSpeed := 0;
-  B685C := 1;
+  Tile142Flag := 1;
   Score := 0;
-  W69C4 := 1;
+  Tile269Count := 1;
   Ammo := 5;
   Gun := 1;
-  W69C6 := 0;
+  Tile31Count := 0;
   for I := 1 to 15 do
     Bullets[I] := 0;
   SpeedBonus := 0;
   SpeedTimer := 0;
-  W69CE := 0;
+  Tile142Val := 0;
   Confused := 0;
   ConfuseTimer := 0;
   UnconfuseMsg := 0;
@@ -267,14 +275,14 @@ begin
   Floppy := 0;
   LaserDown := 0;
   B6A0E := 0;
-  B6A0F := 0;
-  B6A10 := 0;
-  B6A11 := 0;
+  KeyA := 0;
+  KeyB := 0;
+  KeyC := 0;
   Invulnerable := 0;
   DoorKey := 0;
-  B6A14 := 0;
+  DoorMsgShown := 0;
   KeysOff := 0;
-  W69DC := 0;
+  MarkerTimer := 0;
   MapSite := 1;
   Bonus1 := 0;
   Bonus2 := 0;
@@ -286,8 +294,8 @@ begin
   ExitLock := 0;
   RespawnDelay := 8;
   Lives := 3;
-  B6A67 := 0;
-  B6A68 := 0;
+  HitRecover := 0;
+  HitTimer := 0;
   ExitArmed := 0;
   MenuReq := 0;
   ChordP := 0;
@@ -306,7 +314,7 @@ begin
   ChordPB := 0;
   WarpCheat := 0;
   PjxDone := 0;
-  B69FE := 0;
+  WarpNow := 0;
   WarpArmed := 0;
   WarpTimer := 0;
   WarpX := 0;
@@ -314,7 +322,7 @@ begin
   State.X := 0;
   State.Y := 0;
   State.Score := Score;
-  State.W08 := W69C4;
+  State.W08 := Tile269Count;
   State.Ammo := Ammo;
   for I := 1 to 20 do
     State.Bullets[I] := Bullets[I];
@@ -326,7 +334,7 @@ begin
   State.B2A := SlowWalk;
   State.W2B := SlowTimer;
   State.W2D := W69D8;
-  State.W2F := W69DC;
+  State.W2F := MarkerTimer;
   State.MapSite := MapSite;
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];
@@ -447,31 +455,31 @@ begin
   UpHeld := 0;
   DownHeld := 0;
   EscHeld := 0;
-  B6EEC := 0;
-  B6EED := 0;
-  B6EEE := 0;
+  QuitDos := 0;
+  QuitTitle := 0;
+  QuitMap := 0;
   B6EEF := 0;
-  B6EE8 := 0;
+  Riding := 0;
   Jumping := 0;
   JumpHeld := 0;
   Falling := 0;
   Level := 1;
   W6856 := 0;
   PageY := $10;
-  W6864 := 0;
+  DrawPage := 0;
   ScanPage := 0;
   WalkSpeed := 0;
-  B685C := 1;
+  Tile142Flag := 1;
   Score := 0;
-  W69C4 := 1;
+  Tile269Count := 1;
   Ammo := 5;
   Gun := 1;
-  W69C6 := 0;
+  Tile31Count := 0;
   for I := 1 to 15 do
     Bullets[I] := 0;
   SpeedBonus := 0;
   SpeedTimer := 0;
-  W69CE := 0;
+  Tile142Val := 0;
   Confused := 0;
   ConfuseTimer := 0;
   UnconfuseMsg := 0;
@@ -482,14 +490,14 @@ begin
   Floppy := 0;
   LaserDown := 0;
   B6A0E := 0;
-  B6A0F := 0;
-  B6A10 := 0;
-  B6A11 := 0;
+  KeyA := 0;
+  KeyB := 0;
+  KeyC := 0;
   Invulnerable := 0;
   DoorKey := 0;
-  B6A14 := 0;
+  DoorMsgShown := 0;
   KeysOff := 0;
-  W69DC := 0;
+  MarkerTimer := 0;
   MapSite := 1;
   Bonus1 := 0;
   Bonus2 := 0;
@@ -502,8 +510,8 @@ begin
   ExitLock := 0;
   RespawnDelay := 8;
   Lives := 3;
-  B6A67 := 0;
-  B6A68 := 0;
+  HitRecover := 0;
+  HitTimer := 0;
   MenuReq := 0;
   ChordP := 0;
   ChordJ := 0;
@@ -521,7 +529,7 @@ begin
   ChordPB := 0;
   WarpCheat := 0;
   PjxDone := 0;
-  B69FE := 0;
+  WarpNow := 0;
   WarpArmed := 0;
   WarpTimer := 0;
   WarpX := 0;
@@ -529,7 +537,7 @@ begin
   State.X := 0;
   State.Y := 0;
   State.Score := Score;
-  State.W08 := W69C4;
+  State.W08 := Tile269Count;
   State.Ammo := Ammo;
   for I := 1 to 20 do
     State.Bullets[I] := Bullets[I];
@@ -541,7 +549,7 @@ begin
   State.B2A := SlowWalk;
   State.W2B := SlowTimer;
   State.W2D := W69D8;
-  State.W2F := W69DC;
+  State.W2F := MarkerTimer;
   State.MapSite := MapSite;
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];
@@ -564,11 +572,11 @@ begin
   UpHeld := 0;
   DownHeld := 0;
   EscHeld := 0;
-  B6EEC := 0;
-  B6EED := 0;
-  B6EEE := 0;
+  QuitDos := 0;
+  QuitTitle := 0;
+  QuitMap := 0;
   B6EEF := 0;
-  B6EE8 := 0;
+  Riding := 0;
   Jumping := 0;
   JumpHeld := 0;
   Falling := 0;
@@ -578,18 +586,18 @@ begin
   Floppy := 0;
   LaserDown := 0;
   B6A0E := 0;
-  B6A0F := 0;
-  B6A10 := 0;
-  B6A11 := 0;
+  KeyA := 0;
+  KeyB := 0;
+  KeyC := 0;
   DoorKey := 0;
-  B6A14 := 0;
+  DoorMsgShown := 0;
   KeysOff := 0;
   Bonus1 := 0;
   Bonus2 := 0;
   Bonus3 := 1;
   SpeedBonus := 0;
   SpeedTimer := 0;
-  W69CE := 0;
+  Tile142Val := 0;
   Confused := 0;
   ConfuseTimer := 0;
   UnconfuseMsg := 0;
@@ -599,8 +607,8 @@ begin
   ExitLock := 0;
   RespawnDelay := 8;
   Lives := 3;
-  B6A67 := 0;
-  B6A68 := 0;
+  HitRecover := 0;
+  HitTimer := 0;
   HitLock := 0;
   ArcLen := $23;
   ExitArmed := 0;
@@ -620,7 +628,7 @@ begin
   ChordPB := 0;
   WarpCheat := 0;
   PjxDone := 0;
-  B69FE := 0;
+  WarpNow := 0;
   WarpArmed := 0;
   WarpTimer := 0;
   WarpX := 0;

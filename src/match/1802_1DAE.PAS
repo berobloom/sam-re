@@ -40,9 +40,9 @@ begin
   GetImage(P681C^, X1, (Y1 shl 3) + ScanPage, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + ScanPage);
   X2 := X1 + MaxW + 4;
   Y2 := Y1 + NLines + 1;
-  for W6850 := 1 to Y2 - Y1 do
+  for WinRow := 1 to Y2 - Y1 do
     for RowIdx := X1 + 1 to X2 - 1 do
-      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + WinRow) shl 3) + ScanPage);
   DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
     DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);

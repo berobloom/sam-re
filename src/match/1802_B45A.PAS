@@ -1,4 +1,4 @@
-{ src: GUESS 1802:B45A (the first ordering window; sets B6EEB, unlike the other windows) }
+{ src: GUESS 1802:B45A (the first ordering window; sets EscHeld, unlike the other windows) }
 { from: B2E1 }
 { to: B69D }
 {$F+}

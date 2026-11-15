@@ -30,11 +30,11 @@ begin
       DrawCell(GfxSmall[1]^.Cell[14], 20, 1);
     if DoorKey <> 0 then
       DrawCell(GfxSmall[1]^.Cell[21], 25, 1);
-    if B6A10 <> 0 then
+    if KeyB <> 0 then
       DrawCell(GfxSmall[1]^.Cell[18], 27, 1);
-    if B6A11 <> 0 then
+    if KeyC <> 0 then
       DrawCell(GfxSmall[1]^.Cell[19], 28, 1);
-    if B6A0F <> 0 then
+    if KeyA <> 0 then
       DrawCell(GfxSmall[1]^.Cell[20], 29, 1);
     if Floppy <> 0 then
       DrawCell(GfxSmall[1]^.Cell[22], 30, 1);
@@ -57,11 +57,11 @@ begin
       DrawCellX(GfxSmall[1]^.Cell[14], Sh + $A0, 1);
     if DoorKey <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[21], Sh + $C8, 1);
-    if B6A10 <> 0 then
+    if KeyB <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[18], Sh + $D8, 1);
-    if B6A11 <> 0 then
+    if KeyC <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[19], Sh + $E0, 1);
-    if B6A0F <> 0 then
+    if KeyA <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[20], Sh + $E8, 1);
     if Floppy <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[22], Sh + $F0, 1);

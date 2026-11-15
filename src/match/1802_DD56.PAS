@@ -27,7 +27,7 @@ begin
   until KeyPressed;
   MemW[0:$41C] := MemW[0:$41A];
   CheckHighScore;
-  B6EED := 1;
+  QuitTitle := 1;
   HasPix := 0;
-  B6EEC := 0;
+  QuitDos := 0;
 end;

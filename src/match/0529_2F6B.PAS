@@ -151,7 +151,7 @@ begin
             if ShotHit(Slots[I].X, Slots[I].Y) or ShotHit(Slots[I].X + $10, Slots[I].Y) then
             begin
               PlaySound(8);
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               Dec(Slots[I].W10);
               if Slots[I].W10 = 0 then
               begin
@@ -238,7 +238,7 @@ begin
                   Slots[I].DirX := -1;
                   Slots[I].Anim := $29;
                 end;
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               Dec(Slots[I].W10);
               if Slots[I].W10 = 0 then
               begin
@@ -397,7 +397,7 @@ begin
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
               Dec(Slots[I].W0C);
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               if Slots[I].W0C <= 0 then
               begin
                 for Col1 := 0 to $F do
@@ -454,7 +454,7 @@ begin
             HitPlayer(Slots[I].X, Slots[I].Y);
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               Dec(Slots[I].W10);
               if Slots[I].W10 <= 0 then
               begin
@@ -518,7 +518,7 @@ begin
             HitPlayer(Slots[I].X, Slots[I].Y);
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               Dec(Slots[I].W10);
               if Slots[I].W10 <= 0 then
               begin
@@ -551,7 +551,7 @@ begin
             HitPlayer(Slots[I].X, Slots[I].Y);
             if ShotHit(Slots[I].X, Slots[I].Y) then
             begin
-              Slots[I].W00 := 3;
+              Slots[I].MaskFrames := 3;
               Dec(Slots[I].W10);
               if Slots[I].W10 <= 0 then
               begin

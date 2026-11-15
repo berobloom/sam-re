@@ -1,6 +1,6 @@
 { src: SAM1RE 0D9C:2530 (../SAM objects.md: the front cell repaint at pixel X, Y: the cell's Front tile from
   its bank (1..$32 bank 1, then 50 a bank: $64.. 2, $97.. 10, $C9.. 11, $FB.. 15, $12D.. 13, $15F.. 16,
-  $191.. 4, $1C3.. 5, $259.. 6, $28B.. 7, $2BD.. 8, $2EF.. 9) on the page W6866; $B3, $1F3, $265, $25B and
+  $191.. 4, $1C3.. 5, $259.. 6, $28B.. 7, $2BD.. 8, $2EF.. 9) on the page PageY; $B3, $1F3, $265, $25B and
   $270 differ by page (two-frame animation). Columns 0..$27 only, no upper row bound) }
 { interface }
 procedure DrawFront(X, Y: Integer);

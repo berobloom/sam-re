@@ -1,5 +1,5 @@
-{ src: GUESS 1802:9B63 (quit prompt: B6820 = [1, $15, $31] lists the accepted scan codes Y and N;
-  Y sets B6EEC) }
+{ src: GUESS 1802:9B63 (quit prompt: KeyFilter = [1, $15, $31] lists the accepted scan codes Y and N;
+  Y sets QuitDos) }
 { from: 9B41 }
 { to: 9BF2 }
 {$F+}
@@ -13,7 +13,7 @@ begin
   KeyFilter[3] := $31;
   WinKey := Ord(TextWindow(True));
   if WinKey = $15 then
-    B6EEC := 1;
+    QuitDos := 1;
   EscHeld := 0;
   MenuReq := 0;
   UpHeld := 0;

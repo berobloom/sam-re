@@ -1,5 +1,5 @@
 { src: SAM1RE 0D9C:1185 (../SAM level-load.md: the row-24 sheet cell repaint at pixel X, Y, load time only:
-  the sheet's Back values 2, 5, 6, 7 stand for the level's own tiles W6840..W6840+3 and 8 for $29B while
+  the sheet's Back values 2, 5, 6, 7 stand for the level's own tiles BackTile..BackTile+3 and 8 for $29B while
   it draws (mapped back after), Back without mask, Mid and Front with mask, the banks as DrawFront's. No
   bounds test) }
 {$F+}

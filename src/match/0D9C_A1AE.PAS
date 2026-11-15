@@ -1,6 +1,6 @@
 { src: SAM1RE 0D9C:A1AE (../SAM level-load.md: the level loader. Resets slots 2..25 and the ten shots, then
   reads SAM103.GFX, 42-byte encrypted records: the world map (N = 1) is the first 25, level N (2..17) the
-  25 after (N-1)*48. The first record's three chars are the number W6840, the next is row 24 (the sheet
+  25 after (N-1)*48. The first record's three chars are the number BackTile, the next is row 24 (the sheet
   row), then rows 0..23 ('*' rows repeat the row). Then the page sweep, FadeIn(20) and sound $D) }
 { from: A1A3 }
 { interface }
@@ -18,7 +18,7 @@ begin
   StatusCamX := -1;
   for I := 2 to 25 do
   begin
-    Slots[I].W00 := 0;
+    Slots[I].MaskFrames := 0;
     Slots[I].Sprite := 9;
     Slots[I].X := -41;
     Slots[I].Y := 0;

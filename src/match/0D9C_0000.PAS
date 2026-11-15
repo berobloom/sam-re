@@ -1,6 +1,6 @@
 { src: SAM1RE 0D9C:0000 (../SAM objects.md, level-load.md: the back cell repaint at pixel X, Y: the cell's
   Back (1..8 a pattern of the row-24 sheet, else a tile drawn without mask), then its Mid and Front tiles
-  with mask, on the page W6866; the banks as DrawFront's. Columns 0..$27 only, no upper row bound) }
+  with mask, on the page PageY; the banks as DrawFront's. Columns 0..$27 only, no upper row bound) }
 { interface }
 procedure DrawBack(X, Y: Integer);
 var

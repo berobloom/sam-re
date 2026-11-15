@@ -104,7 +104,7 @@ begin
       begin
         PlaySound(8);
         Dec(Slots[I].Kind);
-        Slots[I].W00 := 3;
+        Slots[I].MaskFrames := 3;
         Slots[I].Sprite := $15F;
         Slots[I].Speed := 1;
         Slots[I].W0C := Random($32) + $32;
@@ -163,7 +163,7 @@ begin
         PlaySound(8);
         Dec(Slots[I].Kind);
         Slots[I].Sprite := $167;
-        Slots[I].W00 := 3;
+        Slots[I].MaskFrames := 3;
         Slots[I].Speed := 2;
         if Slots[I].X < Slots[1].X then
           Slots[I].DirX := 1
@@ -230,7 +230,7 @@ begin
         PlaySound(8);
         Dec(Slots[I].Kind);
         Slots[I].Sprite := $16F;
-        Slots[I].W00 := 3;
+        Slots[I].MaskFrames := 3;
         Slots[I].Speed := 3;
         if Slots[I].X < Slots[1].X then
           Slots[I].DirX := 1
@@ -295,7 +295,7 @@ begin
         PlaySound(8);
         Dec(Slots[I].Kind);
         Slots[I].Sprite := $177;
-        Slots[I].W00 := 3;
+        Slots[I].MaskFrames := 3;
         if Slots[I].X < Slots[1].X then
           Slots[I].DirX := 1
         else
@@ -335,7 +335,7 @@ begin
         begin
           PlaySound(8);
           Dec(Slots[I].W0C);
-          Slots[I].W00 := 3;
+          Slots[I].MaskFrames := 3;
           if Slots[I].W0C <= 0 then
           begin
             Slots[I].Sprite := $271;
@@ -365,17 +365,17 @@ begin
         if (Col1 < 8) and (Col1 > -8) and (Row2 < 8) and (Row2 > -8) and (Invulnerable = 0) and (HitLock = 0) then
           if Lives > 1 then
           begin
-            if B6A67 = 0 then
+            if HitRecover = 0 then
             begin
-              B6A67 := 1;
-              B6A68 := $1E;
+              HitRecover := 1;
+              HitTimer := $1E;
               Dec(Lives);
               StatusCamX := -1;
-              Slots[1].W00 := 5;
+              Slots[1].MaskFrames := 5;
             end;
           end
           else
-            if B6A67 = 0 then
+            if HitRecover = 0 then
             begin
               HitLock := 1;
               ArcLen := $23;
@@ -716,7 +716,7 @@ begin
         DrawBack(Slots[I].X + $10, Slots[I].Y + 8);
         Slots[I].Y := Slots[I].Y + 8;
         Slots[I].W10 := -1;
-        B6EE8 := 0;
+        Riding := 0;
       end
       else
       begin
@@ -748,7 +748,7 @@ begin
             Slots[1].Y := Slots[I].Y - $10;
             Jumping := 0;
             Falling := 0;
-            B6EE8 := 1;
+            Riding := 1;
             if Slots[1].Sprite = $D then
               Slots[1].Sprite := 9
             else
@@ -768,7 +768,7 @@ begin
         Slots[1].Y := Slots[I].Y - $10;
         Jumping := 0;
         Falling := 0;
-        B6EE8 := 1;
+        Riding := 1;
         if Slots[1].Sprite = $D then
           Slots[1].Sprite := 9
         else

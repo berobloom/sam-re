@@ -1,6 +1,6 @@
-{ src: SAM1RE 0D9C:2E88 (../SAM level-load.md: the world-map cell of row char S at cell X, Y. B6868 := exactly
+{ src: SAM1RE 0D9C:2E88 (../SAM level-load.md: the world-map cell of row char S at cell X, Y. AllDone := exactly
   15 of the 16 site counters done; on the world map (Level 1) each char gives its SetCell; the site markers
-  M N O P show done or undone by SiteDone[W685A + 2], and 'l' by B6868) }
+  M N O P show done or undone by SiteDone[SiteCounter + 2], and 'l' by AllDone) }
 { from: 2E20 }
 { to: 3A59 }
 {$F+}
