@@ -10,8 +10,10 @@ keep a session diary here.
 - **The matching decompilation is complete.** `src/` (written by
   `tools/tp/gen_scaffold.py` from `src/match/`) compiles with TP 5.0 to a
   `SAM1.EXE` whose load image equals the unpacked original in all 188768
-  bytes. The header differs only where LZEXE touched it: min/max alloc, and
-  the relocation entries' seg:off form (the same linear set). All 10 game
+  bytes, and `tools/tp/pack.py` (LZEXE 0.91 after setting the header's
+  min/max alloc to 3248/44208, which the original's linker output did not
+  have: MATCHING.md section 8) turns it into the shipped `original/SAM1.EXE`
+  byte for byte, SHA-256 included. All 10 game
   units are byte-identical: main, 0529 (actors), 0D9C (map), 1802 (menus,
   windows, save/load), 25E6 (text), 2643 (Genus PCX Toolkit, asm), 286F
   (joystick), 287F (sound), 2891 (start-up, data), 29C3 (graphics, asm).
@@ -30,8 +32,6 @@ keep a session diary here.
 
 ## Next
 
-- MATCHING.md section 8: pack the build with LZEXE 0.91 and compare it with
-  `original/SAM1.EXE`.
 - Names: the `W`/`B` globals, the slot fields, the 29C3 and Genus asm
   routines; `match.py` must stay green after each rename.
 - `gen_scaffold.py` still carries the stub, fill and keeper machinery that the

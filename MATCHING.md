@@ -355,6 +355,15 @@ image; only order and size matter).
 
 ## 8. Last: the shipped file
 
-Pack the matched build with LZEXE 0.91 (`../cosmore/src/LZEXE91/LZEXE.EXE`)
-and compare with `original/SAM1.EXE`. LZEXE is deterministic as far as known
-(LIKELY; untested), so a matching image should pack to the shipped file.
+Done (CONFIRMED): `tools/tp/pack.py` packs the build with LZEXE 0.91
+(`../cosmore/src/LZEXE91/LZEXE.EXE`, in the stock DOSBox) and the result is
+`original/SAM1.EXE` byte for byte (SHA-256 as in `original/SHA256SUMS`).
+
+One step is not TP's: before packing, the header's min/max alloc are set to
+3248/44208 paragraphs. LZEXE carries them over one to one (packed min = input
++ 8234, packed max = input + 8645, measured with three inputs), so the file
+that was packed had those values. TP 5.0 writes 2837/43797 for this layout
+with the default `{$M 16384,0,655360}`; `{$M 16384,6576,655360}` gives the
+minimum, but the maximum needs a heapmax over 655360, which TP rejects
+("Error in $M"). So the header was edited after linking (LIKELY an
+EXEMOD-style tool), and SS:SP, the image and the relocations are TP's.
