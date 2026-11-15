@@ -14,7 +14,7 @@ begin
   R := SetStride($28);
   CamX := 0;
   CamY := 0;
-  W6862 := 0;
+  ScanPage := 0;
   PageY := 0;
   R := ShowPicture('sam1.apo', 1, 0, 0);
   FadeIn($14);

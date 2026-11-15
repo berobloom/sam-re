@@ -7,9 +7,9 @@
 {$F+}
 procedure Jump;
 begin
-  if (B6EE7 = 0) and (B6EE8 = 0) then
+  if (Jumping = 0) and (B6EE8 = 0) then
     Fall;
-  if (KeysOff = 0) and (B6EE7 = 0) and (B6EE6 = 0) and ((B6EF3 <> 0) or (JumpButton and JoyOn))
+  if (KeysOff = 0) and (Jumping = 0) and (Falling = 0) and ((JumpHeld <> 0) or (JumpButton and JoyOn))
     and (Map[(Slots[1].X + 3) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0)
     and (Map[(Slots[1].X + 12) shr 4 + 1, (Slots[1].Y - 3) shr 4 + 1].Solid = 0) then
   begin
@@ -18,16 +18,16 @@ begin
     else
       Slots[1].Sprite := $E;
     PlaySound(1);
-    B6EE7 := 1;
+    Jumping := 1;
     B6EE8 := 0;
     JumpUpTop := 0;
   end;
-  if B6EE7 <> 0 then
+  if Jumping <> 0 then
   begin
     Inc(JumpUpTop);
     if JumpUpTop = 10 then
     begin
-      B6EE7 := 0;
+      Jumping := 0;
       JumpUpTop := 9;
     end;
     if JumpUpTop < 17 then
@@ -44,7 +44,7 @@ begin
       else
       begin
         JumpUpTop := 9;
-        B6EE7 := 0;
+        Jumping := 0;
       end;
   end;
 end;

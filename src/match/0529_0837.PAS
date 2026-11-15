@@ -363,7 +363,7 @@ begin
         Slots[I].X := NewX;
         Col1 := Slots[1].X - Slots[I].X;
         Row2 := Slots[1].Y - Slots[I].Y;
-        if (Col1 < 8) and (Col1 > -8) and (Row2 < 8) and (Row2 > -8) and (B6A19 = 0) and (B6A1B = 0) then
+        if (Col1 < 8) and (Col1 > -8) and (Row2 < 8) and (Row2 > -8) and (Invulnerable = 0) and (HitLock = 0) then
           if Lives > 1 then
           begin
             if B6A67 = 0 then
@@ -378,7 +378,7 @@ begin
           else
             if B6A67 = 0 then
             begin
-              B6A1B := 1;
+              HitLock := 1;
               ArcLen := $23;
             end;
       end;
@@ -744,11 +744,11 @@ begin
               Slots[I].X := Slots[1].X + $D;
         end
         else
-          if (Slots[1].Y + $10 >= Slots[I].Y) and (Slots[I].Y >= Slots[1].Y) and (B6EE7 = 0) then
+          if (Slots[1].Y + $10 >= Slots[I].Y) and (Slots[I].Y >= Slots[1].Y) and (Jumping = 0) then
           begin
             Slots[1].Y := Slots[I].Y - $10;
-            B6EE7 := 0;
-            B6EE6 := 0;
+            Jumping := 0;
+            Falling := 0;
             B6EE8 := 1;
             if Slots[1].Sprite = $D then
               Slots[1].Sprite := 9
@@ -764,11 +764,11 @@ begin
         Slots[I].DirX := -Slots[I].DirX;
       if ((Slots[I].X <= Slots[1].X) and (Slots[I].X + 9 >= Slots[1].X) or (Slots[1].X + 9 >= Slots[I].X)
           and (Slots[I].X >= Slots[1].X)) and (Slots[1].Y + $10 >= Slots[I].Y)
-          and (Slots[I].Y > Slots[1].Y) and (B6EE7 = 0) then
+          and (Slots[I].Y > Slots[1].Y) and (Jumping = 0) then
       begin
         Slots[1].Y := Slots[I].Y - $10;
-        B6EE7 := 0;
-        B6EE6 := 0;
+        Jumping := 0;
+        Falling := 0;
         B6EE8 := 1;
         if Slots[1].Sprite = $D then
           Slots[1].Sprite := 9

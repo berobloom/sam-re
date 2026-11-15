@@ -31,7 +31,7 @@ begin
     2..10: SaveGame(WinKey - 1);
     11: SaveGame(0);
   end;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
   ClearText;
   if IOResult = 0 then

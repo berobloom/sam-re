@@ -25,5 +25,5 @@ begin
   State.MapSite := MapSite;
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];
-  State.B47 := B6A02;
+  State.B47 := AmmoCheat;
 end;

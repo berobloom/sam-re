@@ -93,13 +93,13 @@
             Ticks := 0;
             if JoyOn then
               ReadJoystick;
-            if (Slots[1].Sprite = 9) and (B6EF1 <> 0) then
+            if (Slots[1].Sprite = 9) and (RightHeld <> 0) then
               Slots[1].Sprite := 1
             else
-              if (Slots[1].Sprite = $A) and (B6EF0 <> 0) then
+              if (Slots[1].Sprite = $A) and (LeftHeld <> 0) then
                 Slots[1].Sprite := 5
               else
-                if ((Slots[1].Sprite = $A) or (Slots[1].Sprite = 9)) and ((B6EEA <> 0) or (B6EE9 <> 0)) then
+                if ((Slots[1].Sprite = $A) or (Slots[1].Sprite = 9)) and ((DownHeld <> 0) or (UpHeld <> 0)) then
                   Slots[1].Sprite := 1;
             FlipPage;
             DrawBack(Slots[1].PrevX - $10, Slots[1].PrevY - $10);
@@ -172,7 +172,7 @@
               DrawBack(Shots[SlotIdx].PrevX, Shots[SlotIdx].PrevY + $10);
               DrawBack(Shots[SlotIdx].PrevX + $10, Shots[SlotIdx].PrevY + $10);
             end;
-            if (B6A1B = 0) and (ExitLock = 0) then
+            if (HitLock = 0) and (ExitLock = 0) then
             begin
               MovePlayer;
               if Level > 1 then
@@ -182,7 +182,7 @@
               B6EE8 := 0;
             end
             else
-              if B6A1B <> 0 then
+              if HitLock <> 0 then
               begin
                 Slots[1].PrevX := Slots[1].X;
                 Slots[1].PrevY := Slots[1].Y;
@@ -285,7 +285,7 @@
                   DrawFront(Shots[SlotIdx].X, Shots[SlotIdx].Y + $10);
                   DrawFront(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y + $10);
                 end;
-            if B6A06 <> 0 then
+            if WarpArmed <> 0 then
             begin
               Dec(WarpTimer);
               if WarpTimer = 0 then
@@ -294,7 +294,7 @@
                 if WarpTimer = -19 then
                 begin
                   KeysOff := 0;
-                  B6A06 := 0;
+                  WarpArmed := 0;
                 end;
             end;
             if B69FE <> 0 then
@@ -351,15 +351,15 @@
                     Slots[1].Y + PageY)
               else
                 DrawTileB(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
-            if B6A06 <> 0 then
+            if WarpArmed <> 0 then
               if WarpTimer < 0 then
                 DrawTileB(Gfx[10]^.Tile[WarpTimer div 5 + $28], Slots[1].X, Slots[1].Y + PageY)
               else
                 DrawTileB(Gfx[10]^.Tile[$28 - WarpTimer div 5], Slots[1].X, Slots[1].Y + PageY);
-            if (B6EF0 <> 0) and (Slots[1].Sprite = $C) then
+            if (LeftHeld <> 0) and (Slots[1].Sprite = $C) then
               Slots[1].Sprite := 5
             else
-              if (B6EF1 <> 0) and (Slots[1].Sprite = $B) then
+              if (RightHeld <> 0) and (Slots[1].Sprite = $B) then
                 Slots[1].Sprite := 1;
             for SlotIdx := 2 to $19 do
               if (Slots[SlotIdx].Free = 0) and (Slots[SlotIdx].Remove = 0) and (OnScreen($20, SlotIdx)
@@ -791,7 +791,7 @@
                         DrawFront(Slots[SlotIdx].X - $F, Slots[SlotIdx].Y);
                       end;
                     end;
-            if B6A1B <> 0 then
+            if HitLock <> 0 then
               DrawTileB(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
             ShowPage;
             if UnconfuseMsg <> 0 then
@@ -810,16 +810,16 @@
               if Ammo < $F then
                 Ammo := $F;
               SiteDone[MapSite] := 0;
-              if B6A1B = 0 then
+              if HitLock = 0 then
                 Level := 1;
               LevelReset;
               RestoreState;
               LoadLevel(Level);
               StatusCamX := -1;
             end;
-            if B69F9 <> 0 then
+            if WarpCheat <> 0 then
             begin
-              B69F9 := 0;
+              WarpCheat := 0;
               SlotIdx := AskWarp;
               if (SlotIdx >= 1) and (SlotIdx <= $10) then
               begin
@@ -832,10 +832,10 @@
                 StatusCamX := -1;
               end;
             end;
-            if B69FD <> 0 then
+            if PjxDone <> 0 then
             begin
-              B69FD := 0;
-              if B6A19 <> 0 then
+              PjxDone := 0;
+              if Invulnerable <> 0 then
                 ShowMessage('GOD Mode On')
               else
                 ShowMessage('GOD Mode Off');
@@ -843,7 +843,7 @@
           end;
         end;
       end;
-      if B6D8C <> 0 then
+      if HasPix <> 0 then
         ShowEnding;
     end;
     FadeOut($14);

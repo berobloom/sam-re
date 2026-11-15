@@ -488,7 +488,7 @@ begin
   TextLines[I] := 'END OF WINDOW';
   KeyFilter[1] := 1;
   WinKey := Ord(PageWindow(False));
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
 end;
 {$F-}

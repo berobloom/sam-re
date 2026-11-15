@@ -31,7 +31,7 @@ begin
   State.MapSite := MapSite;
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];
-  State.B47 := B6A02;
+  State.B47 := AmmoCheat;
   Str(N:1, S);
   Assign(F, 'SAM1-' + S + '.SAV');
   Rewrite(F);

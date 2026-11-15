@@ -18,6 +18,6 @@ begin
   MemW[0:$41C] := MemW[0:$41A];
   Val(NameInput, N, Code);
   AskWarp := N;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
 end;

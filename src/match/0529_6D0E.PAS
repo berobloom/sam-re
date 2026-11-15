@@ -141,16 +141,16 @@ begin
       case Map[X shr 4 + 1, Y shr 4 + 1].Front of
         $26D:
         begin
-          B6A16 := 1;
+          Bonus1 := 1;
           Score := Score + $64;
           Spawn(X and $FFF0, Y and $FFF0, $11);
           StatusCamX := -1;
           PlaySound(4);
         end;
         $26E:
-          if (B6A18 <> 0) and (B6A16 <> 0) then
+          if (Bonus3 <> 0) and (Bonus1 <> 0) then
           begin
-            B6A17 := 1;
+            Bonus2 := 1;
             Score := Score + $64;
             Spawn(X and $FFF0, Y and $FFF0, $11);
             StatusCamX := -1;
@@ -158,15 +158,15 @@ begin
           end
           else
           begin
-            B6A17 := 1;
-            B6A18 := 0;
+            Bonus2 := 1;
+            Bonus3 := 0;
             Score := Score + $64;
             Spawn(X and $FFF0, Y and $FFF0, $11);
             StatusCamX := -1;
             PlaySound(4);
           end;
         $26F:
-          if (B6A18 <> 0) and (B6A16 <> 0) and (B6A17 <> 0) then
+          if (Bonus3 <> 0) and (Bonus1 <> 0) and (Bonus2 <> 0) then
           begin
             Score := Score + $2710;
             Spawn(X and $FFF0, Y and $FFF0, $17);
@@ -178,7 +178,7 @@ begin
             Score := Score + $64;
             Spawn(X and $FFF0, Y and $FFF0, $11);
             StatusCamX := -1;
-            B6A18 := 0;
+            Bonus3 := 0;
             PlaySound(4);
           end;
       end;
@@ -201,7 +201,7 @@ begin
       StatusCamX := -1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
-      B6D8C := 1;
+      HasPix := 1;
     end;
     $25F:
     begin
@@ -228,7 +228,7 @@ begin
     begin
       if not Playing then
         PlaySound($1C);
-      if B6A19 = 0 then
+      if Invulnerable = 0 then
         KeysOff := 1;
       W69DC := $33;
       MarkerX := Slots[1].X;
@@ -264,13 +264,13 @@ begin
         LoadLevel(MapSite);
         LevelReset;
         SiteDone[MapSite] := 1;
-        B6EEA := 0;
-        B6EE9 := 0;
+        DownHeld := 0;
+        UpHeld := 0;
       end;
     end;
     $27B:
     begin
-      B6A1A := 1;
+      DoorKey := 1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
       StatusCamX := -1;
@@ -278,9 +278,9 @@ begin
       Score := Score + $1F4;
     end;
     $27D:
-      if B6A1A = 1 then
+      if DoorKey = 1 then
       begin
-        B6A1A := 0;
+        DoorKey := 0;
         PlaySound($B);
         StatusCamX := -1;
         if Slots[1].X + 5 > X then
@@ -328,13 +328,13 @@ begin
           TextLines[5] := 'END OF WINDOW';
           KeyFilter[1] := 1;
           WinKey := Ord(TextWindow(False));
-          B6EEB := 0;
+          EscHeld := 0;
           MenuReq := 0;
         end;
     $27E:
       if ExitArmed <> 0 then
       begin
-        if B6D8C <> 0 then
+        if HasPix <> 0 then
           B6EEC := 1;
         ExitLock := 1;
         SiteDone[Level] := 1;
@@ -352,10 +352,10 @@ begin
           Slots[1].Y := Y and $FFF0;
           Slots[1].DirX := -1;
           Slots[1].Sprite := 5;
-          B6EE7 := 0;
-          B6EE6 := 0;
-          B6EF0 := 1;
-          B6EF1 := 0;
+          Jumping := 0;
+          Falling := 0;
+          LeftHeld := 1;
+          RightHeld := 0;
         end
         else
         begin
@@ -365,10 +365,10 @@ begin
           Slots[1].Y := Y and $FFF0;
           Slots[1].DirX := 1;
           Slots[1].Sprite := 1;
-          B6EE7 := 0;
-          B6EE6 := 0;
-          B6EF0 := 0;
-          B6EF1 := 1;
+          Jumping := 0;
+          Falling := 0;
+          LeftHeld := 0;
+          RightHeld := 1;
         end;
       end
       else
@@ -386,7 +386,7 @@ begin
           TextLines[8] := 'END OF WINDOW';
           KeyFilter[1] := 1;
           WinKey := Ord(TextWindow(False));
-          B6EEB := 0;
+          EscHeld := 0;
           MenuReq := 0;
           if (X shr 4 = 0) or (Map[X shr 4 + 1 - 1, Y shr 4 + 1].Solid = 1) then
           begin
@@ -395,10 +395,10 @@ begin
             Slots[1].X := X and $FFF0 + $10;
             Slots[1].Y := Y and $FFF0;
             Slots[1].Sprite := $A;
-            B6EE7 := 0;
-            B6EE6 := 0;
-            B6EF0 := 0;
-            B6EF1 := 0;
+            Jumping := 0;
+            Falling := 0;
+            LeftHeld := 0;
+            RightHeld := 0;
           end
           else
           begin
@@ -407,10 +407,10 @@ begin
             Slots[1].X := X and $FFF0 - $10;
             Slots[1].Y := Y and $FFF0;
             Slots[1].Sprite := 9;
-            B6EE7 := 0;
-            B6EE6 := 0;
-            B6EF0 := 0;
-            B6EF1 := 0;
+            Jumping := 0;
+            Falling := 0;
+            LeftHeld := 0;
+            RightHeld := 0;
           end;
         end;
     $270:
@@ -435,31 +435,31 @@ begin
       Slots[I].Kind := $17;
       Slots[I].Free := 0;
       Slots[I].Remove := 0;
-      if B6A19 = 0 then
+      if Invulnerable = 0 then
         KeysOff := 1;
-      if (B6A1B = 0) and (B6A19 = 0) then
+      if (HitLock = 0) and (Invulnerable = 0) then
       begin
-        B6A1B := 1;
+        HitLock := 1;
         ArcLen := $23;
       end;
-      B6EE9 := 0;
-      B6EEA := 0;
-      B6EF0 := 0;
-      B6EF1 := 0;
-      B6EE7 := 0;
+      UpHeld := 0;
+      DownHeld := 0;
+      LeftHeld := 0;
+      RightHeld := 0;
+      Jumping := 0;
     end;
     $1F3, $25B, $265, $267, $268:
-      if B6A19 = 0 then
+      if Invulnerable = 0 then
       begin
-        B6A1B := 1;
+        HitLock := 1;
         ArcLen := $23;
         PlaySound($16);
       end;
     $25C:
-      if B6A12 = 1 then
+      if Floppy = 1 then
       begin
-        B6A12 := 0;
-        B6A13 := 1;
+        Floppy := 0;
+        LaserDown := 1;
         Map[X shr 4 + 1, Y shr 4 + 1].Solid := 0;
         PlaySound($18);
         for Y := 1 to $18 do
@@ -477,10 +477,10 @@ begin
         ShowMessage('Laser Field has been De-Activated.');
       end
       else
-        if B6A13 = 0 then
+        if LaserDown = 0 then
         begin
           PlaySound($19);
-          B6A13 := 1;
+          LaserDown := 1;
           ClearText;
           TextLines[1] := 'The computer needs a floppy';
           TextLines[2] := 'disk to operate.';
@@ -489,12 +489,12 @@ begin
           TextLines[5] := 'END OF WINDOW';
           KeyFilter[1] := 1;
           WinKey := Ord(TextWindow(False));
-          B6EEB := 0;
+          EscHeld := 0;
           MenuReq := 0;
         end;
     $25D:
     begin
-      B6A12 := 1;
+      Floppy := 1;
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound(5);
       StatusCamX := -1;
@@ -504,7 +504,7 @@ begin
     $B7:
     begin
       X := X and $FFF0;
-      if ((Slots[1].X > X) and (Slots[1].X - X <= 2) or (Slots[1].X < X) and (X - Slots[1].X <= 2)) and (B6A06 = 0) then
+      if ((Slots[1].X > X) and (Slots[1].X - X <= 2) or (Slots[1].X < X) and (X - Slots[1].X <= 2)) and (WarpArmed = 0) then
       begin
         StatusCamX := -1;
         PlaySound($17);
@@ -521,18 +521,18 @@ begin
               PX := $28;
               PY := $18;
             end;
-        B6A06 := 1;
+        WarpArmed := 1;
         WarpTimer := $13;
         KeysOff := 1;
-        if (B6EF1 = 1) or (Slots[1].Sprite = 1) then
+        if (RightHeld = 1) or (Slots[1].Sprite = 1) then
           Slots[1].Sprite := 9
         else
           Slots[1].Sprite := $A;
-        B6EE9 := 0;
-        B6EEA := 0;
-        B6EF0 := 0;
-        B6EF1 := 0;
-        B6EE7 := 0;
+        UpHeld := 0;
+        DownHeld := 0;
+        LeftHeld := 0;
+        RightHeld := 0;
+        Jumping := 0;
       end;
     end;
     $139:
@@ -586,8 +586,8 @@ begin
       Map[X shr 4 + 1, Y shr 4 + 1].Front := 0;
       PlaySound($1A);
       Confused := 1;
-      B6EF0 := 0;
-      B6EF1 := 0;
+      LeftHeld := 0;
+      RightHeld := 0;
       ConfuseTimer := $D8;
       ShowMessage('YOU FEEL A BIT CONFUSED!');
     end;

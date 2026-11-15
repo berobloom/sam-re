@@ -29,7 +29,7 @@ begin
     DrawCell(GfxSmall[1]^.Cell[Ammo mod 10 + 1], 15, 1);
     if SpeedBonus > 0 then
       DrawCell(GfxSmall[1]^.Cell[14], 20, 1);
-    if B6A1A <> 0 then
+    if DoorKey <> 0 then
       DrawCell(GfxSmall[1]^.Cell[21], 25, 1);
     if B6A10 <> 0 then
       DrawCell(GfxSmall[1]^.Cell[18], 27, 1);
@@ -37,7 +37,7 @@ begin
       DrawCell(GfxSmall[1]^.Cell[19], 28, 1);
     if B6A0F <> 0 then
       DrawCell(GfxSmall[1]^.Cell[20], 29, 1);
-    if B6A12 <> 0 then
+    if Floppy <> 0 then
       DrawCell(GfxSmall[1]^.Cell[22], 30, 1);
     for I := 1 to Lives do
       DrawCell(GfxSmall[1]^.Cell[12], I + $20, 1);
@@ -56,7 +56,7 @@ begin
     DrawCellX(GfxSmall[1]^.Cell[Ammo mod 10 + 1], Sh + $78, 1);
     if SpeedBonus > 0 then
       DrawCellX(GfxSmall[1]^.Cell[14], Sh + $A0, 1);
-    if B6A1A <> 0 then
+    if DoorKey <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[21], Sh + $C8, 1);
     if B6A10 <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[18], Sh + $D8, 1);
@@ -64,7 +64,7 @@ begin
       DrawCellX(GfxSmall[1]^.Cell[19], Sh + $E0, 1);
     if B6A0F <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[20], Sh + $E8, 1);
-    if B6A12 <> 0 then
+    if Floppy <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[22], Sh + $F0, 1);
     for I := 1 to Lives do
       DrawCellX(GfxSmall[1]^.Cell[12], Sh + $100 + (I shl 3), 1);

@@ -41,36 +41,36 @@ begin
     CX := CX + X1;
   CY := CY + Y1;
   GetMem(P681C, 30000);
-  GetImage(P681C^, X1, (Y1 shl 3) + W6862, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + W6862);
+  GetImage(P681C^, X1, (Y1 shl 3) + ScanPage, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + ScanPage);
   X2 := X1 + MaxW + 4;
   Y2 := Y1 + NLines + 1;
   for W6850 := 1 to Y2 - Y1 do
     for RowIdx := X1 + 1 to X2 - 1 do
-      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + W6862);
+      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
-    DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + ScanPage);
   for RowIdx := 1 to Y2 - Y1 do
   begin
-    DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + W6862);
-    DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + W6862);
-    DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + ScanPage);
+    DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + ScanPage);
+    DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + ScanPage);
   end;
-  DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + W6862);
+  DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
-    DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 + 1 do
-    DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + ScanPage);
   for RowIdx := 1 to NLines do
     if TextLines[RowIdx] <> 'END OF WINDOW' then
       DrawText(X1 + 2, Y1 + RowIdx + 1, TextLines[RowIdx]);
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
   repeat
     MemW[0:$41C] := MemW[0:$41A];
   until ScanCode > $80;
@@ -103,8 +103,8 @@ begin
         if Ticks > 20 then
         begin
           Ticks := 0;
-          DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + W6862);
-          DrawCellM(GfxSmall[3]^.Cell[Anim + $2D], CX, (CY shl 3) + W6862);
+          DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + ScanPage);
+          DrawCellM(GfxSmall[3]^.Cell[Anim + $2D], CX, (CY shl 3) + ScanPage);
           Inc(Anim);
           if Anim > 5 then
             Anim := 1;
@@ -115,17 +115,17 @@ begin
             begin
               Spark := False;
               if SH then
-                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + W6862)
+                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + ScanPage)
               else
-                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + W6862);
+                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + ScanPage);
             end
             else
             begin
               if SH then
-                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + W6862)
+                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + ScanPage)
               else
-                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + W6862);
-              DrawCellM(GfxSmall[2]^.Cell[ST + $25], SX, SY + W6862);
+                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + ScanPage);
+              DrawCellM(GfxSmall[2]^.Cell[ST + $25], SX, SY + ScanPage);
             end;
           end;
         end;
@@ -160,13 +160,13 @@ begin
       Done := True;
     end;
   until Done;
-  PutImage(P681C^, X1, (Y1 shl 3) + W6862);
+  PutImage(P681C^, X1, (Y1 shl 3) + ScanPage);
   FreeMem(P681C, 30000);
   MemW[0:$41C] := MemW[0:$41A];
   B6EF2 := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
+  UpHeld := 0;
+  DownHeld := 0;
 end;
 {$F-}

@@ -9,9 +9,9 @@ var
 begin
   JoyX := ReadAxis(0);
   JoyY := ReadAxis(1);
-  if B6EE5 <> 0 then
+  if Shot <> 0 then
   begin
-    B6EE5 := 0;
+    Shot := 0;
     if Slots[1].Sprite = $B then
       Slots[1].Sprite := 9
     else if Slots[1].Sprite = $C then
@@ -19,40 +19,40 @@ begin
   end;
   if JoyCenterX - $32 > JoyX then
   begin
-    B6EF0 := 1;
-    B6EF1 := 0;
+    LeftHeld := 1;
+    RightHeld := 0;
     B6EE8 := 0;
     JoyMovedX := True;
-    if (B6EE7 = 0) and (B6EE6 = 0) then
+    if (Jumping = 0) and (Falling = 0) then
       Slots[1].Sprite := 5
     else
       Slots[1].Sprite := $E;
   end
   else if JoyCenterX + $32 < JoyX then
   begin
-    B6EF1 := 1;
-    B6EF0 := 0;
+    RightHeld := 1;
+    LeftHeld := 0;
     B6EE8 := 0;
     JoyMovedX := True;
-    if (B6EE7 = 0) and (B6EE6 = 0) then
+    if (Jumping = 0) and (Falling = 0) then
       Slots[1].Sprite := 1
     else
       Slots[1].Sprite := $D;
   end
   else if JoyMovedX then
   begin
-    if (B6EF1 = 1) or (Slots[1].Sprite = 1) then
+    if (RightHeld = 1) or (Slots[1].Sprite = 1) then
       Slots[1].Sprite := 9
     else
       Slots[1].Sprite := $A;
-    B6EF1 := 0;
-    B6EF0 := 0;
+    RightHeld := 0;
+    LeftHeld := 0;
     JoyMovedX := False;
   end;
   if Level = 1 then
     if JoyCenterY - $32 > JoyY then
     begin
-      B6EE9 := 1;
+      UpHeld := 1;
       JoyMovedY := True;
       if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
         Slots[1].Sprite := 1
@@ -61,7 +61,7 @@ begin
     end
     else if JoyCenterY + $32 < JoyY then
     begin
-      B6EEA := 1;
+      DownHeld := 1;
       JoyMovedY := True;
       if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
         Slots[1].Sprite := 1
@@ -71,14 +71,14 @@ begin
     else if JoyMovedY then
     begin
       JoyMovedY := False;
-      B6EE9 := 0;
-      B6EEA := 0;
+      UpHeld := 0;
+      DownHeld := 0;
       if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
         Slots[1].Sprite := 9
       else
         Slots[1].Sprite := $A;
     end;
-  if FireButton and (Ammo > 0) and (Level > 1) and (B6A1B = 0) then
+  if FireButton and (Ammo > 0) and (Level > 1) and (HitLock = 0) then
   begin
     Fired := False;
     I := 0;
@@ -94,13 +94,13 @@ begin
         if (Slots[1].Sprite = 1) or (Slots[1].Sprite = $D) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
         begin
           Shots[I].DirX := 1;
-          B6EE5 := 1;
+          Shot := 1;
           Slots[1].Sprite := $B;
         end
         else
         begin
           Shots[I].DirX := -1;
-          B6EE5 := 1;
+          Shot := 1;
           Slots[1].Sprite := $C;
         end;
         Shots[I].DirY := 0;

@@ -53,48 +53,48 @@ begin
   if KeysOff = 0 then
     if ScanCode = KeyLeft then
     begin
-      B6EF0 := 1;
-      B6EF1 := 0;
+      LeftHeld := 1;
+      RightHeld := 0;
       B6EE8 := 0;
       Slots[1].Sprite := 5;
-      if B6EE7 <> 0 then
+      if Jumping <> 0 then
         Slots[1].Sprite := $E;
     end
     else if KeyLeft + $80 = ScanCode then
     begin
-      B6EF0 := 0;
-      if B6EE7 = 0 then
+      LeftHeld := 0;
+      if Jumping = 0 then
       begin
-        if B6EF1 = 0 then
+        if RightHeld = 0 then
           Slots[1].Sprite := $A
         else
           Slots[1].Sprite := 1;
       end
-      else if B6EF1 = 1 then
+      else if RightHeld = 1 then
         Slots[1].Sprite := $D
       else
         Slots[1].Sprite := $E;
     end
     else if ScanCode = KeyRight then
     begin
-      B6EF1 := 1;
-      B6EF0 := 0;
+      RightHeld := 1;
+      LeftHeld := 0;
       B6EE8 := 0;
       Slots[1].Sprite := 1;
-      if B6EE7 <> 0 then
+      if Jumping <> 0 then
         Slots[1].Sprite := $D;
     end
     else if KeyRight + $80 = ScanCode then
     begin
-      B6EF1 := 0;
-      if B6EE7 = 0 then
+      RightHeld := 0;
+      if Jumping = 0 then
       begin
-        if B6EF0 = 0 then
+        if LeftHeld = 0 then
           Slots[1].Sprite := 9
         else
           Slots[1].Sprite := 5;
       end
-      else if B6EF0 = 1 then
+      else if LeftHeld = 1 then
         Slots[1].Sprite := $E
       else
         Slots[1].Sprite := $D;
@@ -103,7 +103,7 @@ begin
     begin
       if Ammo = 0 then
         PlaySound($14)
-      else if (Ammo > 0) and (B6A1B = 0) and (Level > 1) then
+      else if (Ammo > 0) and (HitLock = 0) and (Level > 1) then
       begin
         Fired := False;
         I := 0;
@@ -154,15 +154,15 @@ begin
         Slots[1].Sprite := $A;
     end
     else if ScanCode = KeyJump then
-      B6EF3 := 1
+      JumpHeld := 1
     else if KeyJump + $80 = ScanCode then
-      B6EF3 := 0
+      JumpHeld := 0
     else if ScanCode = KeyUp then
     begin
       if Level = 1 then
       begin
-        B6EE9 := 1;
-        B6EEA := 0;
+        UpHeld := 1;
+        DownHeld := 0;
         if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
           Slots[1].Sprite := 1
         else
@@ -173,7 +173,7 @@ begin
     begin
       if Level = 1 then
       begin
-        B6EE9 := 0;
+        UpHeld := 0;
         if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
           Slots[1].Sprite := 9
         else
@@ -184,8 +184,8 @@ begin
     begin
       if Level = 1 then
       begin
-        B6EEA := 1;
-        B6EE9 := 0;
+        DownHeld := 1;
+        UpHeld := 0;
         if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
           Slots[1].Sprite := 1
         else
@@ -196,7 +196,7 @@ begin
     begin
       if Level = 1 then
       begin
-        B6EEA := 0;
+        DownHeld := 0;
         if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
           Slots[1].Sprite := 9
         else
@@ -205,7 +205,7 @@ begin
     end
     else if ScanCode = 1 then
     begin
-      B6EEB := 1;
+      EscHeld := 1;
       MenuReq := 1;
     end
     else if ScanCode = $10 then
@@ -232,153 +232,153 @@ begin
       MenuReq := 1
     else if ScanCode = $16 then
     begin
-      B69FF := 1;
-      if (B6A00 <> 0) and (B6A01 <> 0) and (B6A02 = 0) then
+      ChordU := 1;
+      if (ChordV <> 0) and (ChordK <> 0) and (AmmoCheat = 0) then
       begin
         Ammo := Ammo + $19;
-        B6A02 := 1;
+        AmmoCheat := 1;
         StatusCamX := -1;
       end;
     end
     else if ScanCode = $96 then
-      B69FF := 0
+      ChordU := 0
     else if ScanCode = $2F then
     begin
-      B6A00 := 1;
-      if (B69FF <> 0) and (B6A01 <> 0) and (B6A02 = 0) then
+      ChordV := 1;
+      if (ChordU <> 0) and (ChordK <> 0) and (AmmoCheat = 0) then
       begin
         Ammo := Ammo + $19;
-        B6A02 := 1;
+        AmmoCheat := 1;
         StatusCamX := -1;
       end;
     end
     else if ScanCode = $AF then
-      B6A00 := 0
+      ChordV := 0
     else if ScanCode = $25 then
     begin
-      B6A01 := 1;
-      if (B69FF <> 0) and (B6A00 <> 0) and (B6A02 = 0) then
+      ChordK := 1;
+      if (ChordU <> 0) and (ChordV <> 0) and (AmmoCheat = 0) then
       begin
         Ammo := Ammo + $19;
-        B6A02 := 1;
+        AmmoCheat := 1;
         StatusCamX := -1;
       end;
     end
     else if ScanCode = $A5 then
-      B6A01 := 0
+      ChordK := 0
     else if ScanCode = $2C then
     begin
-      B6A03 := 1;
-      if (B6A04 <> 0) and (B6A05 <> 0) then
+      ChordZ := 1;
+      if (ChordG <> 0) and (ChordI <> 0) then
       begin
-        B6A12 := 1;
-        B6A1A := 1;
+        Floppy := 1;
+        DoorKey := 1;
         StatusCamX := -1;
       end;
     end
     else if ScanCode = $AC then
-      B6A03 := 0
+      ChordZ := 0
     else if ScanCode = $22 then
     begin
-      B6A04 := 1;
-      if (B6A03 <> 0) and (B6A05 <> 0) then
+      ChordG := 1;
+      if (ChordZ <> 0) and (ChordI <> 0) then
       begin
-        B6A12 := 1;
-        B6A1A := 1;
+        Floppy := 1;
+        DoorKey := 1;
         StatusCamX := -1;
       end;
     end
     else if ScanCode = $A2 then
-      B6A04 := 0
+      ChordG := 0
     else if ScanCode = $17 then
     begin
-      B6A05 := 1;
-      if (B6A04 <> 0) and (B6A03 <> 0) then
+      ChordI := 1;
+      if (ChordG <> 0) and (ChordZ <> 0) then
       begin
-        B6A12 := 1;
-        B6A1A := 1;
+        Floppy := 1;
+        DoorKey := 1;
         StatusCamX := -1;
       end;
     end
     else if ScanCode = $97 then
-      B6A05 := 0
+      ChordI := 0
     else if ScanCode = $19 then
     begin
-      B69FA := 1;
-      if (B69FB <> 0) and (B69FC <> 0) then
+      ChordP := 1;
+      if (ChordJ <> 0) and (ChordX <> 0) then
       begin
-        if B6A19 = 0 then
-          B6A19 := 1
+        if Invulnerable = 0 then
+          Invulnerable := 1
         else
-          B6A19 := 0;
-        B69FD := 1;
+          Invulnerable := 0;
+        PjxDone := 1;
       end;
-      B69F8 := 1;
-      if (B69F5 <> 0) and (B69F6 <> 0) and (B69F7 <> 0) then
-        B69F9 := 1;
+      ChordPB := 1;
+      if (ChordO <> 0) and (ChordN <> 0) and (ChordD <> 0) then
+        WarpCheat := 1;
     end
     else if ScanCode = $99 then
     begin
-      B69FA := 0;
-      B69F8 := 0;
+      ChordP := 0;
+      ChordPB := 0;
     end
     else if ScanCode = $24 then
     begin
-      B69FB := 1;
-      if (B69FA <> 0) and (B69FC <> 0) then
+      ChordJ := 1;
+      if (ChordP <> 0) and (ChordX <> 0) then
       begin
-        if B6A19 = 0 then
-          B6A19 := 1
+        if Invulnerable = 0 then
+          Invulnerable := 1
         else
-          B6A19 := 0;
-        B69FD := 1;
+          Invulnerable := 0;
+        PjxDone := 1;
       end;
     end
     else if ScanCode = $A4 then
-      B69FB := 0
+      ChordJ := 0
     else if ScanCode = $2D then
     begin
-      B69FC := 1;
-      if (B69FA <> 0) and (B69FB <> 0) then
+      ChordX := 1;
+      if (ChordP <> 0) and (ChordJ <> 0) then
       begin
-        if B6A19 = 0 then
-          B6A19 := 1
+        if Invulnerable = 0 then
+          Invulnerable := 1
         else
-          B6A19 := 0;
-        B69FD := 1;
+          Invulnerable := 0;
+        PjxDone := 1;
       end;
     end
     else if ScanCode = $30 then
-      B69F8 := 1
+      ChordPB := 1
     else if ScanCode = $B0 then
-      B69F8 := 0
+      ChordPB := 0
     else if ScanCode = $AD then
-      B69FC := 0
+      ChordX := 0
     else if ScanCode = $18 then
     begin
-      B69F5 := 1;
-      if (B69F8 <> 0) and (B69F6 <> 0) and (B69F7 <> 0) then
-        B69F9 := 1;
+      ChordO := 1;
+      if (ChordPB <> 0) and (ChordN <> 0) and (ChordD <> 0) then
+        WarpCheat := 1;
     end
     else if ScanCode = $98 then
-      B69F5 := 0
+      ChordO := 0
     else if ScanCode = $31 then
     begin
-      B69F6 := 1;
-      if (B69F5 <> 0) and (B69F8 <> 0) and (B69F7 <> 0) then
-        B69F9 := 1;
+      ChordN := 1;
+      if (ChordO <> 0) and (ChordPB <> 0) and (ChordD <> 0) then
+        WarpCheat := 1;
     end
     else if ScanCode = $B1 then
-      B69F6 := 0
+      ChordN := 0
     else if ScanCode = $20 then
     begin
-      B69F7 := 1;
-      if (B69F5 <> 0) and (B69F6 <> 0) and (B69F8 <> 0) then
-        B69F9 := 1;
+      ChordD := 1;
+      if (ChordO <> 0) and (ChordN <> 0) and (ChordPB <> 0) then
+        WarpCheat := 1;
     end
     else if ScanCode = $A0 then
-      B69F7 := 0;
-  if (B6EE9 = 0) and (B6EEA = 0) and (B6EF1 = 0) and (B6EF0 = 0) then
+      ChordD := 0;
+  if (UpHeld = 0) and (DownHeld = 0) and (RightHeld = 0) and (LeftHeld = 0) then
     WalkHeld := 0;
   Inline($FF/$36/>OldInt9 + 2/$FF/$36/>OldInt9/$5B/$58/$87/$5E/$0E/$87/$46/$10/$89/$EC/$5D/$07/$1F/$5F/$5E/
     $5A/$59/$CB);
@@ -395,9 +395,9 @@ var
 begin
   JoyX := ReadAxis(0);
   JoyY := ReadAxis(1);
-  if B6EE5 <> 0 then
+  if Shot <> 0 then
   begin
-    B6EE5 := 0;
+    Shot := 0;
     if Slots[1].Sprite = $B then
       Slots[1].Sprite := 9
     else if Slots[1].Sprite = $C then
@@ -405,40 +405,40 @@ begin
   end;
   if JoyCenterX - $32 > JoyX then
   begin
-    B6EF0 := 1;
-    B6EF1 := 0;
+    LeftHeld := 1;
+    RightHeld := 0;
     B6EE8 := 0;
     JoyMovedX := True;
-    if (B6EE7 = 0) and (B6EE6 = 0) then
+    if (Jumping = 0) and (Falling = 0) then
       Slots[1].Sprite := 5
     else
       Slots[1].Sprite := $E;
   end
   else if JoyCenterX + $32 < JoyX then
   begin
-    B6EF1 := 1;
-    B6EF0 := 0;
+    RightHeld := 1;
+    LeftHeld := 0;
     B6EE8 := 0;
     JoyMovedX := True;
-    if (B6EE7 = 0) and (B6EE6 = 0) then
+    if (Jumping = 0) and (Falling = 0) then
       Slots[1].Sprite := 1
     else
       Slots[1].Sprite := $D;
   end
   else if JoyMovedX then
   begin
-    if (B6EF1 = 1) or (Slots[1].Sprite = 1) then
+    if (RightHeld = 1) or (Slots[1].Sprite = 1) then
       Slots[1].Sprite := 9
     else
       Slots[1].Sprite := $A;
-    B6EF1 := 0;
-    B6EF0 := 0;
+    RightHeld := 0;
+    LeftHeld := 0;
     JoyMovedX := False;
   end;
   if Level = 1 then
     if JoyCenterY - $32 > JoyY then
     begin
-      B6EE9 := 1;
+      UpHeld := 1;
       JoyMovedY := True;
       if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
         Slots[1].Sprite := 1
@@ -447,7 +447,7 @@ begin
     end
     else if JoyCenterY + $32 < JoyY then
     begin
-      B6EEA := 1;
+      DownHeld := 1;
       JoyMovedY := True;
       if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
         Slots[1].Sprite := 1
@@ -457,14 +457,14 @@ begin
     else if JoyMovedY then
     begin
       JoyMovedY := False;
-      B6EE9 := 0;
-      B6EEA := 0;
+      UpHeld := 0;
+      DownHeld := 0;
       if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
         Slots[1].Sprite := 9
       else
         Slots[1].Sprite := $A;
     end;
-  if FireButton and (Ammo > 0) and (Level > 1) and (B6A1B = 0) then
+  if FireButton and (Ammo > 0) and (Level > 1) and (HitLock = 0) then
   begin
     Fired := False;
     I := 0;
@@ -480,13 +480,13 @@ begin
         if (Slots[1].Sprite = 1) or (Slots[1].Sprite = $D) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) then
         begin
           Shots[I].DirX := 1;
-          B6EE5 := 1;
+          Shot := 1;
           Slots[1].Sprite := $B;
         end
         else
         begin
           Shots[I].DirX := -1;
-          B6EE5 := 1;
+          Shot := 1;
           Slots[1].Sprite := $C;
         end;
         Shots[I].DirY := 0;
@@ -820,13 +820,13 @@ begin
             Ticks := 0;
             if JoyOn then
               ReadJoystick;
-            if (Slots[1].Sprite = 9) and (B6EF1 <> 0) then
+            if (Slots[1].Sprite = 9) and (RightHeld <> 0) then
               Slots[1].Sprite := 1
             else
-              if (Slots[1].Sprite = $A) and (B6EF0 <> 0) then
+              if (Slots[1].Sprite = $A) and (LeftHeld <> 0) then
                 Slots[1].Sprite := 5
               else
-                if ((Slots[1].Sprite = $A) or (Slots[1].Sprite = 9)) and ((B6EEA <> 0) or (B6EE9 <> 0)) then
+                if ((Slots[1].Sprite = $A) or (Slots[1].Sprite = 9)) and ((DownHeld <> 0) or (UpHeld <> 0)) then
                   Slots[1].Sprite := 1;
             FlipPage;
             DrawBack(Slots[1].PrevX - $10, Slots[1].PrevY - $10);
@@ -899,7 +899,7 @@ begin
               DrawBack(Shots[SlotIdx].PrevX, Shots[SlotIdx].PrevY + $10);
               DrawBack(Shots[SlotIdx].PrevX + $10, Shots[SlotIdx].PrevY + $10);
             end;
-            if (B6A1B = 0) and (ExitLock = 0) then
+            if (HitLock = 0) and (ExitLock = 0) then
             begin
               MovePlayer;
               if Level > 1 then
@@ -909,7 +909,7 @@ begin
               B6EE8 := 0;
             end
             else
-              if B6A1B <> 0 then
+              if HitLock <> 0 then
               begin
                 Slots[1].PrevX := Slots[1].X;
                 Slots[1].PrevY := Slots[1].Y;
@@ -1012,7 +1012,7 @@ begin
                   DrawFront(Shots[SlotIdx].X, Shots[SlotIdx].Y + $10);
                   DrawFront(Shots[SlotIdx].X + $10, Shots[SlotIdx].Y + $10);
                 end;
-            if B6A06 <> 0 then
+            if WarpArmed <> 0 then
             begin
               Dec(WarpTimer);
               if WarpTimer = 0 then
@@ -1021,7 +1021,7 @@ begin
                 if WarpTimer = -19 then
                 begin
                   KeysOff := 0;
-                  B6A06 := 0;
+                  WarpArmed := 0;
                 end;
             end;
             if B69FE <> 0 then
@@ -1078,15 +1078,15 @@ begin
                     Slots[1].Y + PageY)
               else
                 DrawTileB(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
-            if B6A06 <> 0 then
+            if WarpArmed <> 0 then
               if WarpTimer < 0 then
                 DrawTileB(Gfx[10]^.Tile[WarpTimer div 5 + $28], Slots[1].X, Slots[1].Y + PageY)
               else
                 DrawTileB(Gfx[10]^.Tile[$28 - WarpTimer div 5], Slots[1].X, Slots[1].Y + PageY);
-            if (B6EF0 <> 0) and (Slots[1].Sprite = $C) then
+            if (LeftHeld <> 0) and (Slots[1].Sprite = $C) then
               Slots[1].Sprite := 5
             else
-              if (B6EF1 <> 0) and (Slots[1].Sprite = $B) then
+              if (RightHeld <> 0) and (Slots[1].Sprite = $B) then
                 Slots[1].Sprite := 1;
             for SlotIdx := 2 to $19 do
               if (Slots[SlotIdx].Free = 0) and (Slots[SlotIdx].Remove = 0) and (OnScreen($20, SlotIdx)
@@ -1518,7 +1518,7 @@ begin
                         DrawFront(Slots[SlotIdx].X - $F, Slots[SlotIdx].Y);
                       end;
                     end;
-            if B6A1B <> 0 then
+            if HitLock <> 0 then
               DrawTileB(Gfx[3]^.Tile[Slots[1].Anim div 5 + Slots[1].Sprite], Slots[1].X, Slots[1].Y + PageY);
             ShowPage;
             if UnconfuseMsg <> 0 then
@@ -1537,16 +1537,16 @@ begin
               if Ammo < $F then
                 Ammo := $F;
               SiteDone[MapSite] := 0;
-              if B6A1B = 0 then
+              if HitLock = 0 then
                 Level := 1;
               LevelReset;
               RestoreState;
               LoadLevel(Level);
               StatusCamX := -1;
             end;
-            if B69F9 <> 0 then
+            if WarpCheat <> 0 then
             begin
-              B69F9 := 0;
+              WarpCheat := 0;
               SlotIdx := AskWarp;
               if (SlotIdx >= 1) and (SlotIdx <= $10) then
               begin
@@ -1559,10 +1559,10 @@ begin
                 StatusCamX := -1;
               end;
             end;
-            if B69FD <> 0 then
+            if PjxDone <> 0 then
             begin
-              B69FD := 0;
-              if B6A19 <> 0 then
+              PjxDone := 0;
+              if Invulnerable <> 0 then
                 ShowMessage('GOD Mode On')
               else
                 ShowMessage('GOD Mode Off');
@@ -1570,7 +1570,7 @@ begin
           end;
         end;
       end;
-      if B6D8C <> 0 then
+      if HasPix <> 0 then
         ShowEnding;
     end;
     FadeOut($14);

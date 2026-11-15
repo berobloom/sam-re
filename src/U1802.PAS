@@ -78,7 +78,7 @@ begin
     SetViewStart(CamX, PageY + CamY)
   else
     SetViewStartAlt(CamX, PageY + CamY);
-  W6862 := PageY;
+  ScanPage := PageY;
 end;
 { src: SAM1RE 1802:005F (palette registers 0..7 -> 0..7, 8..15 -> $10..$17, Delay(D) after each) }
 { interface }
@@ -162,7 +162,7 @@ begin
     DrawCell(GfxSmall[1]^.Cell[Ammo mod 10 + 1], 15, 1);
     if SpeedBonus > 0 then
       DrawCell(GfxSmall[1]^.Cell[14], 20, 1);
-    if B6A1A <> 0 then
+    if DoorKey <> 0 then
       DrawCell(GfxSmall[1]^.Cell[21], 25, 1);
     if B6A10 <> 0 then
       DrawCell(GfxSmall[1]^.Cell[18], 27, 1);
@@ -170,7 +170,7 @@ begin
       DrawCell(GfxSmall[1]^.Cell[19], 28, 1);
     if B6A0F <> 0 then
       DrawCell(GfxSmall[1]^.Cell[20], 29, 1);
-    if B6A12 <> 0 then
+    if Floppy <> 0 then
       DrawCell(GfxSmall[1]^.Cell[22], 30, 1);
     for I := 1 to Lives do
       DrawCell(GfxSmall[1]^.Cell[12], I + $20, 1);
@@ -189,7 +189,7 @@ begin
     DrawCellX(GfxSmall[1]^.Cell[Ammo mod 10 + 1], Sh + $78, 1);
     if SpeedBonus > 0 then
       DrawCellX(GfxSmall[1]^.Cell[14], Sh + $A0, 1);
-    if B6A1A <> 0 then
+    if DoorKey <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[21], Sh + $C8, 1);
     if B6A10 <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[18], Sh + $D8, 1);
@@ -197,7 +197,7 @@ begin
       DrawCellX(GfxSmall[1]^.Cell[19], Sh + $E0, 1);
     if B6A0F <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[20], Sh + $E8, 1);
-    if B6A12 <> 0 then
+    if Floppy <> 0 then
       DrawCellX(GfxSmall[1]^.Cell[22], Sh + $F0, 1);
     for I := 1 to Lives do
       DrawCellX(GfxSmall[1]^.Cell[12], Sh + $100 + (I shl 3), 1);
@@ -238,82 +238,82 @@ begin
     P := Pos(Copy(S, I, 1), T);
     if Copy(S, I, 1) <> '^' then
       if (P >= $5D) and (P < $76) then
-        DrawCellM(GfxSmall[3]^.Cell[P - $5D + $15], X + I - 1, (Y shl 3) + W6862)
+        DrawCellM(GfxSmall[3]^.Cell[P - $5D + $15], X + I - 1, (Y shl 3) + ScanPage)
       else if P <= $48 then
         case P of
-          $20..$48: DrawCellM(GfxSmall[2]^.Cell[P - $20 + $0A], X + I - 1, (Y shl 3) + W6862);
+          $20..$48: DrawCellM(GfxSmall[2]^.Cell[P - $20 + $0A], X + I - 1, (Y shl 3) + ScanPage);
         end
       else if P >= $76 then
         case P of
-          $76: DrawTile(Gfx[14]^.Tile[1], X + I - 1, (Y shl 3) + W6862);
-          $77: DrawTile(Gfx[14]^.Tile[7], X + I - 1, (Y shl 3) + W6862);
-          $78: DrawTile(Gfx[1]^.Tile[15], X + I - 1, (Y shl 3) + W6862);
-          $79: DrawTile(Gfx[1]^.Tile[16], X + I - 1, (Y shl 3) + W6862);
-          $7A: DrawTile(Gfx[1]^.Tile[13], X + I - 1, (Y shl 3) + W6862);
-          $7B: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $7C: DrawTile(Gfx[2]^.Tile[4], X + I - 1, (Y shl 3) + W6862);
-          $7D: DrawTile(Gfx[2]^.Tile[8], X + I - 1, (Y shl 3) + W6862);
-          $7E: DrawTile(Gfx[2]^.Tile[34], X + I - 1, (Y shl 3) + W6862);
-          $7F: DrawTile(Gfx[2]^.Tile[21], X + I - 1, (Y shl 3) + W6862);
-          $80: DrawTile(Gfx[4]^.Tile[21], X + I - 1, (Y shl 3) + W6862);
-          $81: DrawTile(Gfx[4]^.Tile[23], X + I - 1, (Y shl 3) + W6862);
-          $82: DrawTile(Gfx[4]^.Tile[25], X + I - 1, (Y shl 3) + W6862);
-          $83: DrawTile(Gfx[4]^.Tile[22], X + I - 1, (Y shl 3) + W6862);
-          $84: DrawTile(Gfx[4]^.Tile[24], X + I - 1, (Y shl 3) + W6862);
-          $85: DrawTile(Gfx[4]^.Tile[26], X + I - 1, (Y shl 3) + W6862);
-          $86: DrawTile(Gfx[4]^.Tile[47], X + I - 1, (Y shl 3) + W6862);
-          $87: DrawTile(Gfx[6]^.Tile[4], X + I - 1, (Y shl 3) + W6862);
-          $88: DrawTile(Gfx[6]^.Tile[5], X + I - 1, (Y shl 3) + W6862);
-          $89: DrawTile(Gfx[6]^.Tile[33], X + I - 1, (Y shl 3) + W6862);
-          $8A: DrawTile(Gfx[6]^.Tile[37], X + I - 1, (Y shl 3) + W6862);
-          $8B: DrawTile(Gfx[6]^.Tile[19], X + I - 1, (Y shl 3) + W6862);
-          $8C: DrawTile(Gfx[6]^.Tile[18], X + I - 1, (Y shl 3) + W6862);
-          $8D: DrawTile(Gfx[6]^.Tile[20], X + I - 1, (Y shl 3) + W6862);
-          $8E: DrawTile(Gfx[6]^.Tile[29], X + I - 1, (Y shl 3) + W6862);
-          $8F: DrawTile(Gfx[6]^.Tile[30], X + I - 1, (Y shl 3) + W6862);
-          $90: DrawTile(Gfx[6]^.Tile[31], X + I - 1, (Y shl 3) + W6862);
-          $91: DrawTile(Gfx[6]^.Tile[32], X + I - 1, (Y shl 3) + W6862);
-          $92: DrawTile(Gfx[6]^.Tile[35], X + I - 1, (Y shl 3) + W6862);
-          $93: DrawTile(Gfx[7]^.Tile[25], X + I - 1, (Y shl 3) + W6862);
-          $94: DrawTile(Gfx[13]^.Tile[1], X + I - 1, (Y shl 3) + W6862);
-          $95: DrawTile(Gfx[13]^.Tile[4], X + I - 1, (Y shl 3) + W6862);
-          $96: DrawTile(Gfx[13]^.Tile[13], X + I - 1, (Y shl 3) + W6862);
-          $97: DrawTile(Gfx[13]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $98: DrawTile(Gfx[13]^.Tile[16], X + I - 1, (Y shl 3) + W6862);
-          $99: DrawTile(Gfx[12]^.Tile[1], X + I - 1, (Y shl 3) + W6862);
-          $9A: DrawTile(Gfx[12]^.Tile[5], X + I - 1, (Y shl 3) + W6862);
-          $9B: DrawTile(Gfx[12]^.Tile[32], X + I - 1, (Y shl 3) + W6862);
-          $9C: DrawTile(Gfx[12]^.Tile[36], X + I - 1, (Y shl 3) + W6862);
-          $9D: DrawTile(Gfx[12]^.Tile[37], X + I - 1, (Y shl 3) + W6862);
-          $9E: DrawTile(Gfx[3]^.Tile[2], X + I - 1, (Y shl 3) + W6862);
-          $9F: DrawTile(Gfx[3]^.Tile[1], X + I - 1, (Y shl 3) + W6862);
-          $A0: DrawTile(Gfx[16]^.Tile[1], X + I - 1, (Y shl 3) + W6862);
-          $A1: DrawTile(Gfx[16]^.Tile[9], X + I - 1, (Y shl 3) + W6862);
-          $A2: DrawTile(Gfx[16]^.Tile[18], X + I - 1, (Y shl 3) + W6862);
-          $A3: DrawTile(Gfx[16]^.Tile[25], X + I - 1, (Y shl 3) + W6862);
-          $A4: DrawTile(Gfx[16]^.Tile[36], X + I - 1, (Y shl 3) + W6862);
-          $A5: DrawTile(Gfx[10]^.Tile[2], X + I - 1, (Y shl 3) + W6862);
-          $A6: DrawTile(Gfx[10]^.Tile[30], X + I - 1, (Y shl 3) + W6862);
-          $A7: DrawTile(Gfx[10]^.Tile[33], X + I - 1, (Y shl 3) + W6862);
-          $A8: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $A9: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $AA: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $AB: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $AC: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $AD: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $AE: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $AF: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $B0: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $B1: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $B2: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $B3: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $B4: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $B5: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $B6: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
-          $B7: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + W6862);
+          $76: DrawTile(Gfx[14]^.Tile[1], X + I - 1, (Y shl 3) + ScanPage);
+          $77: DrawTile(Gfx[14]^.Tile[7], X + I - 1, (Y shl 3) + ScanPage);
+          $78: DrawTile(Gfx[1]^.Tile[15], X + I - 1, (Y shl 3) + ScanPage);
+          $79: DrawTile(Gfx[1]^.Tile[16], X + I - 1, (Y shl 3) + ScanPage);
+          $7A: DrawTile(Gfx[1]^.Tile[13], X + I - 1, (Y shl 3) + ScanPage);
+          $7B: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $7C: DrawTile(Gfx[2]^.Tile[4], X + I - 1, (Y shl 3) + ScanPage);
+          $7D: DrawTile(Gfx[2]^.Tile[8], X + I - 1, (Y shl 3) + ScanPage);
+          $7E: DrawTile(Gfx[2]^.Tile[34], X + I - 1, (Y shl 3) + ScanPage);
+          $7F: DrawTile(Gfx[2]^.Tile[21], X + I - 1, (Y shl 3) + ScanPage);
+          $80: DrawTile(Gfx[4]^.Tile[21], X + I - 1, (Y shl 3) + ScanPage);
+          $81: DrawTile(Gfx[4]^.Tile[23], X + I - 1, (Y shl 3) + ScanPage);
+          $82: DrawTile(Gfx[4]^.Tile[25], X + I - 1, (Y shl 3) + ScanPage);
+          $83: DrawTile(Gfx[4]^.Tile[22], X + I - 1, (Y shl 3) + ScanPage);
+          $84: DrawTile(Gfx[4]^.Tile[24], X + I - 1, (Y shl 3) + ScanPage);
+          $85: DrawTile(Gfx[4]^.Tile[26], X + I - 1, (Y shl 3) + ScanPage);
+          $86: DrawTile(Gfx[4]^.Tile[47], X + I - 1, (Y shl 3) + ScanPage);
+          $87: DrawTile(Gfx[6]^.Tile[4], X + I - 1, (Y shl 3) + ScanPage);
+          $88: DrawTile(Gfx[6]^.Tile[5], X + I - 1, (Y shl 3) + ScanPage);
+          $89: DrawTile(Gfx[6]^.Tile[33], X + I - 1, (Y shl 3) + ScanPage);
+          $8A: DrawTile(Gfx[6]^.Tile[37], X + I - 1, (Y shl 3) + ScanPage);
+          $8B: DrawTile(Gfx[6]^.Tile[19], X + I - 1, (Y shl 3) + ScanPage);
+          $8C: DrawTile(Gfx[6]^.Tile[18], X + I - 1, (Y shl 3) + ScanPage);
+          $8D: DrawTile(Gfx[6]^.Tile[20], X + I - 1, (Y shl 3) + ScanPage);
+          $8E: DrawTile(Gfx[6]^.Tile[29], X + I - 1, (Y shl 3) + ScanPage);
+          $8F: DrawTile(Gfx[6]^.Tile[30], X + I - 1, (Y shl 3) + ScanPage);
+          $90: DrawTile(Gfx[6]^.Tile[31], X + I - 1, (Y shl 3) + ScanPage);
+          $91: DrawTile(Gfx[6]^.Tile[32], X + I - 1, (Y shl 3) + ScanPage);
+          $92: DrawTile(Gfx[6]^.Tile[35], X + I - 1, (Y shl 3) + ScanPage);
+          $93: DrawTile(Gfx[7]^.Tile[25], X + I - 1, (Y shl 3) + ScanPage);
+          $94: DrawTile(Gfx[13]^.Tile[1], X + I - 1, (Y shl 3) + ScanPage);
+          $95: DrawTile(Gfx[13]^.Tile[4], X + I - 1, (Y shl 3) + ScanPage);
+          $96: DrawTile(Gfx[13]^.Tile[13], X + I - 1, (Y shl 3) + ScanPage);
+          $97: DrawTile(Gfx[13]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $98: DrawTile(Gfx[13]^.Tile[16], X + I - 1, (Y shl 3) + ScanPage);
+          $99: DrawTile(Gfx[12]^.Tile[1], X + I - 1, (Y shl 3) + ScanPage);
+          $9A: DrawTile(Gfx[12]^.Tile[5], X + I - 1, (Y shl 3) + ScanPage);
+          $9B: DrawTile(Gfx[12]^.Tile[32], X + I - 1, (Y shl 3) + ScanPage);
+          $9C: DrawTile(Gfx[12]^.Tile[36], X + I - 1, (Y shl 3) + ScanPage);
+          $9D: DrawTile(Gfx[12]^.Tile[37], X + I - 1, (Y shl 3) + ScanPage);
+          $9E: DrawTile(Gfx[3]^.Tile[2], X + I - 1, (Y shl 3) + ScanPage);
+          $9F: DrawTile(Gfx[3]^.Tile[1], X + I - 1, (Y shl 3) + ScanPage);
+          $A0: DrawTile(Gfx[16]^.Tile[1], X + I - 1, (Y shl 3) + ScanPage);
+          $A1: DrawTile(Gfx[16]^.Tile[9], X + I - 1, (Y shl 3) + ScanPage);
+          $A2: DrawTile(Gfx[16]^.Tile[18], X + I - 1, (Y shl 3) + ScanPage);
+          $A3: DrawTile(Gfx[16]^.Tile[25], X + I - 1, (Y shl 3) + ScanPage);
+          $A4: DrawTile(Gfx[16]^.Tile[36], X + I - 1, (Y shl 3) + ScanPage);
+          $A5: DrawTile(Gfx[10]^.Tile[2], X + I - 1, (Y shl 3) + ScanPage);
+          $A6: DrawTile(Gfx[10]^.Tile[30], X + I - 1, (Y shl 3) + ScanPage);
+          $A7: DrawTile(Gfx[10]^.Tile[33], X + I - 1, (Y shl 3) + ScanPage);
+          $A8: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $A9: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $AA: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $AB: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $AC: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $AD: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $AE: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $AF: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $B0: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $B1: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $B2: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $B3: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $B4: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $B5: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $B6: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
+          $B7: DrawTile(Gfx[1]^.Tile[14], X + I - 1, (Y shl 3) + ScanPage);
         end
       else
-        DrawCellM(GfxSmall[3]^.Cell[P - $48], X + I - 1, (Y shl 3) + W6862);
+        DrawCellM(GfxSmall[3]^.Cell[P - $48], X + I - 1, (Y shl 3) + ScanPage);
   end;
 end;
 {$F-}
@@ -360,36 +360,36 @@ begin
     CX := CX + X1;
   CY := CY + Y1;
   GetMem(P681C, 30000);
-  GetImage(P681C^, X1, (Y1 shl 3) + W6862, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + W6862);
+  GetImage(P681C^, X1, (Y1 shl 3) + ScanPage, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + ScanPage);
   X2 := X1 + MaxW + 4;
   Y2 := Y1 + NLines + 1;
   for W6850 := 1 to Y2 - Y1 do
     for RowIdx := X1 + 1 to X2 - 1 do
-      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + W6862);
+      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
-    DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + ScanPage);
   for RowIdx := 1 to Y2 - Y1 do
   begin
-    DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + W6862);
-    DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + W6862);
-    DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + ScanPage);
+    DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + ScanPage);
+    DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + ScanPage);
   end;
-  DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + W6862);
+  DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
-    DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 + 1 do
-    DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + ScanPage);
   for RowIdx := 1 to NLines do
     if TextLines[RowIdx] <> 'END OF WINDOW' then
       DrawText(X1 + 2, Y1 + RowIdx + 1, TextLines[RowIdx]);
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
   repeat
     MemW[0:$41C] := MemW[0:$41A];
   until ScanCode > $80;
@@ -422,8 +422,8 @@ begin
         if Ticks > 20 then
         begin
           Ticks := 0;
-          DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + W6862);
-          DrawCellM(GfxSmall[3]^.Cell[Anim + $2D], CX, (CY shl 3) + W6862);
+          DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + ScanPage);
+          DrawCellM(GfxSmall[3]^.Cell[Anim + $2D], CX, (CY shl 3) + ScanPage);
           Inc(Anim);
           if Anim > 5 then
             Anim := 1;
@@ -434,17 +434,17 @@ begin
             begin
               Spark := False;
               if SH then
-                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + W6862)
+                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + ScanPage)
               else
-                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + W6862);
+                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + ScanPage);
             end
             else
             begin
               if SH then
-                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + W6862)
+                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + ScanPage)
               else
-                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + W6862);
-              DrawCellM(GfxSmall[2]^.Cell[ST + $25], SX, SY + W6862);
+                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + ScanPage);
+              DrawCellM(GfxSmall[2]^.Cell[ST + $25], SX, SY + ScanPage);
             end;
           end;
         end;
@@ -479,14 +479,14 @@ begin
       Done := True;
     end;
   until Done;
-  PutImage(P681C^, X1, (Y1 shl 3) + W6862);
+  PutImage(P681C^, X1, (Y1 shl 3) + ScanPage);
   FreeMem(P681C, 30000);
   MemW[0:$41C] := MemW[0:$41A];
   B6EF2 := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
+  UpHeld := 0;
+  DownHeld := 0;
 end;
 {$F-}
 { src: SAM1RE 1802:1DAE (../SAM menus.md: a text window with a line editor at the '^': letters, digits and
@@ -529,36 +529,36 @@ begin
   CX := CX + X1;
   CY := CY + Y1;
   GetMem(P681C, 30000);
-  GetImage(P681C^, X1, (Y1 shl 3) + W6862, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + W6862);
+  GetImage(P681C^, X1, (Y1 shl 3) + ScanPage, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + ScanPage);
   X2 := X1 + MaxW + 4;
   Y2 := Y1 + NLines + 1;
   for W6850 := 1 to Y2 - Y1 do
     for RowIdx := X1 + 1 to X2 - 1 do
-      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + W6862);
+      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
-    DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + ScanPage);
   for RowIdx := 1 to Y2 - Y1 do
   begin
-    DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + W6862);
-    DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + W6862);
-    DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + ScanPage);
+    DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + ScanPage);
+    DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + ScanPage);
   end;
-  DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + W6862);
+  DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
-    DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 + 1 do
-    DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + ScanPage);
   for RowIdx := 1 to NLines do
     if TextLines[RowIdx] <> 'END OF WINDOW' then
       DrawText(X1 + 2, Y1 + RowIdx + 1, TextLines[RowIdx]);
-  B6EE9 := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
-  B6EEA := 0;
+  UpHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
+  DownHeld := 0;
   repeat
     MemW[0:$41C] := MemW[0:$41A];
   until Port[$60] > $80;
@@ -578,7 +578,7 @@ begin
             begin
               S := S + Ch;
               Inc(Len);
-              DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + W6862);
+              DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + ScanPage);
               DrawText(CX, CY, Ch);
               Inc(CX);
             end;
@@ -587,9 +587,9 @@ begin
         if Ch = #8 then
           if Len > 0 then
           begin
-            DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + W6862);
+            DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + ScanPage);
             Dec(CX);
-            DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + W6862);
+            DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + ScanPage);
             Delete(S, Length(S), 1);
             Dec(Len);
           end;
@@ -618,8 +618,8 @@ begin
     if Ticks > 20 then
     begin
       Ticks := 0;
-      DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + W6862);
-      DrawCellM(GfxSmall[3]^.Cell[Anim + $2D], CX, (CY shl 3) + W6862);
+      DrawCell(GfxSmall[2]^.Cell[9], CX, (CY shl 3) + ScanPage);
+      DrawCellM(GfxSmall[3]^.Cell[Anim + $2D], CX, (CY shl 3) + ScanPage);
       Inc(Anim);
       if Anim > 5 then
         Anim := 1;
@@ -630,29 +630,29 @@ begin
         begin
           Spark := False;
           if SH then
-            DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + W6862)
+            DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + ScanPage)
           else
-            DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + W6862);
+            DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + ScanPage);
         end
         else
         begin
           if SH then
-            DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + W6862)
+            DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + ScanPage)
           else
-            DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + W6862);
-          DrawCellM(GfxSmall[2]^.Cell[ST + $25], SX, SY + W6862);
+            DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + ScanPage);
+          DrawCellM(GfxSmall[2]^.Cell[ST + $25], SX, SY + ScanPage);
         end;
       end;
     end;
   end;
   InputLine := S;
-  PutImage(P681C^, X1, (Y1 shl 3) + W6862);
+  PutImage(P681C^, X1, (Y1 shl 3) + ScanPage);
   FreeMem(P681C, 30000);
   MemW[0:$41C] := MemW[0:$41A];
-  B6EE9 := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
-  B6EEA := 0;
+  UpHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
+  DownHeld := 0;
 end;
 {$F-}
 { src: SAM1RE 1802:2653 (../SAM menus.md: the paged text window: TextWindow for up to 299 lines, 16 shown;
@@ -697,36 +697,36 @@ begin
   CX := CX + X1;
   CY := CY + Y1;
   GetMem(P681C, 30000);
-  GetImage(P681C^, X1, (Y1 shl 3) + W6862, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + W6862);
+  GetImage(P681C^, X1, (Y1 shl 3) + ScanPage, X1 + MaxW + 5 + 1, ((Y1 + NLines + 2 + 1) shl 3) + ScanPage);
   X2 := X1 + MaxW + 4;
   Y2 := Y1 + NLines + 1;
   for W6850 := 1 to Y2 - Y1 do
     for RowIdx := X1 + 1 to X2 - 1 do
-      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + W6862);
+      DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
-    DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + ScanPage);
   for RowIdx := 1 to Y2 - Y1 do
   begin
-    DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + W6862);
-    DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + W6862);
-    DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + ScanPage);
+    DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + ScanPage);
+    DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + ScanPage);
   end;
-  DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + W6862);
+  DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 - 1 do
-    DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + W6862);
-  DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + ScanPage);
+  DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + ScanPage);
   for RowIdx := X1 + 1 to X2 + 1 do
-    DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + W6862);
+    DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + ScanPage);
   for RowIdx := 1 to NLines - 2 do
     if TextLines[RowIdx] <> 'END OF WINDOW' then
       DrawText(X1 + 2, Y1 + RowIdx + 1, TextLines[RowIdx]);
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
   repeat
     MemW[0:$41C] := MemW[0:$41A];
   until ScanCode > $80;
@@ -765,17 +765,17 @@ begin
             begin
               Spark := False;
               if SH then
-                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + W6862)
+                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + ScanPage)
               else
-                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + W6862);
+                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + ScanPage);
             end
             else
             begin
               if SH then
-                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + W6862)
+                DrawCellM(GfxSmall[2]^.Cell[2], SX, SY + ScanPage)
               else
-                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + W6862);
-              DrawCellM(GfxSmall[2]^.Cell[ST + $25], SX, SY + W6862);
+                DrawCellM(GfxSmall[2]^.Cell[6], SX, SY + ScanPage);
+              DrawCellM(GfxSmall[2]^.Cell[ST + $25], SX, SY + ScanPage);
             end;
           end;
         end;
@@ -801,24 +801,24 @@ begin
         Top := Total - 16;
       for W6850 := 1 to Y2 - Y1 - 1 do
         for RowIdx := X1 + 1 to X2 - 1 do
-          DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + W6862);
-      DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + W6862);
+          DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+      DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
       for RowIdx := X1 + 1 to X2 - 1 do
-        DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + W6862);
-      DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + W6862);
+        DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);
+      DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + ScanPage);
       for RowIdx := 1 to Y2 - Y1 do
       begin
-        DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + W6862);
-        DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + W6862);
-        DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + W6862);
+        DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + ScanPage);
+        DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + ScanPage);
+        DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + ScanPage);
       end;
-      DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + W6862);
-      DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + W6862);
+      DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + ScanPage);
+      DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + ScanPage);
       for RowIdx := X1 + 1 to X2 - 1 do
-        DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + W6862);
-      DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + W6862);
+        DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + ScanPage);
+      DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + ScanPage);
       for RowIdx := X1 + 1 to X2 + 1 do
-        DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + W6862);
+        DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + ScanPage);
       for RowIdx := 1 to NLines - 2 do
         if TextLines[RowIdx] <> 'END OF WINDOW' then
           DrawText(X1 + 2, Y1 + RowIdx + 1, TextLines[RowIdx + Top]);
@@ -830,24 +830,24 @@ begin
         Top := 0;
       for W6850 := 1 to Y2 - Y1 - 1 do
         for RowIdx := X1 + 1 to X2 - 1 do
-          DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + W6862);
-      DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + W6862);
+          DrawCell(GfxSmall[2]^.Cell[9], RowIdx, ((Y1 + W6850) shl 3) + ScanPage);
+      DrawCellM(GfxSmall[2]^.Cell[1], X1, (Y1 shl 3) + ScanPage);
       for RowIdx := X1 + 1 to X2 - 1 do
-        DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + W6862);
-      DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + W6862);
+        DrawCellM(GfxSmall[2]^.Cell[2], RowIdx, (Y1 shl 3) + ScanPage);
+      DrawCellM(GfxSmall[2]^.Cell[3], X2, (Y1 shl 3) + ScanPage);
       for RowIdx := 1 to Y2 - Y1 do
       begin
-        DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + W6862);
-        DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + W6862);
-        DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + W6862);
+        DrawCellM(GfxSmall[2]^.Cell[6], X1, ((Y1 + RowIdx) shl 3) + ScanPage);
+        DrawCellM(GfxSmall[2]^.Cell[8], X2, ((Y1 + RowIdx) shl 3) + ScanPage);
+        DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y1 + RowIdx) shl 3) + ScanPage);
       end;
-      DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + W6862);
-      DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + W6862);
+      DrawCellM(GfxSmall[2]^.Cell[10], X2 + 1, ((Y2 - Y1 + Y1 + 1) shl 3) + ScanPage);
+      DrawCellM(GfxSmall[2]^.Cell[5], X1, (Y2 shl 3) + ScanPage);
       for RowIdx := X1 + 1 to X2 - 1 do
-        DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + W6862);
-      DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + W6862);
+        DrawCellM(GfxSmall[2]^.Cell[7], RowIdx, (Y2 shl 3) + ScanPage);
+      DrawCellM(GfxSmall[2]^.Cell[4], X2, (Y2 shl 3) + ScanPage);
       for RowIdx := X1 + 1 to X2 + 1 do
-        DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + W6862);
+        DrawCellM(GfxSmall[2]^.Cell[10], RowIdx, ((Y2 + 1) shl 3) + ScanPage);
       for RowIdx := 1 to NLines - 2 do
         if TextLines[RowIdx] <> 'END OF WINDOW' then
           DrawText(X1 + 2, Y1 + RowIdx + 1, TextLines[RowIdx + Top]);
@@ -868,14 +868,14 @@ begin
       Done := True;
     end;
   until Done;
-  PutImage(P681C^, X1, (Y1 shl 3) + W6862);
+  PutImage(P681C^, X1, (Y1 shl 3) + ScanPage);
   FreeMem(P681C, 30000);
   MemW[0:$41C] := MemW[0:$41A];
   B6EF2 := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
+  UpHeld := 0;
+  DownHeld := 0;
 end;
 {$F-}
 { src: SAM1RE 1802:33D0 (../SAM menus: the sam1.apo logo with sound $15, then a key or about 5 s on the
@@ -894,7 +894,7 @@ begin
   R := SetStride($28);
   CamX := 0;
   CamY := 0;
-  W6862 := 0;
+  ScanPage := 0;
   PageY := 0;
   R := ShowPicture('sam1.apo', 1, 0, 0);
   FadeIn($14);
@@ -923,7 +923,7 @@ begin
   R := SetStride($28);
   CamX := 0;
   CamY := 0;
-  W6862 := 0;
+  ScanPage := 0;
   PageY := 0;
   R := ShowPicture('sam1.crd', 1, 0, 0);
   Proc2ECF(0, 0, 0, 200);
@@ -953,7 +953,7 @@ begin
         SetViewStart(0, Y)
       else
         SetViewStartAlt(0, Y);
-      W6862 := Y;
+      ScanPage := Y;
     end
     else
     begin
@@ -961,7 +961,7 @@ begin
         SetViewStart(0, 200 - Y)
       else
         SetViewStartAlt(0, 200 - Y);
-      W6862 := 200 - Y;
+      ScanPage := 200 - Y;
     end;
     Inc(Y);
     if Y > 200 then
@@ -978,11 +978,11 @@ begin
         end;
       until (Ticks > $1B0) or (Key <> ' ');
     end;
-    B6EE9 := 0;
-    B6EEA := 0;
-    B6EF0 := 0;
-    B6EF1 := 0;
-    B6EEB := 0;
+    UpHeld := 0;
+    DownHeld := 0;
+    LeftHeld := 0;
+    RightHeld := 0;
+    EscHeld := 0;
     MemW[0:$41C] := MemW[0:$41A];
     if ScanCode <> 0 then
     begin
@@ -1137,7 +1137,7 @@ begin
   State.MapSite := MapSite;
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];
-  State.B47 := B6A02;
+  State.B47 := AmmoCheat;
 end;
 { src: SAM1RE 1802:3CEF (../SAM physics.md: restores the game state from the store DS:6D3E) }
 { to: 3DA2 }
@@ -1167,7 +1167,7 @@ begin
   MapSite := State.MapSite;
   for I := 1 to 20 do
     SiteDone[I] := State.SiteDone[I];
-  B6A02 := State.B47;
+  AmmoCheat := State.B47;
 end;
 { src: GUESS 1802:3DAD (like SaveState, with the position rounded to 16 (+8, and $FFF0), then the
   store written to SAM1-<N>.SAV; called from the menus in this unit) }
@@ -1202,7 +1202,7 @@ begin
   State.MapSite := MapSite;
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];
-  State.B47 := B6A02;
+  State.B47 := AmmoCheat;
   Str(N:1, S);
   Assign(F, 'SAM1-' + S + '.SAV');
   Rewrite(F);
@@ -1255,7 +1255,7 @@ begin
     MapSite := State.MapSite;
     for I := 1 to 20 do
       SiteDone[I] := State.SiteDone[I];
-    B6A02 := State.B47;
+    AmmoCheat := State.B47;
     LoadGame := True;
   end
   else
@@ -1756,7 +1756,7 @@ begin
   TextLines[I] := 'END OF WINDOW';
   KeyFilter[1] := 1;
   WinKey := Ord(PageWindow(False));
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
 end;
 {$F-}
@@ -1909,7 +1909,7 @@ begin
   TextLines[I] := 'END OF WINDOW';
   KeyFilter[1] := 1;
   WinKey := Ord(PageWindow(False));
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
 end;
 {$F-}
@@ -2062,7 +2062,7 @@ begin
   TextLines[I] := 'END OF WINDOW';
   KeyFilter[1] := 1;
   WinKey := Ord(PageWindow(False));
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
 end;
 {$F-}
@@ -2293,7 +2293,7 @@ begin
   MemW[0:$41C] := MemW[0:$41A];
   Val(NameInput, N, Code);
   AskWarp := N;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
 end;
 { src: SAM1RE 1802:8F3A (../SAM menus.md: the save menu; keys 1..9 save to slots 1..9, 0 to slot 0, the first
@@ -2329,7 +2329,7 @@ begin
     2..10: SaveGame(WinKey - 1);
     11: SaveGame(0);
   end;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
   ClearText;
   if IOResult = 0 then
@@ -2381,7 +2381,7 @@ begin
         WinKey := $1C;
   end;
   RestoreMenu := WinKey;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
 end;
 {$F-}
@@ -2518,7 +2518,7 @@ begin
       end;
     1:
       begin
-        B6EEB := 0;
+        EscHeld := 0;
         MainMenu := ' ';
       end;
   end;
@@ -2614,7 +2614,7 @@ begin
           TextLines[5] := 'END OF WINDOW';
           KeyFilter[1] := 1;
           WinKey := Ord(TextWindow(False));
-          B6EEB := 0;
+          EscHeld := 0;
           MenuReq := 0;
         end;
       end;
@@ -2648,7 +2648,7 @@ begin
   TextLines[17] := 'END OF WINDOW';
   KeyFilter[1] := 1;
   WinKey := Ord(TextWindow(True));
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
 end;
 {$F-}
@@ -2666,7 +2666,7 @@ begin
   TextLines[4] := 'END OF WINDOW';
   KeyFilter[1] := 1;
   WinKey := Ord(TextWindow(False));
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
 end;
 { src: GUESS 1802:9B63 (quit prompt: B6820 = [1, $15, $31] lists the accepted scan codes Y and N;
@@ -2685,12 +2685,12 @@ begin
   WinKey := Ord(TextWindow(True));
   if WinKey = $15 then
     B6EEC := 1;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
   MemW[0:$41C] := MemW[0:$41A];
   ScanCode := 0;
 end;
@@ -2717,27 +2717,27 @@ begin
   begin
     CheckHighScore;
     B6EEC := 1;
-    B6D8C := 0;
+    HasPix := 0;
     PlaySound($12);
   end
   else if WinKey = $14 then
   begin
     CheckHighScore;
     B6EED := 1;
-    B6D8C := 0;
+    HasPix := 0;
     PlaySound($12);
   end
   else if WinKey = $17 then
   begin
     B6EEE := 1;
-    B6D8C := 0;
+    HasPix := 0;
   end;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
   MemW[0:$41C] := MemW[0:$41A];
   ScanCode := 0;
 end;
@@ -2759,12 +2759,12 @@ begin
     SoundOn := True
   else
     SoundOn := False;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
   MemW[0:$41C] := MemW[0:$41A];
   ScanCode := 0;
 end;
@@ -2803,12 +2803,12 @@ begin
     AltVideo := 1
   else
     AltVideo := 0;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
   MemW[0:$41C] := MemW[0:$41A];
   ScanCode := 0;
 end;
@@ -2836,12 +2836,12 @@ begin
     JoyOn := False;
     UseJoystick := 0;
   end;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
   MemW[0:$41C] := MemW[0:$41A];
   ScanCode := 0;
 end;
@@ -2898,12 +2898,12 @@ begin
       JoyCenterY := ReadAxis(1);
     end;
   end;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
   MemW[0:$41C] := MemW[0:$41A];
   ScanCode := 0;
 end;
@@ -3030,7 +3030,7 @@ begin
   TextLines[I] := 'END OF WINDOW';
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
-  B6EEB := 1;
+  EscHeld := 1;
   NoOp;
   ClearText;
   I := 0;
@@ -3064,7 +3064,7 @@ begin
   TextLines[I] := 'END OF WINDOW';
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
-  B6EEB := 1;
+  EscHeld := 1;
   NoOp;
 end;
 {$F-}
@@ -3116,7 +3116,7 @@ begin
   TextLines[I] := 'END OF WINDOW';
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
-  B6EEB := 1;
+  EscHeld := 1;
   NoOp;
 end;
 {$F-}
@@ -3168,7 +3168,7 @@ begin
   TextLines[I] := 'END OF WINDOW';
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
-  B6EEB := 1;
+  EscHeld := 1;
   NoOp;
   OrderPage;
   OrderMailFax;
@@ -3563,7 +3563,7 @@ begin
   ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(False));
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
   NoOp;
 end;
@@ -3596,7 +3596,7 @@ begin
   ScanCode := 999;
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(False));
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
   NoOp;
 end;
@@ -3652,7 +3652,7 @@ begin
   R := SetStride($28);
   CamX := 0;
   CamY := 0;
-  W6862 := 0;
+  ScanPage := 0;
   PageY := 0;
   R := ShowPicture('SAM1.END', 1, 0, 0);
   FadeIn(0);
@@ -3668,7 +3668,7 @@ begin
   MemW[0:$41C] := MemW[0:$41A];
   CheckHighScore;
   B6EED := 1;
-  B6D8C := 0;
+  HasPix := 0;
   B6EEC := 0;
 end;
 begin

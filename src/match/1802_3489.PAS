@@ -15,7 +15,7 @@ begin
   R := SetStride($28);
   CamX := 0;
   CamY := 0;
-  W6862 := 0;
+  ScanPage := 0;
   PageY := 0;
   R := ShowPicture('sam1.crd', 1, 0, 0);
   Proc2ECF(0, 0, 0, 200);
@@ -45,7 +45,7 @@ begin
         SetViewStart(0, Y)
       else
         SetViewStartAlt(0, Y);
-      W6862 := Y;
+      ScanPage := Y;
     end
     else
     begin
@@ -53,7 +53,7 @@ begin
         SetViewStart(0, 200 - Y)
       else
         SetViewStartAlt(0, 200 - Y);
-      W6862 := 200 - Y;
+      ScanPage := 200 - Y;
     end;
     Inc(Y);
     if Y > 200 then
@@ -70,11 +70,11 @@ begin
         end;
       until (Ticks > $1B0) or (Key <> ' ');
     end;
-    B6EE9 := 0;
-    B6EEA := 0;
-    B6EF0 := 0;
-    B6EF1 := 0;
-    B6EEB := 0;
+    UpHeld := 0;
+    DownHeld := 0;
+    LeftHeld := 0;
+    RightHeld := 0;
+    EscHeld := 0;
     MemW[0:$41C] := MemW[0:$41A];
     if ScanCode <> 0 then
     begin

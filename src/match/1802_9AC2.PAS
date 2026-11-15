@@ -12,6 +12,6 @@ begin
   TextLines[4] := 'END OF WINDOW';
   KeyFilter[1] := 1;
   WinKey := Ord(TextWindow(False));
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
 end;

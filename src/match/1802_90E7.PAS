@@ -36,7 +36,7 @@ begin
         WinKey := $1C;
   end;
   RestoreMenu := WinKey;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
 end;
 {$F-}

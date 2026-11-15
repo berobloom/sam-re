@@ -20,27 +20,27 @@ begin
   begin
     CheckHighScore;
     B6EEC := 1;
-    B6D8C := 0;
+    HasPix := 0;
     PlaySound($12);
   end
   else if WinKey = $14 then
   begin
     CheckHighScore;
     B6EED := 1;
-    B6D8C := 0;
+    HasPix := 0;
     PlaySound($12);
   end
   else if WinKey = $17 then
   begin
     B6EEE := 1;
-    B6D8C := 0;
+    HasPix := 0;
   end;
-  B6EEB := 0;
+  EscHeld := 0;
   MenuReq := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
   MemW[0:$41C] := MemW[0:$41A];
   ScanCode := 0;
 end;

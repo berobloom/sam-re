@@ -6,7 +6,7 @@ procedure HitPlayer(X, Y: Integer);
 begin
   if (((Slots[1].X >= X) and (X + 9 >= Slots[1].X)) or ((Slots[1].X + 9 >= X) and (Slots[1].X <= X)))
     and (((Slots[1].Y >= Y) and (Y + 15 >= Slots[1].Y)) or ((Slots[1].Y + 15 >= Y) and (Slots[1].Y <= Y)))
-    and (B6A1B = 0) and (B6A19 = 0) then
+    and (HitLock = 0) and (Invulnerable = 0) then
     if Lives > 1 then
     begin
       if B6A67 = 0 then
@@ -22,7 +22,7 @@ begin
     else if B6A67 = 0 then
     begin
       PlaySound($16);
-      B6A1B := 1;
+      HitLock := 1;
       ArcLen := $23;
     end;
 end;

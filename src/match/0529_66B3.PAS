@@ -8,14 +8,14 @@ begin
   Inc(JumpUpTop);
   if JumpUpTop > 19 then
     JumpUpTop := 19;
-  B6EE6 := 1;
+  Falling := 1;
   Inc(Slots[1].Y, JumpUp[JumpUpTop]);
   if (Map[(Slots[1].X + 3) shr 4 + 1, Slots[1].Y shr 4 + 2].Solid <> 0)
     or (Map[(Slots[1].X + 12) shr 4 + 1, Slots[1].Y shr 4 + 2].Solid <> 0) then
   begin
     Inc(Landings);
     Slots[1].Y := Slots[1].Y and $FFF0;
-    B6EE6 := 0;
+    Falling := 0;
   end;
   if JumpUpTop > 10 then
     if (Map[(Slots[1].X + 3) shr 4 + 1, (Slots[1].Y + 16) shr 4 + 1].FlagB <> 0)
@@ -24,21 +24,21 @@ begin
       begin
         Inc(Landings);
         Slots[1].Y := Slots[1].Y and $FFF0;
-        B6EE6 := 0;
+        Falling := 0;
       end
       else if (Map[(Slots[1].X + 3) shr 4 + 1, (Slots[1].Y + 7) shr 4 + 1].FlagB = 0)
         and (Map[(Slots[1].X + 12) shr 4 + 1, (Slots[1].Y + 7) shr 4 + 1].FlagB = 0) then
       begin
         Inc(Landings);
         Slots[1].Y := Slots[1].Y and $FFF0;
-        B6EE6 := 0;
+        Falling := 0;
       end;
   if CamY + $78 < Slots[1].Y then
     if JumpUp[JumpUpTop] + CamY < $B8 then
       Inc(CamY, JumpUp[JumpUpTop])
     else
       CamY := $B8;
-  if B6EE6 <> 0 then
+  if Falling <> 0 then
   begin
     if (Slots[1].Sprite = 1) or (Slots[1].Sprite = 9) or (Slots[1].Sprite = $B) or (Slots[1].Sprite = $D) then
       Slots[1].Sprite := $D
@@ -47,14 +47,14 @@ begin
   end
   else if Slots[1].Sprite = $D then
   begin
-    if B6EF1 <> 0 then
+    if RightHeld <> 0 then
       Slots[1].Sprite := 1
     else
       Slots[1].Sprite := 9;
   end
   else if Slots[1].Sprite = $E then
   begin
-    if B6EF0 <> 0 then
+    if LeftHeld <> 0 then
       Slots[1].Sprite := 5
     else
       Slots[1].Sprite := $A;

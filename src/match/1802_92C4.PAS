@@ -131,7 +131,7 @@ begin
       end;
     1:
       begin
-        B6EEB := 0;
+        EscHeld := 0;
         MainMenu := ' ';
       end;
   end;

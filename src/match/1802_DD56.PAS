@@ -13,7 +13,7 @@ begin
   R := SetStride($28);
   CamX := 0;
   CamY := 0;
-  W6862 := 0;
+  ScanPage := 0;
   PageY := 0;
   R := ShowPicture('SAM1.END', 1, 0, 0);
   FadeIn(0);
@@ -29,6 +29,6 @@ begin
   MemW[0:$41C] := MemW[0:$41A];
   CheckHighScore;
   B6EED := 1;
-  B6D8C := 0;
+  HasPix := 0;
   B6EEC := 0;
 end;

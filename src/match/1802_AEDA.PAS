@@ -46,7 +46,7 @@ begin
   TextLines[I] := 'END OF WINDOW';
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
-  B6EEB := 1;
+  EscHeld := 1;
   NoOp;
   ClearText;
   I := 0;
@@ -80,7 +80,7 @@ begin
   TextLines[I] := 'END OF WINDOW';
   MemW[0:$41C] := MemW[0:$41A];
   K := Ord(TextWindow(True));
-  B6EEB := 1;
+  EscHeld := 1;
   NoOp;
 end;
 {$F-}

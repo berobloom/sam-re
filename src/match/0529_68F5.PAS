@@ -8,7 +8,7 @@ procedure MovePlayer;
 begin
   Slots[1].PrevX := Slots[1].X;
   Slots[1].PrevY := Slots[1].Y;
-  if B6EF1 <> 0 then
+  if RightHeld <> 0 then
   begin
     Ramp;
     if CanMove(WalkSpeed, 0) then
@@ -22,7 +22,7 @@ begin
       Inc(Slots[1].X, WalkSpeed);
     end;
   end;
-  if B6EF0 <> 0 then
+  if LeftHeld <> 0 then
   begin
     Ramp;
     if CanMove(-WalkSpeed, 0) then
@@ -36,14 +36,14 @@ begin
       Dec(Slots[1].X, WalkSpeed);
     end;
   end;
-  if B6EEA <> 0 then
+  if DownHeld <> 0 then
     if CanMove(0, 4) then
     begin
       if (CamY < $B8) and (CamY + $50 < Slots[1].Y) then
         Inc(CamY, 4);
       Inc(Slots[1].Y, 4);
     end;
-  if B6EE9 <> 0 then
+  if UpHeld <> 0 then
     if CanMove(0, -4) then
     begin
       if (CamY > 0) and (CamY + $50 > Slots[1].Y) then

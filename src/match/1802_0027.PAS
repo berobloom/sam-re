@@ -7,5 +7,5 @@ begin
     SetViewStart(CamX, PageY + CamY)
   else
     SetViewStartAlt(CamX, PageY + CamY);
-  W6862 := PageY;
+  ScanPage := PageY;
 end;

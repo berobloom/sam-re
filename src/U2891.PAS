@@ -76,7 +76,7 @@ var
   B685C: Byte; { @685C }
   CamX: Integer; { @685E }
   CamY: Integer; { @6860 }
-  W6862: Integer; { @6862 }
+  ScanPage: Integer; { @6862; the page the CRTC scans (SAM1RE level-load.md) }
   W6864: Integer; { @6864 }
   PageY: Integer; { @6866 }
   AllDone: Byte; { @6868; 1 when exactly 15 of the 16 sites are done (0D9C:2E88; SAM1RE level-load.md) }
@@ -100,13 +100,39 @@ var
   W69DC: Integer; { @69DC }
   MapSite: Integer; { @69DE }
   SiteDone: array[1..20] of Byte; { @69E0 }
-  ExitArmed, B69F5, B69F6, B69F7, B69F8, B69F9, B69FA, B69FB, B69FC, B69FD, B69FE, B69FF: Byte; { @69F4 }
-  B6A00, B6A01, B6A02, B6A03, B6A04, B6A05, B6A06: Byte; { @6A00 }
+  ExitArmed, ChordO, ChordN, ChordD, ChordPB, WarpCheat, ChordP, ChordJ, ChordX, PjxDone, B69FE, ChordU: Byte; { @69F4;
+    ChordO: cheat chord O N D + P/B (SAM1RE input.md);
+    ChordN: cheat chord (SAM1RE input.md);
+    ChordD: cheat chord (SAM1RE input.md);
+    ChordPB: cheat chord (SAM1RE input.md);
+    WarpCheat: level-warp latch (SAM1RE input.md);
+    ChordP: cheat chord P J X (SAM1RE input.md);
+    ChordJ: cheat chord (SAM1RE input.md);
+    ChordX: cheat chord (SAM1RE input.md);
+    PjxDone: P J X latch (SAM1RE input.md);
+    ChordU: cheat chord U V K, ammo +25 (SAM1RE input.md) }
+  ChordV, ChordK, AmmoCheat, ChordZ, ChordG, ChordI, WarpArmed: Byte; { @6A00;
+    ChordV: cheat chord (SAM1RE input.md);
+    ChordK: cheat chord (SAM1RE input.md);
+    AmmoCheat: U V K one-shot (SAM1RE input.md);
+    ChordZ: cheat chord Z G I (SAM1RE input.md);
+    ChordG: cheat chord (SAM1RE input.md);
+    ChordI: cheat chord (SAM1RE input.md);
+    WarpArmed: warp tile armed (SAM1RE level-load.md) }
   WarpTimer, WarpX, WarpY: Integer; { @6A08;
     WarpTimer: warp countdown, := $13 (SAM1RE level-load.md);
     WarpX: warp destination (SAM1RE level-load.md);
     WarpY: warp destination (SAM1RE level-load.md) }
-  B6A0E, B6A0F, B6A10, B6A11, B6A12, B6A13, B6A14, VGunOff, B6A16, B6A17, B6A18, B6A19, B6A1A, B6A1B: Byte; { @6A0E }
+  B6A0E, B6A0F, B6A10, B6A11, Floppy, LaserDown, B6A14, VGunOff: Byte; { @6A0E;
+    Floppy: the floppy (SAM1RE level-load.md);
+    LaserDown: laser field off (SAM1RE level-load.md) }
+  Bonus1, Bonus2, Bonus3, Invulnerable, DoorKey, HitLock: Byte; { @6A16;
+    Bonus1: ordered bonus chain (SAM1RE level-load.md);
+    Bonus2: ordered bonus chain (SAM1RE level-load.md);
+    Bonus3: ordered bonus chain (SAM1RE level-load.md);
+    Invulnerable: P J X toggle, gates damage (SAM1RE input.md);
+    DoorKey: the door key (SAM1RE level-load.md);
+    HitLock: hit/death lock (SAM1RE physics.md) }
   ArcLen: Byte; { @6A1C }
   Arc: array[1..35] of Integer; { @6A1E; indexed by ArcLen (main 0000:1B35) }
   ExitLock: Byte; { @6A64; exit/cutscene lock (SAM1RE physics.md) }
@@ -124,7 +150,7 @@ var
     SaveSlot: save slot = scan - 1 (SAM1RE menus.md);
     MarkerX: player x at a site marker (SAM1RE level-load.md);
     MarkerY: player y at a site marker (SAM1RE level-load.md) }
-  B6D8C: Byte; { @6D8C }
+  HasPix: Byte; { @6D8C; the PIX pickup (SAM1RE level-load.md) }
   JoyCenterX, JoyCenterY: Integer; { @6D8E; signed compares in main 0000:08A2 }
   JoyX, JoyY: Integer; { @6D92 }
   JoyMovedX, JoyMovedY: Boolean; { @6D96 }
@@ -133,8 +159,16 @@ var
   GfxSmall: array[1..3] of PGfxSmall; { @6E58 }
   GfxSmallFile: file of TGfxSmall; { @6E64 }
   EscKey: Char; { @6EE4; EscapeMenu's result (main 0000:5078) }
-  B6EE5, B6EE6, B6EE7, B6EE8, B6EE9, B6EEA, B6EEB, B6EEC, B6EED, B6EEE, B6EEF, B6EF0, B6EF1: Byte; { @6EE5 }
-  B6EF2, B6EF3: Byte; { @6EF2 }
+  Shot, Falling, Jumping, B6EE8, UpHeld, DownHeld, EscHeld, B6EEC, B6EED, B6EEE, B6EEF, LeftHeld, RightHeld: Byte; { @6EE5;
+    Shot: shot fired (SAM1RE physics.md);
+    Falling: (SAM1RE physics.md);
+    Jumping: (SAM1RE physics.md);
+    UpHeld: (SAM1RE input.md);
+    DownHeld: (SAM1RE input.md);
+    EscHeld: (SAM1RE input.md);
+    LeftHeld: (SAM1RE input.md);
+    RightHeld: (SAM1RE input.md) }
+  B6EF2, JumpHeld: Byte; { @6EF2; JumpHeld: (SAM1RE input.md) }
   NameUp, NameDown, NameFire, NameRight, NameJump, NameLeft: String[80]; { @6EF4; key names (redefine menu) }
   KeyUp, KeyDown, KeyLeft, KeyRight, KeyFire, KeyJump: Integer; { @70E0; SAM1RE menus.md: 70E8 fire }
   AltVideo: Integer; { @70EC; Alternate video setting Y/N (SAM1RE menus.md) }
@@ -193,25 +227,25 @@ begin
     L := I;
     HiScore[I] := 200000 - (L - 1) * 10000;
   end;
-  B6EE5 := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EEB := 0;
+  Shot := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  EscHeld := 0;
   B6EEC := 0;
   B6EED := 0;
   B6EEE := 0;
   B6EEF := 0;
   B6EE8 := 0;
-  B6EE7 := 0;
-  B6EF3 := 0;
-  B6EE6 := 0;
+  Jumping := 0;
+  JumpHeld := 0;
+  Falling := 0;
   Level := 1;
   W6856 := 0;
   PageY := $10;
   W6864 := 0;
-  W6862 := 0;
+  ScanPage := 0;
   WalkSpeed := 0;
   B685C := 1;
   Score := 0;
@@ -231,24 +265,24 @@ begin
   SlowTimer := 0;
   W69D8 := 0;
   VGunOff := 0;
-  B6A12 := 0;
-  B6A13 := 0;
+  Floppy := 0;
+  LaserDown := 0;
   B6A0E := 0;
   B6A0F := 0;
   B6A10 := 0;
   B6A11 := 0;
-  B6A19 := 0;
-  B6A1A := 0;
+  Invulnerable := 0;
+  DoorKey := 0;
   B6A14 := 0;
   KeysOff := 0;
   W69DC := 0;
   MapSite := 1;
-  B6A16 := 0;
-  B6A17 := 0;
-  B6A18 := 1;
+  Bonus1 := 0;
+  Bonus2 := 0;
+  Bonus3 := 1;
   for I := 1 to 20 do
     SiteDone[I] := 0;
-  B6A1B := 0;
+  HitLock := 0;
   ArcLen := $23;
   ExitLock := 0;
   RespawnDelay := 8;
@@ -257,24 +291,24 @@ begin
   B6A68 := 0;
   ExitArmed := 0;
   MenuReq := 0;
-  B69FA := 0;
-  B69FB := 0;
-  B69FC := 0;
-  B69FF := 0;
-  B6A00 := 0;
-  B6A01 := 0;
-  B6A02 := 0;
-  B6A03 := 0;
-  B6A04 := 0;
-  B6A05 := 0;
-  B69F5 := 0;
-  B69F6 := 0;
-  B69F7 := 0;
-  B69F8 := 0;
-  B69F9 := 0;
-  B69FD := 0;
+  ChordP := 0;
+  ChordJ := 0;
+  ChordX := 0;
+  ChordU := 0;
+  ChordV := 0;
+  ChordK := 0;
+  AmmoCheat := 0;
+  ChordZ := 0;
+  ChordG := 0;
+  ChordI := 0;
+  ChordO := 0;
+  ChordN := 0;
+  ChordD := 0;
+  ChordPB := 0;
+  WarpCheat := 0;
+  PjxDone := 0;
   B69FE := 0;
-  B6A06 := 0;
+  WarpArmed := 0;
   WarpTimer := 0;
   WarpX := 0;
   WarpY := 0;
@@ -392,7 +426,7 @@ begin
   Arc[33] := 8;
   Arc[34] := 8;
   Arc[35] := 8;
-  B6D8C := 0;
+  HasPix := 0;
 end;
 { src: SAM1RE 2891:07D5 (../SAM code-map.md: new game) }
 { interface }
@@ -401,7 +435,7 @@ procedure NewGame;
 var
   I: Integer;
 begin
-  B6D8C := 0;
+  HasPix := 0;
   for I := 1 to 25 do
     Slots[I].Free := 1;
   CamX := 0;
@@ -409,25 +443,25 @@ begin
   StatusCamX := -1;
   CamY := 0;
   Ticks := 0;
-  B6EE5 := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EEB := 0;
+  Shot := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  EscHeld := 0;
   B6EEC := 0;
   B6EED := 0;
   B6EEE := 0;
   B6EEF := 0;
   B6EE8 := 0;
-  B6EE7 := 0;
-  B6EF3 := 0;
-  B6EE6 := 0;
+  Jumping := 0;
+  JumpHeld := 0;
+  Falling := 0;
   Level := 1;
   W6856 := 0;
   PageY := $10;
   W6864 := 0;
-  W6862 := 0;
+  ScanPage := 0;
   WalkSpeed := 0;
   B685C := 1;
   Score := 0;
@@ -447,24 +481,24 @@ begin
   SlowTimer := 0;
   W69D8 := 0;
   VGunOff := 0;
-  B6A12 := 0;
-  B6A13 := 0;
+  Floppy := 0;
+  LaserDown := 0;
   B6A0E := 0;
   B6A0F := 0;
   B6A10 := 0;
   B6A11 := 0;
-  B6A19 := 0;
-  B6A1A := 0;
+  Invulnerable := 0;
+  DoorKey := 0;
   B6A14 := 0;
   KeysOff := 0;
   W69DC := 0;
   MapSite := 1;
-  B6A16 := 0;
-  B6A17 := 0;
-  B6A18 := 1;
+  Bonus1 := 0;
+  Bonus2 := 0;
+  Bonus3 := 1;
   for I := 1 to 20 do
     SiteDone[I] := 0;
-  B6A1B := 0;
+  HitLock := 0;
   ArcLen := $23;
   ExitArmed := 0;
   ExitLock := 0;
@@ -473,24 +507,24 @@ begin
   B6A67 := 0;
   B6A68 := 0;
   MenuReq := 0;
-  B69FA := 0;
-  B69FB := 0;
-  B69FC := 0;
-  B69FF := 0;
-  B6A00 := 0;
-  B6A01 := 0;
-  B6A02 := 0;
-  B6A03 := 0;
-  B6A04 := 0;
-  B6A05 := 0;
-  B69F5 := 0;
-  B69F6 := 0;
-  B69F7 := 0;
-  B69F8 := 0;
-  B69F9 := 0;
-  B69FD := 0;
+  ChordP := 0;
+  ChordJ := 0;
+  ChordX := 0;
+  ChordU := 0;
+  ChordV := 0;
+  ChordK := 0;
+  AmmoCheat := 0;
+  ChordZ := 0;
+  ChordG := 0;
+  ChordI := 0;
+  ChordO := 0;
+  ChordN := 0;
+  ChordD := 0;
+  ChordPB := 0;
+  WarpCheat := 0;
+  PjxDone := 0;
   B69FE := 0;
-  B6A06 := 0;
+  WarpArmed := 0;
   WarpTimer := 0;
   WarpX := 0;
   WarpY := 0;
@@ -513,7 +547,7 @@ begin
   State.MapSite := MapSite;
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];
-  State.B47 := B6A02;
+  State.B47 := AmmoCheat;
 end;
 { src: SAM1RE 2891:0A89 (../SAM code-map.md: level entry / respawn). I is never used (sub sp,2) }
 { interface }
@@ -522,40 +556,40 @@ procedure LevelReset;
 var
   I: Integer;
 begin
-  B6D8C := 0;
+  HasPix := 0;
   SetColor(0);
   ClearRows(0, $50, 0, 8);
   CopyPage;
   StatusCamX := -1;
-  B6EE5 := 0;
-  B6EF0 := 0;
-  B6EF1 := 0;
-  B6EE9 := 0;
-  B6EEA := 0;
-  B6EEB := 0;
+  Shot := 0;
+  LeftHeld := 0;
+  RightHeld := 0;
+  UpHeld := 0;
+  DownHeld := 0;
+  EscHeld := 0;
   B6EEC := 0;
   B6EED := 0;
   B6EEE := 0;
   B6EEF := 0;
   B6EE8 := 0;
-  B6EE7 := 0;
-  B6EF3 := 0;
-  B6EE6 := 0;
+  Jumping := 0;
+  JumpHeld := 0;
+  Falling := 0;
   W6856 := 0;
   WalkSpeed := 0;
   VGunOff := 0;
-  B6A12 := 0;
-  B6A13 := 0;
+  Floppy := 0;
+  LaserDown := 0;
   B6A0E := 0;
   B6A0F := 0;
   B6A10 := 0;
   B6A11 := 0;
-  B6A1A := 0;
+  DoorKey := 0;
   B6A14 := 0;
   KeysOff := 0;
-  B6A16 := 0;
-  B6A17 := 0;
-  B6A18 := 1;
+  Bonus1 := 0;
+  Bonus2 := 0;
+  Bonus3 := 1;
   SpeedBonus := 0;
   SpeedTimer := 0;
   W69CE := 0;
@@ -570,27 +604,27 @@ begin
   Lives := 3;
   B6A67 := 0;
   B6A68 := 0;
-  B6A1B := 0;
+  HitLock := 0;
   ArcLen := $23;
   ExitArmed := 0;
-  B69FA := 0;
-  B69FB := 0;
-  B69FC := 0;
-  B69FF := 0;
-  B6A00 := 0;
-  B6A01 := 0;
-  B6A02 := 0;
-  B6A03 := 0;
-  B6A04 := 0;
-  B6A05 := 0;
-  B69F5 := 0;
-  B69F6 := 0;
-  B69F7 := 0;
-  B69F8 := 0;
-  B69F9 := 0;
-  B69FD := 0;
+  ChordP := 0;
+  ChordJ := 0;
+  ChordX := 0;
+  ChordU := 0;
+  ChordV := 0;
+  ChordK := 0;
+  AmmoCheat := 0;
+  ChordZ := 0;
+  ChordG := 0;
+  ChordI := 0;
+  ChordO := 0;
+  ChordN := 0;
+  ChordD := 0;
+  ChordPB := 0;
+  WarpCheat := 0;
+  PjxDone := 0;
   B69FE := 0;
-  B6A06 := 0;
+  WarpArmed := 0;
   WarpTimer := 0;
   WarpX := 0;
   WarpY := 0;

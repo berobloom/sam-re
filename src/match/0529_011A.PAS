@@ -3,6 +3,6 @@
 { keep: KillPlayer; }
 procedure KillPlayer;
 begin
-  if B6A19 = 0 then
+  if Invulnerable = 0 then
     B6EEE := 1;
 end;

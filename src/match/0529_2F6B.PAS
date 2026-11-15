@@ -646,12 +646,12 @@ begin
               Slots[I].Y := NewY;
               if Slots[I].Y < 0 then
                 Slots[I].Y := 0;
-              if (B6A19 = 0) and ((Slots[I].X <= Slots[1].X) and (Slots[I].X + 9 >= Slots[1].X)
+              if (Invulnerable = 0) and ((Slots[I].X <= Slots[1].X) and (Slots[I].X + 9 >= Slots[1].X)
                   or (Slots[1].X + 9 >= Slots[I].X) and (Slots[I].X >= Slots[1].X))
                   and ((Slots[I].Y <= Slots[1].Y) and (Slots[I].Y + $F >= Slots[1].Y)
-                  or (Slots[1].Y + $F >= Slots[I].Y) and (Slots[I].Y >= Slots[1].Y)) and (B6A1B = 0) then
+                  or (Slots[1].Y + $F >= Slots[I].Y) and (Slots[I].Y >= Slots[1].Y)) and (HitLock = 0) then
               begin
-                B6A1B := 1;
+                HitLock := 1;
                 ArcLen := $23;
                 PlaySound($16);
               end;
