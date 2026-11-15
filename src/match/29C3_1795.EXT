@@ -1,0 +1,3 @@
+{ src: GUESS 29C3:1795 (saves the screen rectangle X1,Y1 .. X2,Y2 into Buf; retf 12) }
+{ interface }
+{$F+} procedure GetImage(var Buf; X1, Y1, X2, Y2: Integer); external; {$F-}

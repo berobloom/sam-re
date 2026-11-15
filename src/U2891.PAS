@@ -41,7 +41,7 @@ var
   Slots: array[1..25] of TSlot; { @3512 }
   P_3838: array[1..6] of Byte;
   TextLines: array[1..299] of String[40]; { @3838 }
-  P_6820: array[1..4] of Byte;
+  P681C: Pointer; { @681C; TextWindow's save-under buffer (30000 bytes) }
   B6820: array[1..20] of Byte; { @6820 }
   P_683A: array[1..6] of Byte;
   W683A: Integer; { @683A }
@@ -52,7 +52,7 @@ var
   W6846: Integer; { @6846 }
   P_684A: array[1..2] of Byte;
   W684A: Integer; { @684A }
-  P_6852: array[1..6] of Byte;
+  W684C, W684E, W6850: Integer; { @684C; loop variables of the text windows }
   W6852: Integer; { @6852 }
   P_6856: array[1..2] of Byte;
   W6856: Integer; { @6856 }
@@ -112,8 +112,7 @@ var
   GfxSmallFile: file of TGfxSmall; { @6E64 }
   P_6EE5: array[1..1] of Byte;
   B6EE5, B6EE6, B6EE7, B6EE8, B6EE9, B6EEA, B6EEB, B6EEC, B6EED, B6EEE, B6EEF, B6EF0, B6EF1: Byte; { @6EE5 }
-  P_6EF3: array[1..1] of Byte;
-  B6EF3: Byte; { @6EF3 }
+  B6EF2, B6EF3: Byte; { @6EF2 }
   NameUp, NameDown, NameFire, NameRight, NameJump, NameLeft: String[80]; { @6EF4; key names (redefine menu) }
   KeyUp, KeyDown, KeyLeft, KeyRight, KeyFire, KeyJump: Integer; { @70E0; SAM1RE menus.md: 70E8 fire }
   W70EC: Integer; { @70EC }

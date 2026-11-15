@@ -1,0 +1,3 @@
+{ src: GUESS 29C3:051F (DrawCell with the mask: a cell over the background; retf 8) }
+{ interface }
+{$F+} procedure DrawCellM(var Src; X, Y: Integer); external; {$F-}

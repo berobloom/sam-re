@@ -369,8 +369,8 @@ def gen_unit(u, rec, fill, regs, keepers_of_units=(), unit_data=()):
         init_off = next(r[2] for r in regs if r[0] == 'init')
         fi = fragment(seg, init_off)
         if fi:
-            if not keeper and (calls or dnames):
-                raise ValueError('%s: a hand-written init but nothing else keeps %s' % (name, calls + dnames))
+            # no keeper and a hand-written init: every stub is matched or has a signature, so the matched callers
+            # keep the private routines; one nothing calls is dropped by the linker and the layout check fails
             L += [l for l in fi['text'].split('\n') if l.strip()]
         else:
             L += body('INIT', [] if keeper else calls, [] if keeper else dnames)

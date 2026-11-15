@@ -1,0 +1,3 @@
+{ src: GUESS 29C3:1831 (puts back a rectangle saved by GetImage at X, Y; retf 8) }
+{ interface }
+{$F+} procedure PutImage(var Buf; X, Y: Integer); external; {$F-}

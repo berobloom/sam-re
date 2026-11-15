@@ -7,8 +7,11 @@ global SETSTRIDE
 global SETVIEWSTART
 global SETVIEWSTARTALT
 global SETPALREG
+global DRAWCELLM
 global SETCOLOR
 global CLEARROWS
+global GETIMAGE
+global PUTIMAGE
 global DRAWCELLX
 global GETROMFONTS
 global PROC2981
@@ -390,6 +393,7 @@ L04B9:
     pop ds                                  ; 051A
     pop bp                                  ; 051B
     retf 8                                  ; 051C
+DRAWCELLM:
     push bp                                 ; 051F
     db 0x8B, 0xEC   ; mov bp, sp
     push ds                                 ; 0522
@@ -806,6 +810,7 @@ L086F:
     db 0x01, 0x8B, 0x46, 0x0A, 0x2E, 0xA3, 0x9B, 0x01, 0x8B, 0x46, 0x06, 0x2E, 0xA3, 0x9D, 0x01, 0x5D
     db 0xCA, 0x08, 0x00, 0x2E, 0xA1, 0x9F, 0x01, 0xCB, 0x2E, 0xA1, 0xA1, 0x01, 0xCB, 0x2E, 0xA1, 0x9B
     db 0x01, 0xCB, 0x2E, 0xA1, 0x9D, 0x01, 0xCB
+GETIMAGE:
     push bp                                 ; 1795
     db 0x8B, 0xEC   ; mov bp, sp
     push ds                                 ; 1798
@@ -887,6 +892,7 @@ L1805:
     db 0x8B, 0xE5   ; mov sp, bp
     pop bp                                  ; 182D
     retf 0xc                                ; 182E
+PUTIMAGE:
     push bp                                 ; 1831
     db 0x8B, 0xEC   ; mov bp, sp
     push ds                                 ; 1834

@@ -11,8 +11,11 @@ function SetStride(N: Integer): Integer;
 procedure SetViewStart(X, Y: Integer);
 procedure SetViewStartAlt(X, Y: Integer);
 procedure SetPalReg(Reg, Color: Integer);
+procedure DrawCellM(var Src; X, Y: Integer);
 procedure SetColor(C: Integer);
 procedure ClearRows(Base, Count, Row, Rows: Integer);
+procedure GetImage(var Buf; X1, Y1, X2, Y2: Integer);
+procedure PutImage(var Buf; X, Y: Integer);
 procedure DrawCellX(var Src; X, Y: Integer);
 procedure DrawCell(var Src; X, Y: Integer);
 procedure Proc2ECF(A, B, C, D: Integer);
@@ -26,8 +29,11 @@ function SetStride; external;
 procedure SetViewStart; external;
 procedure SetViewStartAlt; external;
 procedure SetPalReg; external;
+procedure DrawCellM; external;
 procedure SetColor; external;
 procedure ClearRows; external;
+procedure GetImage; external;
+procedure PutImage; external;
 procedure DrawCellX; external;
 {$F+} procedure GetRomFonts; external; {$F-}
 {$F+} procedure Proc2981(X: Integer); external; {$F-}
