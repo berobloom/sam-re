@@ -236,6 +236,10 @@ so unknown variables between known ones need no declaration yet.
   packed record (e.g. the state store DS:6D3E, `TState` in `2891.VAR`).
 - `array[1..N]` at BASE is indexed as `[di + BASE - size]`: read the base
   from the displacement plus one element size.
+- Constant indices fold into one absolute address, so they do not show an
+  array's lower bound: `JumpUp` (2891) read as `array[0..18]` until 0529:66B3
+  indexed it by a Byte as `[di + 34D5]`. `JumpUp[B - 1]` on a Byte B is not
+  folded (`xor ah,ah; dec ax`), so the bound is 1 and the index is B.
 - A two-dimensional `array[1..A, 1..B]` of N-byte elements at BASE: the
   displacement is BASE - B*N - N + field offset (Map: 01F2 = 02BC - 200 - 8
   + 6); the first index is `mov dx, B*N; mul dx`, the second `shl` by log2 N.

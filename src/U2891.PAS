@@ -39,7 +39,7 @@ type
     B47: Byte;
   end;
 var
-  JumpUp: array[0..18] of Byte; { @34D6 }
+  JumpUp: array[1..19] of Byte; { @34D6; indexed by JumpUpTop 1..19 (0529:66B3) }
   JumpDown: array[0..37] of Byte; { @34EA }
   JumpUpTop: Byte; { @3510 }
   JumpDownTop: Byte; { @3511 }
@@ -51,7 +51,8 @@ var
   P_683A: array[1..6] of Byte;
   W683A: Integer; { @683A }
   B683C: Byte; { @683C }
-  P_6842: array[1..4] of Byte;
+  W683E: Integer; { @683E; counts the player's landings (0529:66B3), GUESS }
+  P_6842: array[1..2] of Byte;
   Level: Integer; { @6842 }
   W6844, W6846: Integer; { @6844 }
   P_684A: array[1..2] of Byte;
@@ -277,25 +278,25 @@ begin
   for I := 1 to 20 do
     State.SiteDone[I] := SiteDone[I];
   W6D86 := 0;
-  JumpUp[0] := 0;
-  JumpUp[1] := 8;
+  JumpUp[1] := 0;
   JumpUp[2] := 8;
   JumpUp[3] := 8;
-  JumpUp[4] := 4;
+  JumpUp[4] := 8;
   JumpUp[5] := 4;
-  JumpUp[6] := 2;
+  JumpUp[6] := 4;
   JumpUp[7] := 2;
   JumpUp[8] := 2;
-  JumpUp[9] := 1;
+  JumpUp[9] := 2;
   JumpUp[10] := 1;
-  JumpUp[11] := 2;
+  JumpUp[11] := 1;
   JumpUp[12] := 2;
   JumpUp[13] := 2;
-  JumpUp[14] := 4;
+  JumpUp[14] := 2;
   JumpUp[15] := 4;
-  JumpUp[16] := 8;
+  JumpUp[16] := 4;
   JumpUp[17] := 8;
   JumpUp[18] := 8;
+  JumpUp[19] := 8;
   JumpUpTop := 18;
   JumpDown[0] := 0;
   JumpDown[1] := 8;
