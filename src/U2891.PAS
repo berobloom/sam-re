@@ -75,7 +75,7 @@ var
   W6862: Integer; { @6862 }
   W6864: Integer; { @6864 }
   W6866: Integer; { @6866 }
-  P_686A: array[1..2] of Byte;
+  B6868: Byte; { @6868; 1 when exactly 15 of the 16 sites are done (0D9C:2E88; SAM1RE level-load.md) }
   Bullets: array[1..20] of Byte; { @686A }
   Ammo: Integer; { @687E }
   Shots: array[1..10] of TSlot; { @6880; a second slot table (0529:008D tests it like Slots), GUESS name }

@@ -786,7 +786,7 @@ if OnScreen(0, 1) then;;
 if ShotOnScreen(0, 1) then;;
 KillPlayer;;
 TouchPlayer;
-S0D9C_3A91;
+S0D9C_3A59;
 DrawBack(0, 0);;
 DrawFront(0, 0);;
 FlipPage;;
@@ -828,7 +828,7 @@ Inline(>VideoTab/>Tick/>Regs/>VideoMode/>Adapter/>Map/>VideoSeg/>B21FE/>L2200/>W
 >JoyOn/>Bank1/>Bank2/>Bank3/>SndFile/>CurSound/>NoteIdx/>Playing/>SoundOn/>JumpUp/>JumpDown/
 >JumpUpTop/>JumpDownTop/>Slots/>P_3838/>TextLines/>P681C/>B6820/>P_683A/>W683A/>B683C/>W683E/>W6840/
 >Level/>W6844/>W6846/>P_684A/>W684A/>W684C/>W684E/>W6850/>W6852/>W6854/>W6856/>W6858/>W685A/>B685C/
->CamX/>CamY/>W6862/>W6864/>W6866/>P_686A/>Bullets/>Ammo/>Shots/>Score/>W69C4/>W69C6/>Gun/>W69CA/
+>CamX/>CamY/>W6862/>W6864/>W6866/>B6868/>Bullets/>Ammo/>Shots/>Score/>W69C4/>W69C6/>Gun/>W69CA/
 >W69CC/>W69CE/>W69D0/>B69D2/>B69D3/>W69D4/>B69D6/>W69D8/>B69DA/>W69DC/>MapSite/>SiteDone/>B69F4/
 >B69F5/>B69F6/>B69F7/>B69F8/>B69F9/>B69FA/>B69FB/>B69FC/>B69FD/>B69FE/>B69FF/>B6A00/>B6A01/>B6A02/
 >B6A03/>B6A04/>B6A05/>B6A06/>W6A08/>W6A0A/>W6A0C/>B6A0E/>B6A0F/>B6A10/>B6A11/>B6A12/>B6A13/>B6A14/
