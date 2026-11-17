@@ -1,4 +1,4 @@
-# SAM2: Secret Agent, rebuilt to its original source
+# sam-re: Secret Agent, rebuilt to its original source
 
 ## Project goal
 
@@ -64,7 +64,7 @@ Do not duplicate a finding; link to it.
 
 ## Not DREA
 
-SAM2 is an experiment: its findings, tools and traps stay in this repo
+sam-re (started as SAM2) is an experiment: its findings, tools and traps stay in this repo
 (`GOTCHAS.md`, `findings/`). Do not write into `../DREA`.
 
 ## Working mode

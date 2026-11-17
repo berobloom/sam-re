@@ -1,95 +1,116 @@
-# DREA: DOS reverse-engineering template
+# Secret Agent: a matching decompilation in Turbo Pascal
 
-A starting point for reverse engineering a DOS game and porting it to C, with
-an AI agent (Claude Code or a local model through pi) working next to you.
-It works with the patched DOSBox-X and the `dosre` MCP server in
-`../dos-re-suite`.
+<img src="docs/media/cover.jpg" align="right" width="320" alt="The title screen: the SECRET AGENT logo in yellow over Mission One, The Hunt for Red Rock Rover, and the blond agent in a tuxedo hanging from a parachute with a pistol in his hand">
 
-Everything here is generic. It comes from two finished projects:
+A rebuild of the DOS platformer **Secret Agent, episode 1: The Hunt for Red
+Rock Rover** (Apogee Software, 1992; programmed by Peder Jungck, version 1.0
+shareware) as Turbo Pascal source that compiles back to the shipped
+`SAM1.EXE`, byte for byte.
 
-- **re_cold**: Cold Dreams (1994), 16-bit real mode, reverse engineered by
-  long unattended local-model runs over GDB/QMP.
-- **redcat**: RedCat's Razende Rekenrace (1996), 32-bit Watcom/DOS/4GW, ported
-  to SDL2 and WebAssembly.
+![The original game: the first level, the agent collects two items from the shelf, jumps onto the ledge and walks back above the shark tank](docs/media/sam-level.gif)
 
-Only the parts that would have saved time on a new game came across: the
-traps (GOTCHAS.md, harness/TRAPS.md), the working method (METHOD.md), the note-keeping layout,
-the harness configuration and the tools with no game in them.
+The source is `src/match/`: the game's Pascal, one routine per file, and the
+assembler blocks it links in. Built with **Turbo Pascal 5.0**, the compiler
+the game was built with, it gives the original's load image in all 188,768
+bytes. Packed with LZEXE 0.91 the way the shipped file was, it is
+`SAM1.EXE` itself, SHA-256 included.
 
-## Start a project
+<p>
+  <img src="docs/media/menu.jpg" width="32%" alt="The main menu in a grey brick frame on a striped red panel: New Game, Restore Old Game, Story, Instructions, High Scores, Ordering Info, Foreign Orders, Call Our BBS, Video Support, About Apogee and Quit to DOS">
+  <img src="docs/media/map.jpg" width="32%" alt="The island map: the agent stands on the beach next to the sea, forests around him and the first level's building with a red flag further in">
+  <img src="docs/media/level.jpg" width="32%" alt="The first level: grey stone walls, a pool with a shark fin under the sign DON'T FEED THE FISH, a red key on the wall and the agent on a ledge">
+</p>
+
+All of these are the original `SAM1.EXE`, captured in DOSBox-X.
+
+**The game itself is not included.** You need your own copy (the shareware
+episode is enough). Nothing here changes or redistributes the original files.
+
+## Progress
+
+<a href="docs/SAMPROGRESS.HTML"><img src="docs/SAMPROGRESS.SVG" width="50%" alt="SAM1.EXE: the share of the game's routines that compile to the original's bytes"></a>
+
+**All 165 of the game's routines compile to the original's exact bytes, and
+all 10 game units are whole.** Borland's System, Crt and Dos units come from
+TP 5.0's `TURBO.TPL` unchanged and match too, as does the data segment.
+
+[`docs/SAMPROGRESS.HTML`](docs/SAMPROGRESS.HTML) lists every routine: search
+it by name, address or source text, filter it by unit, and click a routine
+to read its source. [`PROGRESS.md`](PROGRESS.md) has the same numbers as
+tables, part by part and unit by unit. `tools/progress.py` writes all three
+from a fresh build of the source, not from hand counts.
+
+## Building and checking
+
+The build needs Turbo Pascal 5.0 (in `.work/toolchains/tp50`), NASM, and the
+stock `dosbox` to run the compiler headless. LZEXE 0.91 is needed only for
+the last step. None of them is included: `findings/executables.md` says
+which versions, and `MATCHING.md` section 1 how they were pinned. The
+Python tools run from `.work/venv`.
 
 ```sh
-git clone https://github.com/berobloom/DREA ~/projects/active/<game>-re
-cd ~/projects/active/<game>-re && rm -rf .git && git init
-./setup.sh            # checks every tool; prints the apt line for what is missing
-./setup.sh --suite    # once per machine: fetch and build dos-re-suite
-# the game, untouched, in original/
-unzip -d original <download>.zip     # or 7z x -ooriginal <image>.iso
-(cd original && sha256sum * > SHA256SUMS)
-.work/venv/bin/python tools/mz.py original/*.EXE
-# the emulator and the agent
-GAMEDIR=<DIR> harness/install.sh
-.work/venv/bin/python tools/dosrun.py start
-cp harness/mcp.json.template .mcp.json   # Claude Code and pi (pi-mcp-adapter reads .mcp.json)
+./setup.sh                                                   # checks the tools, makes .work/venv
+.work/venv/bin/python tools/real/unlzexe.py original/SAM1.EXE .work/tp/SAM1_unp.exe
+.work/venv/bin/python tools/tp/gen_scaffold.py   # assemble src/ from src/match/, build with TP 5.0, check the layout
+.work/venv/bin/python tools/tp/match.py          # every routine, the libraries and the data against the original
+.work/venv/bin/python tools/tp/pack.py           # LZEXE 0.91, compared with original/SAM1.EXE
+.work/venv/bin/python tools/progress.py          # rewrite PROGRESS.md and docs/SAMPROGRESS.*
 ```
 
-`setup.sh` never uses sudo: it prints the install command and you run it, then
-run `setup.sh` again until it says `ready`.
-
-Then fill in the `<...>` parts of `AGENTS.md` (`CLAUDE.md` is a link to it),
-put your first priorities in `QUEUE.md`, and keep `GOTCHAS.md` growing.
-Delete the worked example at the bottom of `findings/_TEMPLATE.md` once the
-first real findings exist.
+`SAM1.EXE` and the game's data files go in `original/`, untouched;
+`original/SHA256SUMS` lists the files this was made with.
 
 ## Layout
 
-| Path | What |
+| Path | Contents |
 |---|---|
-| `AGENTS.md` (`CLAUDE.md`) | project instructions for the agent: session start, evidence rules, where things go |
-| `METHOD.md` | how to RE and port one behaviour: trust order, evidence levels, the fix loop, x86-to-C mistakes, checks that can fail |
-| `GOTCHAS.md` | the 17 traps to read every session, plus this project's own |
-| `harness/TRAPS.md` | all ~60 harness, tooling and process traps by topic, tagged by origin; grep it |
-| `QUEUE.md` | the human's work list; only the human ticks items |
-| `STATUS.md` | where things stand, `## Next` |
-| `QUESTIONS.md` | open questions and hypotheses, numbered |
-| `findings/` | facts by subsystem, with evidence levels (`INDEX.md`, `_TEMPLATE.md`) |
-| `analysis/` | names and function lists per executable |
-| `captures/` | save states and dumps that checks use (`MANIFEST.md`) |
-| `reference/DOS.md` | platform facts: memory map, PSP/MZ/LE, VGA, PIT, keyboard, Sound Blaster, compilers' rand() |
-| `setup.sh` | checks and sets up the tools; `--suite` builds the emulator |
-| `harness/` | DOSBox-X config template, install script, MCP configs, `MCP-GUIDE.md` |
-| `tools/` | `mz.py`, `dosrun.py`, real-mode and LE tools, Ghidra headless (`tools/README.md`) |
-| `port/README.md` | conventions for the C port and for testing it without a human |
-| `original/` | the untouched game files (not committed) |
-| `.work/` | everything derived (not committed) |
+| `src/match/` | The source: `<SEG>_<OFF>_<Name>.PAS` routines, `.EXT` asm declarations, `OBJ<SEG>.ASM` asm blocks, `<SEG>.VAR` data |
+| `src/` | The compilable units `gen_scaffold.py` assembles from `src/match/` on every build |
+| `SOURCE.md` | What the source is, how it builds, and which unit holds which part of the game |
+| `MATCHING.md` | The method: pinning the compiler, the libraries, the layout scaffold, the packing step |
+| `recipe/units.json` | Every unit and routine of `SAM1.EXE`: segment, offset, size, status |
+| `findings/` | What has been established about the game and its build, with evidence |
+| `GOTCHAS.md` | Traps in the tools and in matching Turbo Pascal's output |
+| `tools/tp/` | Compiler driver, pattern decompiler (`pasgen.py`), match check, packer, renamer |
+| `tools/dosrun.py` | Drives the original in DOSBox-X: keys, screenshots, memory, save states |
+| `harness/` | DOSBox-X set-up for running the original |
 
-## Not included
+## How it was done
 
-- **re_cold's overnight loop** (`overnight/`: the pi supervisor, the watchdog
-  extension, `check.sh` with build + self-check + mutation gates). It is tied
-  to that project's check binary and is not committed there either. Copy it
-  and adapt `check.sh` and `prompt.md` when a project has a port with a
-  self-check to gate on.
-- **The MCP server and DOSBox-X build**: they stay in `dos-re-suite`
-  (GitHub `berobloom/dos-re-suite`, private); its README is the manual.
-- **Game-specific decoders** (Davilex IND/IMG archives, Cold Dreams sprite
-  banks). The redcat port's `smacker.c` is a general Smacker decoder worth
-  copying when a game has `.SMK` films.
+`MATCHING.md` is the whole method; in short:
 
-## Feeding lessons back
+1. **Pin the compiler.** All 80 of the game's System, Crt and Dos routines
+   have TP 5.0's code; 5.5 differs in 4 of them and 6.0 in 17
+   (`findings/executables.md`).
+2. **Size-exact scaffold.** Every unit is first built from stubs of the
+   right sizes, so the segment bases, routine offsets and data addresses
+   all land where the original's are before any real code goes in.
+3. **One routine at a time.** Each stub is replaced by Pascal until its
+   bytes and relocations match. `tools/tp/pasgen.py`, a pattern decompiler
+   for TP 5.0's code, wrote the first drafts of the largest routines; the
+   assembler blocks are disassembled to NASM by `tools/tp/obj2asm.py`.
+4. **The last bytes.** The shipped header's memory sizes cannot come out of
+   TP 5.0; `tools/tp/pack.py` sets them before packing (`MATCHING.md`
+   section 8).
 
-A project finds traps and methods that are not about its game. Tag them
-`[generic]` in the project's `GOTCHAS.md` (or a finding's `## Traps`), and
-from time to time copy them here:
+Each finding carries a label: CONFIRMED, STRONGLY SUPPORTED, LIKELY or
+SPECULATIVE, and the names in the source carry where they come from
+(`SAM1RE`, the earlier behavioural study; `EXE`, read from the code;
+`GUESS`). The working rules are in [`METHOD.md`](METHOD.md) and
+[`AGENTS.md`](AGENTS.md).
 
-- harness and tool traps → `harness/TRAPS.md` (and `GOTCHAS.md` if one would
-  have saved a whole session), with the project's tag;
-- platform facts confirmed in a game → `reference/DOS.md`, with the game named;
-- a reusable tool → `tools/`, stripped of game addresses, with a usage line;
-- a way of working → `METHOD.md`.
+The original runs in a patched DOSBox-X from
+[dos-re-suite](https://github.com/berobloom/dos-re-suite), which
+`tools/dosrun.py` drives on a hidden display. The pictures above come from
+there.
 
-Keep `GOTCHAS.md` at one screen: when it grows, move the least costly entry to
-`TRAPS.md`.
+## Status
+
+The decompilation is complete. Left open: nine variables keep address names
+because the code only clears or saves them, a few actor-slot field names are
+LIKELY rather than confirmed, and most of the internal routines of the Genus
+asm block keep their `L<offset>` names. A port to C and SDL2 would start from
+this source; it is not part of this project.
 
 ## License
 
@@ -99,3 +120,13 @@ This program is free software: you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
 Foundation, either version 3 of the License, or (at your option) any later
 version. It comes WITHOUT ANY WARRANTY. The full text is in [LICENSE](LICENSE).
+
+It covers this project's own code and notes, not the game.
+
+## Legal
+
+Secret Agent, its program, its data and its title art (Apogee Software, 1992;
+programmed by Peder Jungck) are the property of their rights holders. The
+Genus PCX Programmer's Toolkit, whose code the game links in, belongs to
+Genus Microprogramming. This project contains no game data files and is meant
+for people who own the game.
