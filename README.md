@@ -7,7 +7,7 @@ Rock Rover** (Apogee Software, 1992; programmed by Peder Jungck, version 1.0
 shareware) as Turbo Pascal source that compiles back to the shipped
 `SAM1.EXE`, byte for byte.
 
-![The original game: the first level, the agent collects two items from the shelf, jumps onto the ledge and walks back above the shark tank](docs/media/sam-level.gif)
+![The original game, inside a level: the agent picks up two items, jumps onto the ledge above and walks back](docs/media/sam-level.gif)
 
 The source is `src/match/`: the game's Pascal, one routine per file, and the
 assembler blocks it links in. Built with **Turbo Pascal 5.0**, the compiler
@@ -17,8 +17,8 @@ bytes. Packed with LZEXE 0.91 the way the shipped file was, it is
 
 <p>
   <img src="docs/media/menu.jpg" width="32%" alt="The main menu in a grey brick frame on a striped red panel: New Game, Restore Old Game, Story, Instructions, High Scores, Ordering Info, Foreign Orders, Call Our BBS, Video Support, About Apogee and Quit to DOS">
-  <img src="docs/media/map.jpg" width="32%" alt="The island map: the agent stands on the beach next to the sea, forests around him and the first level's building with a red flag further in">
-  <img src="docs/media/level.jpg" width="32%" alt="The first level: grey stone walls, a pool with a shark fin under the sign DON'T FEED THE FISH, a red key on the wall and the agent on a ledge">
+  <img src="docs/media/map.jpg" width="32%" alt="The island map: the agent on the beach by the sea, forest all around, and a level's building with a red flag further in">
+  <img src="docs/media/level.jpg" width="32%" alt="Inside the level from that building: grey stone walls, a pool with a shark fin under the sign DON'T FEED THE FISH, a red key on the wall and the agent on a ledge">
 </p>
 
 All of these are the original `SAM1.EXE`, captured in DOSBox-X.
@@ -69,7 +69,7 @@ Python tools run from `.work/venv`.
 | `SOURCE.md` | What the source is, how it builds, and which unit holds which part of the game |
 | `MATCHING.md` | The method: pinning the compiler, the libraries, the layout scaffold, the packing step |
 | `recipe/units.json` | Every unit and routine of `SAM1.EXE`: segment, offset, size, status |
-| `findings/` | What has been established about the game and its build, with evidence |
+| `findings/` | Facts about the game and its build, each with its evidence and how sure it is |
 | `GOTCHAS.md` | Traps in the tools and in matching Turbo Pascal's output |
 | `tools/tp/` | Compiler driver, pattern decompiler (`pasgen.py`), match check, packer, renamer |
 | `tools/dosrun.py` | Drives the original in DOSBox-X: keys, screenshots, memory, save states |
@@ -77,21 +77,20 @@ Python tools run from `.work/venv`.
 
 ## How it was done
 
-`MATCHING.md` is the whole method; in short:
+The method is `MATCHING.md`. The steps:
 
-1. **Pin the compiler.** All 80 of the game's System, Crt and Dos routines
-   have TP 5.0's code; 5.5 differs in 4 of them and 6.0 in 17
+1. Pin the compiler. All 80 of the game's System, Crt and Dos routines have
+   TP 5.0's code; 5.5 differs in 4 of them and 6.0 in 17
    (`findings/executables.md`).
-2. **Size-exact scaffold.** Every unit is first built from stubs of the
-   right sizes, so the segment bases, routine offsets and data addresses
-   all land where the original's are before any real code goes in.
-3. **One routine at a time.** Each stub is replaced by Pascal until its
+2. Build a scaffold of stubs, each the size of the routine it stands for, so
+   the segment bases, routine offsets and data addresses land where the
+   original's are before any real code goes in.
+3. Replace the stubs with Pascal, one routine at a time, until each one's
    bytes and relocations match. `tools/tp/pasgen.py`, a pattern decompiler
-   for TP 5.0's code, wrote the first drafts of the largest routines; the
-   assembler blocks are disassembled to NASM by `tools/tp/obj2asm.py`.
-4. **The last bytes.** The shipped header's memory sizes cannot come out of
-   TP 5.0; `tools/tp/pack.py` sets them before packing (`MATCHING.md`
-   section 8).
+   for TP 5.0's code, wrote the first drafts of the largest routines, and
+   `tools/tp/obj2asm.py` turned the assembler blocks into NASM source.
+4. Set the header's memory sizes, which TP 5.0 cannot produce, then pack:
+   `tools/tp/pack.py` (`MATCHING.md` section 8).
 
 Each finding carries a label: CONFIRMED, STRONGLY SUPPORTED, LIKELY or
 SPECULATIVE, and the names in the source carry where they come from
