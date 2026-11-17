@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SAM1.EXE source</title>
+<link rel="icon" type="image/png" href="data:image/png;base64,/*ICON*/">
+<style>
+  /* colours from the game's main menu: the striped maroon panel, the grey brick frame, EGA yellow and white */
+  :root {
+    --bg: #3a0008;
+    --stripe: #4a0410;
+    --panel: #6e0c1c;
+    --row: #520814;
+    --row-alt: #5e0a18;
+    --row-hover: #7c1424;
+    --line: #aaaaaa;
+    --brick: #8a8a9a;
+    --text: #ffffff;
+    --muted: #e0b8be;
+    --gold: #ffff55;
+    --match: #55ff55;
+    --near: #ffff55;
+    --code-bg: #12000a;
+    --kw: #ffff55;
+    --cm: #55ffff;
+    --str: #ff9a90;
+    --num: #c8a8ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background-color: var(--bg);
+    background-image: repeating-linear-gradient(135deg, var(--stripe) 0 3px, transparent 3px 7px);
+    color: var(--text);
+    font: 15px/1.45 system-ui, sans-serif;
+  }
+  .main { max-width: 1000px; margin: 0 auto; padding: 16px; }
+  header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 12px; }
+  header img { width: 300px; max-width: 100%; height: auto; image-rendering: pixelated;
+               border: 3px solid var(--brick); border-radius: 4px; }
+  header h1 { margin: 0; font-size: 1.5rem; color: var(--gold); letter-spacing: 0.04em; }
+  header p { margin: 2px 0 0; color: var(--muted); }
+  .bar { height: 14px; background: #000; border: 1px solid var(--text); margin: 6px 0 2px; max-width: 420px; }
+  .bar > div { height: 100%; background: var(--gold); }
+  .card { background: var(--panel); border: 3px solid var(--brick); border-radius: 6px; padding: 12px; margin-bottom: 12px; }
+  #search { width: 100%; padding: 8px 10px; font: inherit; color: var(--text); background: var(--bg);
+            border: 1px solid var(--line); border-radius: 6px; }
+  #search::placeholder { color: var(--muted); }
+  #search:focus, select:focus, button:focus-visible, input:focus-visible, td.name:focus-visible {
+    outline: 2px solid var(--gold); outline-offset: 1px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 10px; align-items: center; }
+  fieldset { min-width: 0; max-width: 100%; border: 1px solid var(--line); border-radius: 6px; margin: 0; padding: 4px 10px 6px;
+             display: flex; flex-wrap: wrap; gap: 4px 14px; align-items: center; }
+  legend { color: var(--muted); font-size: 0.85rem; padding: 0 4px; }
+  label { cursor: pointer; user-select: none; display: inline-flex; gap: 5px; align-items: center; }
+  select { max-width: 100%; }
+  select, button { font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--line);
+                   border-radius: 4px; padding: 3px 8px; cursor: pointer; }
+  button:disabled { opacity: 0.4; cursor: default; }
+  .pager { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin: 4px 0 8px; }
+  table { width: 100%; border-collapse: collapse; font: 13px/1.4 ui-monospace, monospace; }
+  table.list { table-layout: fixed; }
+  th.c-addr { width: 11ch; } th.c-size { width: 8ch; } th.c-pct { width: 17ch; } th.sub { width: 28%; } th.kind { width: 15ch; }
+  .wrap { overflow-x: auto; border: 3px solid var(--brick); border-radius: 6px; }
+  .list thead th { background: var(--panel); text-align: left; padding: 8px; cursor: pointer; user-select: none;
+             white-space: nowrap; border-bottom: 1px solid var(--line); }
+  .list thead th[aria-sort="ascending"]::after { content: " \25B2"; color: var(--gold); }
+  .list thead th[aria-sort="descending"]::after { content: " \25BC"; color: var(--gold); }
+  tbody tr.fn:nth-child(4n+1) { background: var(--row); }
+  tbody tr.fn:nth-child(4n+3) { background: var(--row-alt); }
+  tbody tr.fn:hover { background: var(--row-hover); }
+  td { padding: 6px 8px; vertical-align: top; }
+  td.name { cursor: pointer; word-break: break-all; color: var(--gold); }
+  td.name:hover { text-decoration: underline dotted; }
+  td.pct, td.size { text-align: right; white-space: nowrap; }
+  td.addr { white-space: nowrap; color: var(--muted); }
+  .s-match { color: var(--match); }
+  .s-near { color: var(--near); }
+  tr.src > td { background: var(--code-bg); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 10px; }
+  .srcnote { color: var(--muted); margin: 0 0 8px; font-family: system-ui, sans-serif; }
+  .srcnote code { color: var(--text); }
+  pre.code { margin: 0; white-space: pre; overflow-x: auto; color: #eeeeee; }
+  .kw { color: var(--kw); font-weight: bold; }
+  .cm { color: var(--cm); }
+  .str { color: var(--str); }
+  .num { color: var(--num); }
+  footer { color: var(--muted); font-size: 0.85rem; margin: 12px 0 24px; }
+  footer code { color: var(--text); }
+  @media (max-width: 700px) { td.sub, th.sub, td.kind, th.kind { display: none; } }
+  @media (max-width: 480px) { td.size, th.c-size { display: none; } }
+</style>
+</head>
+<body>
+<div class="main">
+  <header>
+    <img src="data:image/png;base64,/*ICON*/" alt="The SECRET AGENT logo from the game's title screen">
+    <div>
+      <h1>SAM1.EXE</h1>
+      <p id="headline"></p>
+      <div class="bar" role="img" id="barwrap"><div id="bar"></div></div>
+      <p id="sub"></p>
+    </div>
+  </header>
+
+  <div class="card">
+    <input id="search" type="search" placeholder="Search routines (name, address, unit or source text)" aria-label="Search routines">
+    <div class="filters">
+      <fieldset>
+        <legend>Search on</legend>
+        <label><input type="radio" name="on" value="all" checked> Name, address, unit</label>
+        <label><input type="radio" name="on" value="src"> Source text</label>
+      </fieldset>
+      <fieldset>
+        <legend>Unit</legend>
+        <select id="subsys" aria-label="Unit"><option value="">All units</option></select>
+      </fieldset>
+      <fieldset>
+        <legend>Kind</legend>
+        <select id="kind" aria-label="Kind"><option value="">Pascal and asm</option><option value="Pascal">Pascal</option><option value="asm">asm</option></select>
+      </fieldset>
+    </div>
+  </div>
+
+  <div class="pager">
+    <span>Results: <b id="count"></b></span>
+    <span>
+      <button id="prev" type="button">Previous</button>
+      <select id="page" aria-label="Page"></select>
+      <button id="next" type="button">Next</button>
+    </span>
+  </div>
+
+  <div class="wrap">
+    <table class="list">
+      <thead><tr>
+        <th data-k="addr" class="c-addr" aria-sort="ascending">Address</th>
+        <th data-k="name">Name</th>
+        <th data-k="sub" class="sub">Unit</th>
+        <th data-k="kind" class="kind">Kind</th>
+        <th data-k="size" class="c-size" style="text-align:right">Bytes</th>
+        <th data-k="pct" class="c-pct" style="text-align:right">Status</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <footer>
+    Generated by <code>tools/progress.py</code> at commit <code id="commit"></code>.
+    A routine is byte-identical when the Turbo Pascal 5.0 build of <code>src/</code> has the same bytes and
+    relocations as the unpacked original over its whole span. Click a name to read its source.
+    Addresses are <code>SEG:OFF</code>, the segment relative to the load segment.
+  </footer>
+</div>
+
+<script>
+const REPORT = /*DATA*/;
+const PAGE = 100;
+const $ = id => document.getElementById(id);
+const st = { q: '', on: 'all', sub: '', kind: '', key: 'addr', dir: 1, page: 0, open: new Set() };
+const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+const PASKW = new Set(('and array asm begin case const div do downto else end external far file for forward function goto if ' +
+  'implementation in inline interface interrupt label mod nil not of or packed procedure program record repeat set shl shr ' +
+  'string then to type unit until uses var while with xor absolute').split(' '));
+
+function hlPascal(src) {
+  const re = /(\{[\s\S]*?\}|\(\*[\s\S]*?\*\))|('(?:[^']|'')*')|(\$[0-9A-Fa-f]+|#\d+|\b\d+\b)|([A-Za-z_]\w*)/g;
+  let out = '', last = 0, m;
+  while ((m = re.exec(src))) {
+    out += esc(src.slice(last, m.index));
+    if (m[1]) out += '<span class="cm">' + esc(m[1]) + '</span>';
+    else if (m[2]) out += '<span class="str">' + esc(m[2]) + '</span>';
+    else if (m[3]) out += '<span class="num">' + esc(m[3]) + '</span>';
+    else out += PASKW.has(m[4].toLowerCase()) ? '<span class="kw">' + esc(m[4]) + '</span>' : esc(m[4]);
+    last = re.lastIndex;
+  }
+  return out + esc(src.slice(last));
+}
+
+function hlAsm(src) {
+  return src.split('\n').map(line => {
+    if (/^\s*\{/.test(line)) return hlPascal(line);
+    const i = line.indexOf(';');
+    const code = i < 0 ? line : line.slice(0, i), cm = i < 0 ? '' : line.slice(i);
+    const c = /^\w+:$/.test(code.trim()) ? '<span class="kw">' + esc(code) + '</span>'
+      : esc(code).replace(/\b(0x[0-9a-fA-F]+|\d+)\b/g, '<span class="num">$1</span>');
+    return c + (cm ? '<span class="cm">' + esc(cm) + '</span>' : '');
+  }).join('\n');
+}
+
+function statusText(f) {
+  return f.s === 'match' ? '<span class="s-match">byte-identical</span>'
+    : '<span class="s-near">' + f.d + ' bytes differ</span>';
+}
+
+function rows() {
+  const q = st.q.trim().toLowerCase();
+  let r = REPORT.functions.filter(f => {
+    if (st.sub && f.sub !== st.sub) return false;
+    if (st.kind && !f.k.startsWith(st.kind)) return false;
+    if (!q) return true;
+    if (st.on === 'src') return f.src.toLowerCase().includes(q);
+    return f.n.toLowerCase().includes(q) || f.a.toLowerCase().includes(q) || f.sub.toLowerCase().includes(q);
+  });
+  const k = st.key, d = st.dir;
+  const val = f => ({ addr: f.a, name: f.n.toLowerCase(), sub: f.sub, kind: f.k, size: f.z, pct: f.s === 'match' ? 1 : 0 })[k];
+  r.sort((x, y) => (val(x) < val(y) ? -1 : val(x) > val(y) ? 1 : (x.a < y.a ? -1 : 1)) * d);
+  return r;
+}
+
+function srcHtml(f) {
+  let h = '<p class="srcnote">' + (f.f ? '<code>' + esc(f.f) + '</code>' : 'no source file') +
+    (f.k === 'Pascal, nested' ? ', declared inside its parent routine in this file' : '') +
+    (f.k === 'asm' ? ', the routine\'s lines of the unit\'s <code>{$L}</code> block' : '') +
+    (f.ns ? '; name source ' + esc(f.ns) : '') + '; ' + f.z + ' bytes.</p>';
+  if (!f.src) return h + '<p class="srcnote">No source text.</p>';
+  return h + '<pre class="code">' + (f.k === 'asm' ? hlAsm(f.src) : hlPascal(f.src)) + '</pre>';
+}
+
+function render() {
+  const r = rows();
+  const pages = Math.max(1, Math.ceil(r.length / PAGE));
+  st.page = Math.min(st.page, pages - 1);
+  $('count').textContent = r.length;
+  $('page').innerHTML = Array.from({ length: pages }, (_, i) =>
+    '<option value="' + i + '"' + (i === st.page ? ' selected' : '') + '>Page ' + (i + 1) + ' of ' + pages + '</option>').join('');
+  $('prev').disabled = st.page === 0;
+  $('next').disabled = st.page >= pages - 1;
+  let h = '';
+  for (const f of r.slice(st.page * PAGE, st.page * PAGE + PAGE)) {
+    h += '<tr class="fn"><td class="addr">' + f.a + '</td><td class="name" tabindex="0" role="button" aria-expanded="' +
+         st.open.has(f.a) + '" data-a="' + f.a + '">' + esc(f.n) + '</td><td class="sub">' + esc(f.sub) +
+         '</td><td class="kind">' + esc(f.k) + '</td><td class="size">' + f.z + '</td><td class="pct">' + statusText(f) + '</td></tr>';
+    h += st.open.has(f.a) ? '<tr class="src"><td colspan="6">' + srcHtml(f) + '</td></tr>' : '<tr hidden></tr>';
+  }
+  $('rows').innerHTML = h;
+  document.querySelectorAll('table.list thead th').forEach(th =>
+    th.setAttribute('aria-sort', th.dataset.k === st.key ? (st.dir > 0 ? 'ascending' : 'descending') : 'none'));
+}
+
+function init() {
+  const fs = REPORT.functions, done = fs.filter(f => f.s === 'match').length, S = REPORT.summary;
+  const pct = (100 * done / fs.length).toFixed(1);
+  $('headline').textContent = done + ' of ' + fs.length + ' routines byte-identical (' + pct + '%)';
+  $('sub').textContent = S.whole + ' of 10 game units whole' +
+    (S.libs && S.data ? '; System, Crt, Dos and the data segment identical' : '') +
+    (S.packed ? '; packed, the file is the shipped SAM1.EXE' : '');
+  $('bar').style.width = pct + '%';
+  $('barwrap').setAttribute('aria-label', pct + '% byte-identical');
+  $('commit').textContent = REPORT.commit;
+  for (const s of REPORT.units) $('subsys').insertAdjacentHTML('beforeend', '<option>' + esc(s) + '</option>');
+  $('search').addEventListener('input', e => { st.q = e.target.value; st.page = 0; render(); });
+  document.querySelectorAll('input[name=on]').forEach(i => i.addEventListener('change', e => { st.on = e.target.value; st.page = 0; render(); }));
+  $('subsys').addEventListener('change', e => { st.sub = e.target.value; st.page = 0; render(); });
+  $('kind').addEventListener('change', e => { st.kind = e.target.value; st.page = 0; render(); });
+  $('prev').addEventListener('click', () => { st.page--; render(); });
+  $('next').addEventListener('click', () => { st.page++; render(); });
+  $('page').addEventListener('change', e => { st.page = +e.target.value; render(); });
+  document.querySelectorAll('table.list thead th').forEach(th => th.addEventListener('click', () => {
+    if (st.key === th.dataset.k) st.dir = -st.dir; else { st.key = th.dataset.k; st.dir = 1; }
+    render();
+  }));
+  const toggle = el => {
+    const a = el.dataset.a;
+    st.open.has(a) ? st.open.delete(a) : st.open.add(a);
+    render();
+    const again = document.querySelector('td.name[data-a="' + a + '"]');
+    if (again) again.focus();
+  };
+  $('rows').addEventListener('click', e => { const el = e.target.closest('td.name'); if (el) toggle(el); });
+  $('rows').addEventListener('keydown', e => {
+    const el = e.target.closest('td.name');
+    if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); toggle(el); }
+  });
+  render();
+}
+init();
+</script>
+</body>
+</html>

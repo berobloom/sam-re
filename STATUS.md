@@ -35,7 +35,10 @@ keep a session diary here.
   as their `.VAR` notes say. Every slot field is named.
 - Compiler: TP 5.0 / 5.5 / 6.0 compile headless (`tools/tp/tpc.sh`); 5.0 is
   SAM's (`tools/tp/pin_version.sh`).
-- Harness: DOSBox-X + MCP built (`./setup.sh` says ready); not used here.
+- Harness: DOSBox-X + MCP built (`./setup.sh` says ready); used only for the
+  README's captures (`docs/media/`).
+- Progress: `tools/progress.py` rebuilds, compares and writes `PROGRESS.md`,
+  `docs/SAMPROGRESS.HTML` (every routine with its source) and the README badge.
 
 ## Next
 
