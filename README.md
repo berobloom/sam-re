@@ -28,13 +28,13 @@ episode is enough). Nothing here changes or redistributes the original files.
 
 ## Progress
 
-<a href="docs/SAMPROGRESS.HTML"><img src="docs/SAMPROGRESS.SVG" width="50%" alt="SAM1.EXE: the share of the game's routines that compile to the original's bytes"></a>
+<a href="https://berobloom.github.io/sam-re/SAMPROGRESS.HTML"><img src="docs/SAMPROGRESS.SVG" width="50%" alt="SAM1.EXE: the share of the game's routines that compile to the original's bytes"></a>
 
 **All 165 of the game's routines compile to the original's exact bytes, and
 all 10 game units are whole.** Borland's System, Crt and Dos units come from
 TP 5.0's `TURBO.TPL` unchanged and match too, as does the data segment.
 
-[`docs/SAMPROGRESS.HTML`](docs/SAMPROGRESS.HTML) lists every routine: search
+[`docs/SAMPROGRESS.HTML`](https://berobloom.github.io/sam-re/SAMPROGRESS.HTML) lists every routine: search
 it by name, address or source text, filter it by unit, and click a routine
 to read its source. [`PROGRESS.md`](PROGRESS.md) has the same numbers as
 tables, part by part and unit by unit. `tools/progress.py` writes all three
