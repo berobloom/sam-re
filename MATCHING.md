@@ -38,11 +38,11 @@ Known from `../SAM` (notes, re-check before relying on them):
   has no objects (5.5) and no `asm` blocks (6.0), so hand-written code in the
   game is `inline(...)`, `{$L}` .OBJ externals, or `interrupt` procedures.
 - Libraries: the System unit (`2CD1`, last code segment, as TP links it);
-  `2CC7` (160 bytes) holds `Intr` (int86) = the **Dos** unit (LIKELY);
-  `2961` holds `Delay` with a calibration loop = the **Crt** unit (LIKELY);
+  `2CC7` (160 bytes) holds `Intr` (int86) = the **Dos** unit (CONFIRMED);
+  `2961` holds `Delay` with a calibration loop = the **Crt** unit (CONFIRMED);
   **Genus PCX Programmer's Toolkit 3.56** (string "Copyright (c) Genus
-  Microprogramming, Inc. 1988-89"; `../SAM/findings/formats.md` line 8;
-  which segment(s) is OPEN, `29C3` is the candidate).
+  Microprogramming, Inc. 1988-89") is `2643`, and `29C3` is the game author's own
+  graphics unit (findings/executables.md "Units"; this line once had both OPEN).
 
 How to pin the version (the experiment): compile an empty program with each
 candidate TPC and compare its System segment routines with `2CD1`. TP's linker
@@ -71,7 +71,9 @@ video driver, nothing on screen; works with TP 6.0). Alternatively
 [emu2](https://github.com/dmsc/emu2), which runs DOS command-line tools
 straight from a Linux shell and is the better fit for a build script
 (not installed). Borland's files and the Genus toolkit are not committed;
-point to them with `SAM2_TP` / `SAM2_GENUS` (paths outside the repo).
+point to them with `SAM2_TP` / `SAM2_GENUS` (paths outside the repo). Note (2026-11-26):
+no tool reads those two variables; the toolchains live in `.work/toolchains/tp50|tp55|tp60`
+and `tools/tp/tpc.sh` takes the folder.
 
 ## 2. Libraries first
 
@@ -168,7 +170,7 @@ With that the build has every routine at its original address, so section
 `.OBJ` reassembled from the image (NASM `-f obj` works with TP 5.0 if the
 segment is `CODE` with **no class**, and public names are upper case).
 
-## 5. The check: `tools/tp/match.py` (to write)
+## 5. The check: `tools/tp/match.py`
 
 Build with `TPC /GD` and `{$D+,L+}` in every unit: the `.MAP` then gives each
 unit's segment and, for every source line, its code address. Every

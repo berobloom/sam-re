@@ -113,6 +113,34 @@ runtime experiments over manuals, box text, or other people's notes.
 - For a run under a fault (divide by zero, page fault), start a fresh
   emulator for the next case: a half-run machine poisons the rest.
 
+### Lessons from the 2026-11-15 audit of the old C port (../SAM, now gone)
+
+The old port's offline tests all passed while it had 17 defects a player or a live diff saw;
+each rule below was one of them. CONFIRMED unless marked.
+
+- **Diff the port against the running original, slot by slot, frame by frame:** old SAM's
+  `tools/slot_ab.py` warped, read the live RandSeed (DS:029C) at the level loader `0D9C:A1AE`,
+  seeded the port with it and compared all 25 slots (`Slots` DS:3512, 0x20 bytes each) and the
+  player every frame (break at the frame tail `0000:50D1`). Its first runs found 8 defects;
+  afterwards all 16 levels matched for 150 frames.
+- **Never hand-type a constant from the binary:** generate it or pin it with a test that reads
+  the bytes (the walker table had speed 1 next to a comment saying 2; the bytes say 2).
+- **A census compares sets of addresses, never a count against a literal:** `assert == 33`
+  passed for months on a 32-row table; the 33rd spawn site (`0D9C:8FDA`) was the missing kind.
+- **Two readers of the same data get a test that they agree** (the level viewer and the
+  spawner read the map differently; both green, 32 entities lost).
+- **A sequence pin is not a timing pin:** pin durations from logged timestamps.
+- **Before zeroing a field on level entry, find its writer on the entry path** (the fall
+  counter is set once at start-up: findings/actors.md).
+- **"These kinds share one body" needs a per-kind byte census first** (six walker kinds ported
+  as one: two shoot, one moves differently).
+- **Count hedge words in port code** ("UNTRACED", "inferred", "assumed", "stand-in", "TODO")
+  and fail above a baseline. LIKELY useful.
+- **Pick work by what the player sees** (iterations went into one torn frame's pixels while
+  every walker moved at half speed). LIKELY
+- **Unsigned frame budgets underflow:** `Uint32 tstep = RETRACE_MS - elapsed` turns a slow
+  frame into a ~49-day `SDL_Delay`; compare signed. [generic]
+
 ## 8. Habits that wasted whole sessions
 
 - Explaining a report with a theory and never reproducing it.

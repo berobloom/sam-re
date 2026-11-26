@@ -22,14 +22,14 @@ words). Roles are from `../SAM` notes unless stated.
 | 1 | 0529 | 34608 | 17 | actors, physics, AI |
 | 2 | 0D9C | 42592 | 9 | map, cells, level loader |
 | 3 | 1802 | 56896 | 52 | menus, text windows, status line, sprites |
-| 4 | 25E6 | 1488 | 13 | ? (ending film per `../SAM`) |
-| 5 | 2643 | 8896 | 17 | ? (ending film per `../SAM`) |
+| 4 | 25E6 | 1488 | 13 | a text-mode screen library, game Pascal (Units below, SOURCE.md); the old "ending film" reading is superseded |
+| 5 | 2643 | 8896 | 17 | Genus PCX Programmer's Toolkit 3.56 (STRONGLY SUPPORTED, Units below) |
 | 6 | 286F | 256 | 5 | joystick |
 | 7 | 287F | 288 | 2 | sound request |
 | 8 | 2891 | 3328 | 5 | init / resets / decrypt |
-| 9 | 2961 | 1568 | 23 | `Delay`: Crt unit (LIKELY) |
-| 10 | 29C3 | 12352 | 27 | graphics: Genus toolkit candidate |
-| 11 | 2CC7 | 160 | 3 | `Intr`: Dos unit (LIKELY) |
+| 9 | 2961 | 1568 | 23 | `Delay`: Crt unit (CONFIRMED, Units below) |
+| 10 | 29C3 | 12352 | 27 | Peder Jungck's own EGA/VGA graphics unit (CONFIRMED author, Units below) |
+| 11 | 2CC7 | 160 | 3 | `Intr`: Dos unit (CONFIRMED, Units below) |
 | 12 | 2CD1 | 4512 | 54 | System unit |
 | DS | 2DEB | 0x2B0 initialised + BSS | | data |
 
